@@ -1,0 +1,17 @@
+# Fdb version 3
+["pdflatex"] 1636037337 "body.tex" "body.pdf" "body" 1636037339
+  "/etc/texmf/web2c/texmf.cnf" 1634644949 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbxti10.tfm" 1136768653 1532 9162035f4e7176612125649e348e2195 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti10.tfm" 1136768653 1480 aa8e34af0eb6a2941b776984cf1dfdc4 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm" 1136768653 768 1321e9409b4137d6fb428ac9dc956269 ""
+  "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1581979058 38841 ce3692aa899bb693b90b87eaa5d4d84e ""
+  "/usr/share/texmf/web2c/texmf.cnf" 1581979058 38841 ce3692aa899bb693b90b87eaa5d4d84e ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1634717812 4770781 1ed1abab22da9c3e2cc82e4db562318b ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1634717833 8255474 d24170a33739acf17c6f63863a007bb6 ""
+  "body.aux" 1636037337 8 a94a2480d3289e625eea47cd1b285758 ""
+  "body.tex" 1636037337 106536 924ce1e1c6127aa826e0f08dabd38d57 ""
+  (generated)
+  "body.log"
+  "body.pdf"
