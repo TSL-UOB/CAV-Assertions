@@ -122,21 +122,30 @@ The evaluation of assertions requires an environment to generate vehicle data, a
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.98\linewidth]{../other/figures/SimulatorAssertionsTestBenchArchitectureV7.pdf}
+    \includegraphics[width=0.98\linewidth]{../other/figures/SimulatorAssertionsTestBenchArchitecture.png}
     \caption{Simulation testbench architecture}
     \label{fig:SimulatorArchitecture}
 \end{figure}
 
   Figure~\ref{fig:SimulatorArchitecture} shows a layout for a simulation testbench that indicates the context in which the assertions database subsystem is used:\todo[inline]{Should the figure not also include assertion coverage?}
+  \todo[inline, color=green]{Have changed figure to include this}
+
 
   \begin{itemize}
-      \item The \emph{Experiment Instantiation} subsystem generates test scenarios derived from the \emph{Experiment Specification} which may include test objectives or requirements (defined in natural language). This subsystem identifies the \emph{Static} information about the environment (e.g. maps, road features) and \emph{Dynamic} descriptions of the behaviour required of simulated actors (vehicles, other road users, traffic lights, any third-party agents necessary to the test requirement). \todo[inline]{Why subsystem? Can we not just use the name of the respective box(es)?}
-      The experimental configuration determines the test case that will contribute coverage towards the assertion.\todo[inline]{Nothing said yet about coverage.}
+      \item The \emph{Experiment Instantiation} subsystem generates test scenarios derived from the \emph{Experiment Specification} which may include test objectives or requirements (defined in natural language). The Experiment Instantiation subsystem identifies the \emph{Static} information about the environment (e.g. maps, road features) and \emph{Dynamic} descriptions of the behaviour required of simulated actors (vehicles, other road users, traffic lights, any third-party agents necessary to the test requirement). \todo[inline]{Why subsystem? Can we not just use the name of the respective box(es)?} \todo[inline, color=green]{Have updated this sentence}
+      The experimental configuration determines the test case that will contribute coverage towards the assertion.\todo[inline]{Nothing said yet about coverage.}\todo[inline, color=green]{Will add another section at end of list}
       \item The \emph{Simulator} subsystem interacts with the \emph{AV Control} subsystem - although for the purposes of this paper a dummy controller is used that can be set to pass or fail assertions to demonstrate the full extent of the assertion-based safety validation approach. The simulator used is the CARLA simulator\footnote{\url{https://carla.org/}}, but in principle this could be exchanged for other simulators with only moderate effort.
-      \item The \emph{Data Capture} subsystem records relevant simulation data about the driving situation of the AV, including actor positions and road network information, and at each time step of the simulation writes this information into the records of the database to be used for assertion checking.\todo[inline]{Should there not be a DB symbol (looks like a tin) to show the database we are sourcing?}
-      \item The \emph{Assertion Checker} subsystem together with the \emph{Assertions} library constitute the test \emph{Oracle}. These subsystems evaluate all assertions relevant to the driving situation defined at each step of the simulation. The \emph{Outputs} are a a set of Pass/Fail declarations which can be used to annotate the simulation log or be recorded in a separate file if desired.\todo[inline]{Should there not be a DB symbol to represent the assertion library, i.e.\ a set of SQL queries?}
+      \item The \emph{Data Capture} subsystem records relevant simulation data about the driving situation of the AV, including actor positions and road network information, and at each time step of the simulation writes this information into the records of the database to be used for assertion checking.\todo[inline]{Should there not be a DB symbol (looks like a tin) to show the database we are sourcing?}\todo[inline, color=green]{Have added to the figure}
+      \item The \emph{Assertion Checker} subsystem together with the \emph{Assertions} library constitute the test \emph{Oracle}. These subsystems evaluate all assertions relevant to the driving situation defined at each step of the simulation. 
+      \item The \emph{Outputs} are a a set of Pass/Fail declarations which can be used to annotate the simulation log or be recorded in a separate file if desired. \emph{Assertion coverage} with respect to the experiment specifications can also be monitored at the output. \todo[inline]{Should there not be a DB symbol to represent the assertion library, i.e.\ a set of SQL queries?} \todo[inline, color=green]{Have added the DB symbol in the figure}
   \end{itemize}
-  We will focus on describing the assertion oracle in greater detail in the remainder of this paper.\todo[inline]{add the relevant section}\todo[inline]{Really, the ``Simulator'' interfaces with the ``Data Collector'', which writes to a ``Simulation Log'' DB. There is also an Assertion DB. The Assertion Checker sources both the ``Simulation Log'' DB and the ``Assertion'' DB. There is enough space to do this, as follows: Experimental Instantiation -change to- Experimental \\ Instantiation and make box smaller, this means the LHS occupies less space. Move ``Data Collector'' into that space. Add DB to RHS of Data Collector - this results in two DB icons on RHS or one with two parts, one for the log data and one for the assertions/queries. }
+  We will focus on describing the assertion oracle in greater detail in %the remainder of this paper
+  Section \ref{geospatial_database}.
+
+  \todo[inline]{add the relevant section}
+  \todo[inline, color=green]{Have added relevant section number}
+  \todo[inline]{Really, the ``Simulator'' interfaces with the ``Data Collector'', which writes to a ``Simulation Log'' DB. There is also an Assertion DB. The Assertion Checker sources both the ``Simulation Log'' DB and the ``Assertion'' DB. There is enough space to do this, as follows: Experimental Instantiation -change to- Experimental \\ Instantiation and make box smaller, this means the LHS occupies less space. Move ``Data Collector'' into that space. Add DB to RHS of Data Collector - this results in two DB icons on RHS or one with two parts, one for the log data and one for the assertions/queries. }
+  \todo[inline, color=green]{I think I have captured this content in the figure now}
 
 \subsection{Operational Monitoring}
 The basic argument underlying our approach to assertion-based monitoring during operation is that the assertions we have developed for checking in the geospatial database can also be utilised to act as a reference model and monitor the vehicle during operation.
