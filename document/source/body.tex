@@ -7,6 +7,7 @@ Verification and validation are important to earning trust and gaining confidenc
 There has been some recent work to make autonomous vehicles abide by highway traffic laws by formalizing the rules in a language that autonomous systems can understand. This is challenging not only becuase driving rules are often vague and conflicting, but also becuase of the contextual and common sense knowledge required to interpret these rules into appropriate driving actions. 
 %
 Field testing, often the traditional approach to validating systems in their target environments,is likely to be prohibitively expensive for autonomous systems, if a high degree of coverage or statistical confidence is required. This has led to much interest and research into the use of driving simulators\footnote{Examples include \url{https://www.rfpro.com} and \url{http://carla.org}.} for validation. 
+\todo[inline, color=green]{Have cut this down to be more concise}
 %
 % GC COMMENTED THIS
 % Autonomous systems are significantly more complex than their non-autonomous counterparts, and therefore more difficult to validate. Whereas a non-autonomous system is usually designed only to deliver a given servo-mechanical or information processing relationship from inputs to outputs (its function), the problem of autonomy is concerned with how that function is used to achieve one or more situated tasks within the environment, which have specified goals that must be achieved. The state of the environment is as much a part of the validation problem of an autonomous system as the internal state of the system. Hence, the task of validation is often a much higher dimensional problem to solve than for conventional systems, leading to a major expansion in the number of states of a system that may need to be tested. 
@@ -30,6 +31,7 @@ may be expected or legally required to achieve on public roads.
 %
 The class of oracles we are investigating is the ``rules of the road'' legal driving codes for human drivers, which exist in most countries. We are focusing on our home country's rules, the UK Highway Code~\cite{highwayCode} (UKHC), as a working example.
 
+\todo[inline, color=green]{Have cut this section down}
 % GC HAVE COMMENTED THIS OUT:
 % The UKHC is a long established document, about a century old at time of writing\footnote{\url{https://en.wikipedia.org/wiki/The\_Highway\_Code\#History}}, and has been subject to continual revision and evolution of the set of rules contained therein. We consider the UKHC to be a mature and valid reference source for a safe driving code of practice. Publicly available data\footnote{\url{https://en.wikipedia.org/wiki/Reported\_Road\_Casualties\_Great\_Britain}} indicates that despite a significant increase in road users, UK road deaths have been decreasing monotonically since 1966. While there have been many causal factors contributing this trend (e.g.\ seat belts, airbags etc.), we argue that the advice given in the UKHC must have at least some partial contribution to this trend. \todo[inline]{Leave out? Had any advice given at any particular time been confusing or contradictory, then it may have led to increases in accident rates, or would have been detected and corrected over time by UK motoring institutions such as driving instructors, driving test agencies, etc.} Since much of the content of the UKHC has been largely stable for many years, we argue that this is because the advice given is sound, and hence we conclude that it can be a valid reference for constructing safety validation assertions.\todo[inline]{Why only safety? Liveness is also important. Or not?}
 
@@ -122,7 +124,7 @@ The evaluation of assertions requires an environment to generate vehicle data, a
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.98\linewidth]{../other/figures/SimulatorAssertionsTestBenchArchitecture.png}
+    \includegraphics[width=0.98\linewidth]{../other/figures/SimulatorAssertionsTestBenchArchitecture.jpg}
     \caption{Simulation testbench architecture}
     \label{fig:SimulatorArchitecture}
 \end{figure}
@@ -165,7 +167,7 @@ Thus, the same Assertion Checker and Assertions contained in Figure~\ref{fig:Sim
  
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.98\linewidth]{../other/figures/RuntimeAssertionsTestBenchArchitectureV6.pdf}
+    \includegraphics[width=0.98\linewidth]{../other/figures/RuntimeAssertionsTestBenchArchitecture.jpg}
     \caption{Operational monitoring architecture}\todo[inline]{Revise to match new version of Fig. 1}
     \label{fig:RuntimeArchitecture}
 \end{figure}
