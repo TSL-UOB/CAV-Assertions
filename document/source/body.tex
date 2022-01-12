@@ -1,15 +1,14 @@
 \section{Introduction}
 
-Verification and validation are important to earning trust and gaining confidence in the safety of autonomous systems (AS) such as autonomous vehicles (AVs), which are the subject of this paper. Safety validation of any system can (and should) be performed by a variety of measures, including analysis and inspection of designs and their implementation. In this paper we focus on validation by system testing, and in particular on using monitors within simulation and at runtime for a vehicle overtaking scenario. 
+Verification and validation are important to earning trust and gaining confidence in the safety of autonomous systems (AS) such as autonomous vehicles (AVs). Safety validation of any system can (and should) be performed by a variety of measures, including analysis and inspection of designs and their implementation. In this paper we focus on validation by system testing, and in particular on using assertions within simulation and at runtime for a vehicle overtaking scenario. 
 %
 
 % GC ADDED THIS
-There has been some recent work to make autonomous vehicles abide by highway traffic laws by formalizing the rules in a language that autonomous systems can understand. This is challenging not only becuase driving rules are often vague and conflicting, but also becuase of the contextual and common sense knowledge required to interpret these rules into appropriate driving actions. 
+There has been some recent work to make autonomous vehicles abide by highway traffic laws by formalizing the rules in a language that autonomous systems can understand~\cite{?}. This is challenging not only because driving rules are often vague and may be conflicting, but also because of the contextual and common sense knowledge required to interpret these rules into appropriate driving actions. 
 %
-Field testing, often the traditional approach to validating systems in their target environments,is likely to be prohibitively expensive for autonomous systems, if a high degree of coverage or statistical confidence is required. This has led to much interest and research into the use of driving simulators\footnote{Examples include \url{https://www.rfpro.com} and \url{http://carla.org}.} for validation. 
-\todo[inline, color=green]{Have cut this down to be more concise}
+Field testing, often the traditional approach to validating systems in their target environments, is likely to be prohibitively expensive for autonomous systems, if a high degree of coverage or statistical confidence is required. This has led to much interest and research into the use of driving simulators\footnote{Examples include \url{https://www.rfpro.com} and \url{http://carla.org}.} for validation. 
 %
-% GC COMMENTED THIS
+% GC COMMENTED THIS out to be more concise
 % Autonomous systems are significantly more complex than their non-autonomous counterparts, and therefore more difficult to validate. Whereas a non-autonomous system is usually designed only to deliver a given servo-mechanical or information processing relationship from inputs to outputs (its function), the problem of autonomy is concerned with how that function is used to achieve one or more situated tasks within the environment, which have specified goals that must be achieved. The state of the environment is as much a part of the validation problem of an autonomous system as the internal state of the system. Hence, the task of validation is often a much higher dimensional problem to solve than for conventional systems, leading to a major expansion in the number of states of a system that may need to be tested. 
 %
 % Field testing, often the traditional approach to validating systems in their target environments, is likely to be prohibitively expensive for autonomous systems, if a high degree of coverage or statistical confidence is required for safety assurance. This has led to much interest and research into the use of driving simulators\footnote{Examples include \url{https://www.rfpro.com} and \url{http://carla.org}.} for safety validation. Simulation offers the possibility to exercise at least the decision-making logic of a system over a wide range of simulated conditions, and at accelerated rates compared to real-time physical testing. However, the exponential expansion of states associated with testing autonomous %autonomy problems 
@@ -18,8 +17,8 @@ Field testing, often the traditional approach to validating systems in their tar
 % \todo[inline]{autonomy problems - is this politically correct, i.e. ``problems''?} 
 %
 % can also lead to infeasible testing time and resource usage even for simulators. So, care must be taken to ensure simulators are used efficiently and effectively, obtaining as much validation information as possible and getting to the important test conditions that provide key information about the safety properties of a system as fast as possible, rather than by `brute force' approaches such as statistical testing.
-%
-We are interested, therefore, in test methodologies that incorporate the classification, measurement and evaluation of a system's situated behaviour. One such approach is based on the specification of situated behavioural properties as \emph{assertions}, logical expressions that can be applied 
+
+We specifically focus on test methodologies that incorporate the classification, measurement and evaluation of a system's situated behaviour. One such approach is based on the specification of situated behavioural properties as \emph{assertions}, logical expressions that can be applied 
 %at some or even all steps of a simulation session\todo[inline]{or at runtime, so I'd take this out from ``at some'' up to here} 
 to monitor the behaviour of the system under test and to report any property violations. 
 %
@@ -29,25 +28,25 @@ These properties (oracles) relate to the observable driving behaviour of road ve
 %
 may be expected or legally required to achieve on public roads. 
 %
-The class of oracles we are investigating is the ``rules of the road'' legal driving codes for human drivers, which exist in most countries. We are focusing on our home country's rules, the UK Highway Code~\cite{highwayCode} (UKHC), as a working example.
+The class of oracles we are investigating is the ``rules of the road'' legal driving codes for human drivers, which exist in most countries. In this paper we use the UK Highway Code~\cite{highwayCode} (UKHC), as a working example.
 
-\todo[inline, color=green]{Have cut this section down}
 % GC HAVE COMMENTED THIS OUT:
 % The UKHC is a long established document, about a century old at time of writing\footnote{\url{https://en.wikipedia.org/wiki/The\_Highway\_Code\#History}}, and has been subject to continual revision and evolution of the set of rules contained therein. We consider the UKHC to be a mature and valid reference source for a safe driving code of practice. Publicly available data\footnote{\url{https://en.wikipedia.org/wiki/Reported\_Road\_Casualties\_Great\_Britain}} indicates that despite a significant increase in road users, UK road deaths have been decreasing monotonically since 1966. While there have been many causal factors contributing this trend (e.g.\ seat belts, airbags etc.), we argue that the advice given in the UKHC must have at least some partial contribution to this trend. \todo[inline]{Leave out? Had any advice given at any particular time been confusing or contradictory, then it may have led to increases in accident rates, or would have been detected and corrected over time by UK motoring institutions such as driving instructors, driving test agencies, etc.} Since much of the content of the UKHC has been largely stable for many years, we argue that this is because the advice given is sound, and hence we conclude that it can be a valid reference for constructing safety validation assertions.\todo[inline]{Why only safety? Liveness is also important. Or not?}
 
 % GC ADDED THIS
-The UKHC is a mature and valid reference source for a driving code of practice that we believe can be used for constructing validation assertions for properties such as safety and liveness. 
+The UKHC is a mature reference source for a driving code of practice. It comprises a set of driving rules that are in effect an oracle for correct behaviour on the road and thus can be used to create validation assertions for properties such as safety and liveness. 
 %
-The driving rules in the UKHC are in effect an oracle for correct behaviour on the road. In this paper we investigate how to systematically transform them into assertions which can be applied as monitoring checks. To achieve this, the driving rules must be translated from human-readable format to machine-readable expressions that can be automatically monitored during simulation-based testing and also during operation. Although we select the UKHC as the oracle for pragmatic reasons, it could equally be replaced with other metrics pertaining to functionality or even social convention. We review some related work in Section~\ref{Related_work}, in which other potential sources for oracles have been identified.
+We demonstrate how to systematically transform these rules into assertions. To achieve this, the driving rules must be translated from human-readable format to machine-readable expressions that can be automatically monitored during simulation-based testing and also during operation. Although we select the UKHC as the oracle for pragmatic reasons, it could equally be replaced with other metrics pertaining to functionality or even social convention. We review some related work in Section~\ref{Related_work}, in which other potential sources for oracles have been identified.
 %
 %\todo[inline]{Say what we do and that we do it on two examples} 
 %
 
 % GC ADDED THIS
-We demonstrate the interpretation of part of the UKHC driving code of practice into an oracle that can be used for assertion monitoring. 
 %
-We present two examples for applying assertions %for safety validation based on driving code of practice, 
-within a simulation system and an online monitoring system. Both examples involve lane changes during an overtaking scenario. Assertions may be applied either in a simulation system during AV system development, or in a runtime mode during operational service. We present how the same assertion framework can be used for either case. We adopt the terms scene, scenario and situation from~\cite{Ulbrich2015} throughout this paper. 
+We illustrate the approach with two examples of assertion checking lane changes during an overtaking scenario. 
+A geospatial information system in an SQL database has been developed for validation of the assertions and also for performance assessment of both the simulation testbench and the operational monitoring system. Note that the same assertions and assertion checkers can be used for either case.
+%
+We adopt the terms scene, scenario and situation from~\cite{Ulbrich2015} throughout this paper. 
 
 %\subsection{Safety argument}
 Assetion monitoring may be used as evidence to show functional safety compliance to national regulations or codes of practice, the general safety argument being that if an AV satisfies all the rules that may be legally expected of a human driver, then its behaviour is comparable to that of human drivers and therefore should be acceptable, or at least legal. It should be noted that acceptance may therefore be somewhat context-specific, against the code of practice for each country, and what passes under one legal code may not be acceptable in another. We anticipate that there may need to be extensive harmonization of national driving codes in order to avoid having to re-certify vehicles for each new national market and improve the cost-effectiveness of AV certification processes, but this is outside the scope of this paper.
@@ -59,16 +58,29 @@ The need to measure the compliance of an AV's behaviour with legal codes of prac
 \todo[inline]{This is where we ought to say how the paper is structured}
 \todo[inline, color=green]{Have brought paper structure up to this point, added subsection}
 
-\subsection{Document Structure}
-This paper is structured as follows: 
+
+%\todo[inline, color=green]{Have brought contribution down here, added subsection}
+%\subsection{Contribution}
+In summary, this paper makes the following contributions. We present a novel technique for deriving, systematically formalising and encoding assertions from the UKHC and applying them in two modes: (i) within a Geospatial Information System (GIS) database linked to a vehicle simulator, and (ii) within a real-time monitoring system during vehicle operation.
 %
-Related work is reviewed in Section~\ref{Related_work}.
+In the first mode of use, we encode the UKHC assertions~\cite{highwayCode} as SQL queries and run them within a PostgreSQL database with a PostGIS extension.\footnote{Refer to  \url{https://www.postgresql.org/} and \url{http://postgis.net}.} In this mode, the assertions can make use of any data stream available, passed into the database records.
+%
+In the second mode of use, the principal requirement is that data about the AV, other road users and the adjacent environment wrt.\ test vehicle is sufficient to evaluate the assertions during operation. The same PostgreSQL-based database as used in the simulator can therefore be installed as embedded software, but is receiving its data directly from vehicle sensors instead of a simulator. This captured data need not be of a high fidelity, but rather should have ``just enough'' detail~\cite{Koopman2018} to allow the assertions to be evaluated with good confidence.
+
+
+
+
+
+%\subsection{Document Structure}
+The paper is structured as follows: 
+%
+related work is reviewed in Section~\ref{Related_work}.
 %
 Section~\ref{generic_architecture} explains the structure of the PostgreSQL database and how it integrates with the underlying simulator or runtime monitoring environment. 
 %
-Section~\ref{Use_of_assertions} discusses the  methodology of developing assertions derived from the UKHC, and the principles of using  assertions as an oracle both in simulations and for operational analysis. 
+Section~\ref{Use_of_assertions} discusses the  methodology of deriving assertions from the UKHC, and the principles of using  assertions as an oracle both in simulations and for operational analysis. 
 %
-Section~\ref{Experimental_scenario} presents the scenario we have used to demonstrate the application of assertion-based oracles and describes two case studies which we use to illustrate the two options, simulation testing and operational monitoring. The results from the case studies are presented and analysed. 
+Section~\ref{Experimental_scenario} introduces the overtaking scenario we have used to demonstrate the application of assertion-based oracles and describes two case studies to illustrate the two options, simulation-based testing and operational monitoring. The results from the case studies are presented and analysed. 
 %
 In Section~\ref{discussion} we discuss some important aspects of assertion-based monitoring, which have emerged from the experimental work, in particular the use of assertions for performance monitoring as well as for safety, and the observation that in many assertions the intention of ego-vehicle agents may also need to be monitored 
 % GC ADDED THIS
@@ -77,14 +89,6 @@ to demonstrate compliance with certain driving rules.
 %
 Finally, in Section~\ref{conclusion} we draw conclusions and suggest directions for future work.
 
-
-\todo[inline, color=green]{Have brought contribution down here, added subsection}
-\subsection{Contribution}
-We present a novel technique for deriving, systematically formalising and encoding assertions from the UKHC and applying them in two modes: (i) within a Geospatial Information System (GIS) database linked to a vehicle simulator, and (ii) within a real-time monitoring system during vehicle operation.
-
-In the first mode of use, we encode the UKHC assertions~\cite{highwayCode} as SQL queries and run them within a PostgreSQL database with a PostGIS extension.\footnote{Refer to  \url{https://www.postgresql.org/} and \url{http://postgis.net}.} In this mode, the assertions can make use of any data stream available, passed into the database records.
-
-In the second mode of use, the principal idea is that data about the AV, other road users and the adjacent environment from the test vehicle is sufficient to evaluate the assertions during operation. The same PostgreSQL-based database as used in the simulator can therefore be installed as embedded software, but receiving its data directly from vehicle sensors instead of a simulator. This captured data need not be of a high fidelity, but rather should have ``just enough'' detail~\cite{Koopman2018} to allow the assertions to be evaluated with good confidence.
 
 
 
