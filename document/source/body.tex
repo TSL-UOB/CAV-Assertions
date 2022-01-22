@@ -43,10 +43,10 @@ We demonstrate how to systematically transform these rules into assertions. To a
 
 % GC ADDED THIS
 %
-We illustrate the approach with two examples of assertion checking lane changes during an overtaking scenario. 
+We illustrate the approach with two examples of assertion checking lane changes during an overtaking scenario. We adopt the terms scene, scenario and situation from~\cite{Ulbrich2015} throughout this paper. 
 A geospatial information system in an SQL database has been developed for validation of the assertions and also for performance assessment of both the simulation testbench and the operational monitoring system. Note that the same assertions and assertion checkers can be used for either case.
 %
-We adopt the terms scene, scenario and situation from~\cite{Ulbrich2015} throughout this paper. 
+
 
 %\subsection{Safety argument}
 Assetion monitoring may be used as evidence to show functional safety compliance to national regulations or codes of practice, the general safety argument being that if an AV satisfies all the rules that may be legally expected of a human driver, then its behaviour is comparable to that of human drivers and therefore should be acceptable, or at least legal. It should be noted that acceptance may therefore be somewhat context-specific, against the code of practice for each country, and what passes under one legal code may not be acceptable in another. We anticipate that there may need to be extensive harmonization of national driving codes in order to avoid having to re-certify vehicles for each new national market and improve the cost-effectiveness of AV certification processes, but this is outside the scope of this paper.
@@ -61,7 +61,7 @@ The need to measure the compliance of an AV's behaviour with legal codes of prac
 
 %\todo[inline, color=green]{Have brought contribution down here, added subsection}
 %\subsection{Contribution}
-In summary, this paper makes the following contributions. We present a novel technique for deriving, systematically formalising and encoding assertions from the UKHC and applying them in two modes: (i) within a Geospatial Information System (GIS) database linked to a vehicle simulator, and (ii) within a real-time monitoring system during vehicle operation.
+This paper makes the following contributions. We present a novel technique for deriving, systematically formalising and encoding assertions from the UKHC and applying them in two modes: (i) within a Geospatial Information System (GIS) database linked to a vehicle simulator, and (ii) within a real-time monitoring system during vehicle operation.
 %
 In the first mode of use, we encode the UKHC assertions~\cite{highwayCode} as SQL queries and run them within a PostgreSQL database with a PostGIS extension.\footnote{Refer to  \url{https://www.postgresql.org/} and \url{http://postgis.net}.} In this mode, the assertions can make use of any data stream available, passed into the database records.
 %
@@ -72,7 +72,7 @@ In the second mode of use, the principal requirement is that data about the AV, 
 
 
 %\subsection{Document Structure}
-The paper is structured as follows: 
+In the following, 
 %
 related work is reviewed in Section~\ref{Related_work}.
 %
@@ -103,7 +103,7 @@ Finally, in Section~\ref{conclusion} we draw conclusions and suggest directions 
 
 Challenges exist to formalise human-defined traffic rules that can then be used as an oracle to verify the correctness of a vehicle's observed behaviour. 
 %
-Prakken et al.~\cite{lawabidingstudy} discusses some of these issues and argue in favour of the need for formalisation of traffic rules. Rizaldi et al.~\cite{acountability} use the formalisation as a means to resolve accountability issues in an event of an accident. To the best of our knowledge, most work~\cite{acountability, esterle, rizaldi, alves} advocates the use of Higher-Order Logic (HOL) to codify a wide range of traffic rules into a formal language. The authors of~\cite{acountability, esterle, rizaldi, alves} use Linear Temporal Logics (LTL) to construct a set of equations for various manoeuvres to ensure road safety. To construct these equations, a formal model of each lane and lane marking is required. The authors of~\cite{rizaldi} used \textit{lanelets}~\cite{lanelets2014} to build these lane models. While many works use the German or Vienna convention~\cite{vienna} on road traffic, in~\cite{alves} a road junction rule from the UKHC~\cite{highwayCode} is used to demonstrate their methodology. Some researchers~\cite{sqlhuang, sqlgueffaz} have used temporal logic queries to formulate the HOL. These queries can be formulated using a variety of query languages like SQL, OQL, RQL, etc.  
+Prakken et al.~\cite{lawabidingstudy} discusses some of these issues and argue in favour of the need for formalisation of traffic rules. Rizaldi et al.~\cite{acountability} use the formalisation as a means to resolve accountability issues in an event of an accident. To the best of our knowledge, most work~\cite{acountability, esterle, rizaldi, alves} advocates the use of Higher-Order Logic (HOL) to codify a wide range of traffic rules into a formal language. The authors of~\cite{acountability, esterle, rizaldi, alves} use Linear Temporal Logics (LTL) to construct a set of equations for various manoeuvres to ensure road safety. To construct these equations, a formal model of each lane and lane marking is required. The authors of~\cite{rizaldi} used \textit{lanelets}~\cite{lanelets2014} to build these lane models. While many works use the German or Vienna convention~\cite{vienna} on road traffic, in~\cite{alves} a road junction rule from the UKHC~\cite{highwayCode} is used to demonstrate their methodology. Some researchers~\cite{sqlhuang, sqlgueffaz} have used temporal logic queries to formulate the HOL, using a variety of query languages like SQL, OQL, RQL, etc.  
 
 DeCastro et al.~\cite{decastro} guide an agent to learn probabilistic models, via a learning-based algorithm, constrained by safety contracts which are in essence traffic rules. However, the major challenges for using learning algorithms are completeness and verification of the solutions. Such systems are essentially a black box, and it is extremely difficult to validate their correctness. Another major problem is what reward or cost function should be used to train the model. One approach can be to have an oracle providing rewards for correct behaviour, but this leads back to developing traditional assertion-based rules using the relevant highway code.
 
@@ -114,7 +114,7 @@ All the works discussed earlier are limited to detecting the occurrence of some 
 \todo[inline]{Conclude with how our work differs and contributes to the existing body of knowledge.}
 \todo[inline, color=green]{Have added lines below}
 % GC ADDED THIS - PLEASE REVISE!
-Our approach uses SQL to build the assertions due to their high expressiveness~\cite{sqllibkin} and the ability to integrate this language with powerful geospatial object handling technology (postgis). This is a natural environment to write logical checks that can be performed on static and dynamic objects in a geographical context. 
+Our approach uses SQL to build the assertions. SQL is highly expressive~\cite{sqllibkin} and can be integrated with powerful geospatial object handling technology (PostGIS). This provides a natural environment to write logical checks that can be performed on static and dynamic objects in a geographical context. 
 %
 % Encoding every rule by hand is, however, an extensive and potentially error-prone task.
 
@@ -122,7 +122,7 @@ Our approach uses SQL to build the assertions due to their high expressiveness~\
 
 \section{System Architecture for Assertion-based Monitoring} \label{generic_architecture}
 
-The evaluation of assertions requires an environment to generate vehicle data, and apply the safety assertions to interpret the driving situation. This section presents the generic components and software architecture we have deployed to support assertion-based monitoring either in simulation or operational modes.
+The evaluation of assertions requires an environment to generate vehicle data, and apply the assertions to interpret the driving situation. This section presents the generic components and software architecture we have deployed to support assertion-based monitoring either in simulation or during operation.
 
 \subsection{Simulation Environment} \label{generic_sim_system}
 
@@ -133,36 +133,34 @@ The evaluation of assertions requires an environment to generate vehicle data, a
     \label{fig:SimulatorArchitecture}
 \end{figure}
 
-  Figure~\ref{fig:SimulatorArchitecture} shows a layout for a simulation testbench that indicates the context in which the assertions database subsystem is used:\todo[inline]{Should the figure not also include assertion coverage?}
-  \todo[inline, color=green]{Have changed figure to include this}
-
+  Figure~\ref{fig:SimulatorArchitecture} shows a layout for a simulation testbench that indicates the context in which the assertions database is used:
 
   \begin{itemize}
-      \item The \emph{Experiment Instantiation} subsystem generates test scenarios derived from the \emph{Experiment Specification} which may include test objectives or requirements (defined in natural language). The Experiment Instantiation subsystem identifies the \emph{Static} information about the environment (e.g. maps, road features) and \emph{Dynamic} descriptions of the behaviour required of simulated actors (vehicles, other road users, traffic lights, any third-party agents necessary to the test requirement). \todo[inline]{Why subsystem? Can we not just use the name of the respective box(es)?} \todo[inline, color=green]{Have updated this sentence}
-      The experimental configuration determines the test case that will contribute coverage towards the assertion.\todo[inline]{Nothing said yet about coverage.}\todo[inline, color=green]{Will add another section at end of list}
-      \item The \emph{Simulator} subsystem interacts with the \emph{AV Control} subsystem - although for the purposes of this paper a dummy controller is used that can be set to pass or fail assertions to demonstrate the full extent of the assertion-based safety validation approach. The simulator used is the CARLA simulator\footnote{\url{https://carla.org/}}, but in principle this could be exchanged for other simulators with only moderate effort.
-      \item The \emph{Data Capture} subsystem records relevant simulation data about the driving situation of the AV, including actor positions and road network information, and at each time step of the simulation writes this information into the records of the database to be used for assertion checking.\todo[inline]{Should there not be a DB symbol (looks like a tin) to show the database we are sourcing?}\todo[inline, color=green]{Have added to the figure}
-      \item The \emph{Assertion Checker} subsystem together with the \emph{Assertions} library constitute the test \emph{Oracle}. These subsystems evaluate all assertions relevant to the driving situation defined at each step of the simulation. 
-      \item The \emph{Outputs} are a a set of Pass/Fail declarations which can be used to annotate the simulation log or be recorded in a separate file if desired. \emph{Assertion coverage} with respect to the experiment specifications can also be monitored at the output. \todo[inline]{Should there not be a DB symbol to represent the assertion library, i.e.\ a set of SQL queries?} \todo[inline, color=green]{Have added the DB symbol in the figure}
+      \item During \emph{Experiment Instantiation}, specific test scenarios are generated from the \emph{Experiment Specification} which may include test objectives or requirements (defined in natural language). The Experiment Instantiation identifies the \emph{Static} information about the environment (e.g.\ maps, road features) and \emph{Dynamic} descriptions of the behaviour required of simulated actors (vehicles, other road users, traffic lights, and any third-party agents necessary to the test requirement). 
+%      The experimental configuration determines the test case that will contribute coverage towards the assertion.
+
+      \item The \emph{Simulator} interacts with the \emph{AV Control} - although for the purposes of this paper a dummy controller is used that can be set to pass or fail assertions to demonstrate the full extent of the assertion-based validation approach. The simulator used is the CARLA simulator\footnote{\url{https://carla.org/}}, but in principle this could be exchanged for other simulators with only moderate effort.
+      \item The \emph{Data Capture} records relevant simulation data about the driving situation of the AV, including actor positions and road network information, and at each time step of the simulation writes this information into the records of the database to be used for assertion checking.
+      \item The \emph{Assertion Checker} together with the \emph{Assertions} library constitute the test \emph{Oracle}. They evaluate all assertions relevant to the driving situation defined at each step of the simulation. 
+      \item The \emph{Outputs} are a set of Pass/Fail declarations.
+% which can be used to annotate the simulation log or be recorded in a separate file if desired. 
+\emph{Assertion coverage} with respect to the experiment specifications can also be monitored at the output. 
   \end{itemize}
   We will focus on describing the assertion oracle in greater detail in %the remainder of this paper
-  Section \ref{geospatial_database}.
-
-  \todo[inline]{add the relevant section}
-  \todo[inline, color=green]{Have added relevant section number}
-  \todo[inline]{Really, the ``Simulator'' interfaces with the ``Data Collector'', which writes to a ``Simulation Log'' DB. There is also an Assertion DB. The Assertion Checker sources both the ``Simulation Log'' DB and the ``Assertion'' DB. There is enough space to do this, as follows: Experimental Instantiation -change to- Experimental \\ Instantiation and make box smaller, this means the LHS occupies less space. Move ``Data Collector'' into that space. Add DB to RHS of Data Collector - this results in two DB icons on RHS or one with two parts, one for the log data and one for the assertions/queries. }
-  \todo[inline, color=green]{I think I have captured this content in the figure now}
+  Section~\ref{geospatial_database}.
 
 \subsection{Operational Monitoring}
-The basic argument underlying our approach to assertion-based monitoring during operation is that the assertions we have developed for checking in the geospatial database can also be utilised to act as a reference model and monitor the vehicle during operation.
+The key observation motivating our approach to assertion-based monitoring during operation is that the assertions we have developed for assertion-based monitoring in simulation can also be utilised as runtime monitors during operation of a vehicle.
 %
-Thus, the same Assertion Checker and Assertions contained in Figure~\ref{fig:SimulatorArchitecture} can also be used in operational monitoring mode. The external system architecture required to achieve this is illustrated in Figure~\ref{fig:RuntimeArchitecture}. In this architecture, the external subsystems comprise:
+Thus, the same Assertions and Assertion Checker as those shown in Figure~\ref{fig:SimulatorArchitecture} can also be used in operational monitoring mode. The system architecture required to achieve this is illustrated in Figure~\ref{fig:RuntimeArchitecture}, wherein:
 \begin{itemize}
     \item The \emph{AV Sensors} acquire real-time information from the vehicle's sensors.
-    \item During \emph{Feature Extraction}, the data obtained from AV sensors are processed to provide a trace equivalent to that obtained from simulations, so that the \emph{Assertion Checker} can also be applied to operational monitoring.\todo[inline]{Ensure same style as prev. figure, i.e. ``Feature Extraction'' - same for remaining items.}
-    \item \emph{Data Capture}: similarly to the simulator architecture in Figure \ref{fig:SimulatorArchitecture}, the data describing the vehicle's environment is captured and stored in a database for subsequent assertion checking.\todo[inline]{Check with Greg re calling this a DB and the use of a DB symbol in prev. figure.}
-    \item The \emph{Assertion Checker} and \emph{Assertions} library: this subsystem is essentially identical to that of the simulation testbench architecture in Figure \ref{fig:SimulatorArchitecture}, evaluating the relevant assertions and generating a pass or a fail verdict~\cite{RuntimeReview} as an output. 
-    In some applications, there may be differences in the deployment (as shown in Figure~\ref{fig:RuntimeArchitecture}) compared to the simulation testbench, where the system would be deployed on embedded hardware. These applications include operational data recording for further processing or possibly its use as a real-time reward for online learning.
+    \item During \emph{Feature Extraction}, the data obtained from the vehicle's sensors are processed to provide a trace that is equivalent to that obtained from simulations, so that the \emph{Assertion Checker} can be applied in operational mode.
+    \item \emph{Data Capture}: as in % the simulation environment in
+ Figure~\ref{fig:SimulatorArchitecture}, the data describing the vehicle's environment and observable actions is captured and stored in a database for  assertion checking.
+    \item The \emph{Assertion Checker} and \emph{Assertions} library are essentially identical to that of the simulation environment in Figure~\ref{fig:SimulatorArchitecture}, evaluating the relevant assertions and generating a pass or a fail verdict~\cite{RuntimeReview} as an output. 
+% KIE: taken out to shorten the paper, this can be said in the conclusion or under future work, perhaps. 
+% In some applications, there may be differences in the deployment (as shown in Figure~\ref{fig:RuntimeArchitecture}) compared to the simulation testbench, where the system would be deployed on embedded hardware. These applications include operational data recording for further processing or possibly its use as a real-time reward for online learning.
  
 \end{itemize}
 
@@ -172,34 +170,48 @@ Thus, the same Assertion Checker and Assertions contained in Figure~\ref{fig:Sim
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.98\linewidth]{../other/figures/RuntimeAssertionsTestBenchArchitecture.jpg}
-    \caption{Operational monitoring architecture}\todo[inline]{Revise to match new version of Fig. 1}
+    \caption{Operational monitoring architecture}\todo[inline]{Revise to match new version of Fig. 1 almost exactly, i.e. replace AV Control with AV Sensors, replace Simulator with Feature Extraction, remove all above Simulator, leave rest as is. Done. :)}
     \label{fig:RuntimeArchitecture}
 \end{figure}
 
 
 \subsection{Geospatial Database for Assertion Checking} \label{geospatial_database}
-To develop assertions derived from UKHC rules, we need a formal language into which they can be translated for automatic checking. Two aspects are important to the choice. First, as we discuss later, the rules and guidelines in the UKHC are written for human readers not automatic systems. They consist of sets of discrete rules applicable to specific aspects of road user behaviour, which must be taken collectively, and not necessarily always in a particular order, to form the legally required profile of behaviour. This suggests that a declarative programming language, such as Prolog or SQL, may provide an easier and more easily validated means of encoding rules than more familiar procedural languages such as the C family. 
+To develop assertions derived from UKHC rules, we need a formal language into which they can be translated for automatic checking. Two aspects are important to the choice. First, as we discuss later, the rules and guidelines in the UKHC are written for human readers not automatic systems. They consist of sets of discrete rules applicable to specific aspects of road user behaviour, which must be taken collectively, and not necessarily always in a particular order, to form the legally required profile of behaviour. This suggests that a declarative programming language, such as Prolog or SQL, may offer the required expressive power for encoding rules.
+% KIE removed: than more familiar procedural languages such as the C family. 
 %
-Second, we are interested in processing the data produced during driving, so we seek languages that handle large data sets naturally, where the assertions we develop constitute formal operations on datasets corresponding to the logical properties we extract from the UKHC rules. Taking these two requirements into consideration, SQL emerges as the most suitable commonly available programming language, having all the properties mentioned as well as being supported by many publicly available databases and software development environments. SQL has been demonstrated formally~\cite{sqllibkin} to be sufficiently expressive to be able to encode useful problems such as state or graph reachability as well as all standard problems in relational algebra, albeit with the use of some of its later extensions such as recursive operators. Safety properties can be defined in terms of reachability~\cite{guiochet2015, masson2019} or (in-)stability~\cite{harper2005, xue2020} of desirable (goal) and undesirable (hazardous) situated states, so the ability of SQL to express such problems in a general sense is another important capability. For these reasons, we have selected SQL-based database technology as the framework for our assertion-based oracle. 
+Second, to process the data produced during driving, we seek languages that handle large data sets naturally, where the assertions constitute formal operations on datasets corresponding to the logical properties we extract from the UKHC rules. 
+%
+Taking these two requirements into consideration, SQL emerges as the most suitable programming language. SQL has been demonstrated formally~\cite{sqllibkin} to be sufficiently expressive to be able to encode related problems such as state or graph reachability as well as all standard problems in relational algebra, albeit with the use of some of its later extensions such as recursive operators. Safety properties can be defined in terms of reachability~\cite{guiochet2015, masson2019} or (in-)stability~\cite{harper2005, xue2020} of desirable (goal) and undesirable (hazardous) situated states. For these reasons, we have selected SQL-based database technology as the framework for our assertion-based oracle. 
 
-The technical challenge then becomes how to compare the state of the vehicle against the assertion or safety property. We argue that a geospatial relational database is well suited to the task for formal reasoning about the vehicle properties against a set of assertions. The vehicle state can be easily stored and accessed and additional insights, such as dynamic properties, can also be derived from this base information. A database system, such as PostgreSQL, can record, access and perform assertion checks upon this state information quickly and reliably and is especially useful considering libraries that make use of geographical shape objects, e.g. PostGIS. 
+The technical challenge then becomes how to compare the data captured against the assertions. We argue that a geospatial relational database is well suited for this purpose. The vehicle state can be easily stored and accessed. Additional insights, such as dynamic properties, can also be derived from this base information. 
+% KIE taken out as this is expressed also in the next para:
+% A database system, such as PostgreSQL, can record, access and perform assertion checks upon this state information quickly and reliably and is especially useful considering libraries that make use of geographical shape objects, e.g.\ PostGIS. 
+%
+Thus, we have implemented Assertion Checking as a PostgreSQL database with a PostGIS geospatial information system extension, which provides an extensive library of SQL-native spatial measurement functions. We chose these particular software products because they are open-source, and PostgreSQL implements powerful, high-performance table searching algorithms.
+% - in the order of hundreds of thousands to millions of records searched per second. 
+Real applications will involve the use of large data sets, so the performance of the underlying database engine is an essential factor in practice. % in achieving a practicable system.
 
-We have implemented the Assertion Checking subsystem as a PostgreSQL database with a PostGIS geospatial information system extension, which provides an extensive library of SQL-native spatial measurement functions. We chose these particular software products because (a) they are open-source, (b) PostgreSQL implements powerful table searching algorithms that have high performance - in the order of hundreds of thousands to millions of records searched per second. Real applications of this kind of simulator system will involve the use of large data sets, so the performance of the underlying database engine is an essential factor in achieving a practicable simulation-based safety validation toolset.
-
-\begin{figure*} [h!]
+\begin{figure*}[h!]
     \centering
     \includegraphics[width=18cm]{../other/figures/DBMS_deployment.png}
-    \caption{Deployment Diagram of the Oracle as a PostgreSQL DBMS, showing how the Data Capture and Assertion Checking functions are allocated.}
+    \caption{Deployment of the PostgreSQL DBMS, showing interactions with the Data Capture and Assertion Checking.}\todo{The DBMS is not the oracle. The Assertions and AC are the oracle together, see prev. figures. Please correct.}
     \label{fig:dbms_deployment}
 \end{figure*}
 
-The database management system (DBMS) receives data from the simulator (or other data source) containing an actor state vector of variables such as position, velocity and yaw angle of the vehicles and other road users (e.g. pedestrians). This data is then entered into a set of tables, and the safety assertions are applied to the data as one or more database queries (written in SQL) acting on the relation.
+% KIE taken out to shorten paper
+% The database management system (DBMS) receives data from the simulator (or other data source) containing an actor state vector of variables such as position, velocity and yaw angle of the vehicles and other road users (e.g. pedestrians). This data is then entered into a set of tables, and the safety assertions are applied to the data as one or more database queries (written in SQL) acting on the relation.
 
-Figure \ref{fig:dbms_deployment} is a UML-style deployment diagram of the Data Capture and Assertion Checking functions using a PostgreSQL DBMS server. In fact, the server hosts both elements; the Data Capture function is implemented as a set of records that can be updated externally by the Simulator or Experiment Instantiation functions; the Assertions Checking function is performed by the DBMS query engine by execution of SQL queries encoded with the assertion logic, potentially as a stored procedure, that will typically run all relevant assertions sequentially at each time step. The assertions are stored in the database server as a set of SQL queries or procedural functions to be invoked by the query engine whenever required.
+Figure~\ref{fig:dbms_deployment} is a UML-style deployment diagram of the Data Capture and Assertion Checking functions using a PostgreSQL DBMS server. In fact, the server hosts both elements; the Data Capture function is implemented as a set of records that can be updated externally, e.g.\ by the Simulator or Experiment Instantiation functions; the Assertions Checking function is performed by the DBMS query engine by execution of SQL queries encoded with the assertion logic. 
+%, potentially as a stored procedure, that will typically run all relevant assertions sequentially at each time step. 
+The assertions are stored in the database server as a set of SQL queries or procedural functions to be invoked by the query engine. 
+% whenever required.
 
-The use of PostGIS introduces an extensive library of data types and method functions suited to measurement of basic physical (geometric) relationships between the  object data received from the simulator. For the particular scenario considered in this paper (overtaking), functions measuring distance between geometric objects (the bounding-box shapes of vehicles on the road), and partial or total containment of the AV within road lane geometries, are of particular use, as these are used to identify initial and final conditions of overtaking manoeuvres.
+The use of PostGIS introduces an extensive library of data types and method functions suited to measurement of basic physical (geometric) relationships. For the overtaking scenario in this paper, functions measuring distance between geometric objects (the bounding-box shapes of vehicles on the road), and partial or total containment of the vehicle within road lane geometries, are of particular use to assess vehicle positions during the overtaking manoeuvre.
 
-PostGIS functionality can also be used to generate more complex geometric dynamic data derived from the basic state of the AV or other simulated agents. An example of this is shown in Figure \ref{fig:assertion_database_annotated}, in which two polygons for \textit{thinking distance} (inset, green hashed area) and \textit{braking distance} (red hashed area), which are parameters defined in the UKHC (Rule 126), can be generated as a function of the basic forward velocity data of the AV. Figure \ref{fig:assertion_database_annotated} shows a projection of these derived geometries onto the associated street map. In this way new abstractions can be developed by building new derived data sets from the original (captured) simulation data. Where any such abstraction of the simulation data can be generated it can be manipulated effectively as a new variable (SQL attribute) appended to the original data set, and referenced by queries in the same way.
+PostGIS functionality can also be used to generate more complex geometric dynamic data derived from the basic state of the vehicle or other agents. An example of this is shown in Figure~\ref{fig:assertion_database_annotated}, in which two polygons for \textit{thinking distance} (inset, green hashed area) and \textit{braking distance} (red hashed area), which are parameters defined in the UKHC (Rule 126), can be generated as a function of the basic forward velocity data of the vehicle. Figure~\ref{fig:assertion_database_annotated} shows a projection of these derived geometries onto the associated street map. 
+%
+Thus, new abstractions can be developed by deriving new data sets from the original (captured) data. These can be manipulated effectively as a new variable (SQL attribute) appended to the original data set, and referenced by queries in the same way.
+%
 
 \begin{figure}[h!]
     \centering
@@ -209,81 +221,102 @@ PostGIS functionality can also be used to generate more complex geometric dynami
 \end{figure}
 
 
-This is an essential computational mechanism for the methodology we present in this paper. We can develop procedures and queries to generate abstractions directly related to the concepts expressed in the rules of the UKHC. The methodology for identifying assertions and key abstractions is described in Section \ref{Use_of_assertions}. Where such concepts are used in multiple rules the corresponding abstractions form a library of common queries or operations on data, which can be incorporated into the PostgreSQL DBMS as a set of stored procedures within the general database schema for the Testbench Architecture.  Figure \ref{fig:dbms_deployment} shows how the procedure library is included in the overall deployment and its dependencies to other elements of the system. This library will be developed incrementally as each assertion is produced. We anticipate that eventually the library of procedures may be packaged and made available as a PostgreSQL extension. 
-Data and derived abstractions can be combined within queries for assertion checking and coverage collection. For example, if an assertion is required to determine whether the braking zone of the AV has intersected another road user, such as a vehicle travelling in the opposite direction, then the PostgreSQL query can be formulated as:
+This is an essential principle of our methodology. Procedures and queries can be developed to generate abstractions directly related to the concepts expressed in the rules of the UKHC. 
+% The methodology for identifying assertions and key abstractions is described in Section~\ref{Use_of_assertions}. 
+Where such concepts are used in multiple rules, the corresponding abstractions form a library of common queries or operations on data, which can be incorporated into the PostgreSQL DBMS. % as a set of stored procedures within the general database schema.
+%
+Figure~\ref{fig:dbms_deployment} shows how the procedure library is included in the overall deployment and its dependencies to other elements of the system. This library will be developed incrementally as each assertion is produced. We anticipate that eventually the library of procedures may be packaged and made available as a PostgreSQL extension. \todo{KIE: .tex para could be removed to shorten paper.}
+%
+Data and derived abstractions can be combined within queries for assertion checking and coverage collection. 
+%For example, an assertion to determine whether the braking zone of the AV has intersected another road user, such as a vehicle travelling in the opposite direction, can be formulated as PostgreSQL query:
+%
+%\begin{lstlisting}[
+%           language=SQL,
+%           showspaces=false,
+%           basicstyle=\ttfamily,
+%           numbers=none,
+%           numberstyle=\tiny,
+%           commentstyle=\color{gray}
+%           ]
+%        
+%SELECT ST_Overlap(g1.geom::geography,
+%                   g2.geom::geography)
+%FROM sim_log.data g1
+%WHERE g1.agent_id = AV_braking_zone 
+%AND g2.agent_id = Oncoming_Vehicle;
+%\end{lstlisting} 
+%
+%where a PostGIS library function, \texttt{ST\_Distance}, is used to measure the shortest Euclidean distance between the two physical objects or geographical areas g1 and g2, which are a vehicle braking zone and an oncoming vehicle.\todo{KIE: This does not use ST\_Distance? Note, this example could potentially be removed to shorten the paper. }
 
-\begin{lstlisting}[
-           language=SQL,
-           showspaces=false,
-           basicstyle=\ttfamily,
-           numbers=none,
-           numberstyle=\tiny,
-           commentstyle=\color{gray}
-           ]
-        
-SELECT ST_Overlap(g1.geom::geography,
-                   g2.geom::geography)
-FROM sim_log.data g1
-WHERE g1.agent_id = AV_braking_zone 
-AND g2.agent_id = Oncoming_Vehicle;
-\end{lstlisting} where a PostGIS library function,  \texttt{ST\_Distance}, is used to measure the shortest Euclidean distance between the two physical objects or geographical areas g1 and g2, which are a vehicle braking zone and an oncoming vehicle. 
+To illustrate this, Figure~\ref{fig:assertion_database_annotated} shows the operating situation associated with the overtaking scenario described in Section~\ref{Experimental_scenario}, and gives an example of a derived variable called \emph{Safe Distance Ahead} (SDA), whose name is derived from terminology in Rule 162 of the UKHC. The figure shows an urban scene depicting a section of road network divided into \emph{lanelets} denoting legal division between driving lanes and any buildings in the area. In this example the AV is on the left of the figure overtaking a parked vehicle requiring a lane change. The distance to the oncoming vehicle is termed the Distance Ahead. The inset shows annotation denoting the braking and thinking distances of the AV which can be treated as geographical object entities in the database and hence easily used for assertion checking. 
 
-The main illustration in Figure \ref{fig:assertion_database_annotated} shows the operating situation associated with the overtaking scenario described in Section~\ref{Experimental_scenario}, and gives an example of a derived variable called \emph{Safe Distance Ahead} (SDA), whose name is derived from terminology in Rule 162 of the UKHC. The figure shows an urban scene depicting a section of road network divided into \emph{lanelets} denoting legal division between driving lanes and any local buildings in the area. In this example the AV is on the left of the figure overtaking a parked vehicle requiring a lane change. The distance to the oncoming vehicle is termed the Distance Ahead. The inset shows annotation denoting the braking and thinking distances of the vehicle which can be treated as geographical object entities in the database and hence easily used for assertion checking. 
+The assertion performs a check (as defined in UKHC Rule 162) that a safe distance ahead exists between an AV and the nearest vehicle in an oncoming lane, labelled the `Oncoming Vehicle' (OV) as the AV starts to overtake the `Vehicle Being Passed' (VBP). The start time of the overtake is defined as the time that the AV first begins to enter the adjacent lane (Overtaking Lane) of the road, at which point it must commit to the manoeuvre or else abort and return to driving in the initial lane (the Running Lane).
 
-The assertion to be tested performs a check (as defined in UKHC Rule 162) that a safe distance ahead exists between an AV and the nearest vehicle in an oncoming lane, labelled the `Oncoming Vehicle' (OV) as the AV starts to overtake the `Vehicle Being Passed' (VBP). The start time of the overtake is defined as the time that the AV first begins to enter the adjacent lane (Overtaking Lane) of the road, at which point it must commit to the manoeuvre or else abort and return to driving in the initial lane (the Running Lane). 
+In the case of assertions related to overtaking, it is necessary to determine whether the overtaking vehicle wholly or partly occupies a given road lane, since overtaking manoeuvres require it to move at least partially into an adjacent lane and back. Therefore, it is necessary for the database to include lane geometries (polygons) in order to allow checking of vehicle occupancy of lanes by testing for the overlap between vehicle and lane objects. Figure~\ref{fig:assertion_database_annotated} shows the lane polygons projected onto the map section (an extract from the map used for our initial assertion checking experiments described in Section~\ref{Experimental_scenario}). The start of an overtaking manoeuvre is identified as the first time step in which the vehicle overlaps the overtaking lane (and stops being wholly contained within the running lane), and the overtake manoeuvre ends when the vehicle is entirely within the running lane once more after having passed the VBP. Lane geometry objects (shape or bounding box polygons) are therefore an essential element of the assertions related to overtaking.
 
-In the case of assertions related to overtaking, it is necessary to determine whether an AV wholly or partly occupies a given road lane, since overtaking manoeuvres require it to move at least partially into an adjacent lane and back. Therefore, it is necessary for the database to include lane geometries (polygons) in order to allow checking of vehicle occupancy of lanes by testing for the overlap between vehicle and lane objects. Figure \ref{fig:assertion_database_annotated} shows the lane polygons projected onto the map section (an extract from the map used for our initial assertion checking experiments described in Section \ref{Experimental_scenario}). The start of an overtaking manoeuvre is identified as the first time step in which the AV overlaps the overtaking lane (and stops being wholly contained within the running lane), and the overtake manoeuvre ends when the AV is entirely within the running lane once more after having passed the VBP. Lane geometry objects (shape or bounding box polygons) are therefore an essential element of the assertions related to overtaking.
+\section{Assertion Development and Application}\label{Use_of_assertions}
+In this section we first identify the types of assertions that may exist. We then discuss how to develop assertions from the natural language statements of the UKHC. We also present how to use assertions, both in simulation and during operation.
 
-\section{Methodological Principles for Developing and Applying Assertions} \label{Use_of_assertions}
-In this section we report how we develop and apply assertion checks, and present our methodology in its current form. We identify the types of assertions that may exist. We discuss how to develop assertions from the natural language statements of the UKHC, either by direct translation or by modelling. We also discuss how we plan to use assertions, both in simulation and for runtime monitoring.
-
-\subsection{Categories of Assertions} \label{assertion_categories}
-
-We have found that assertions applied to simulation or runtime monitoring tend to fall into one of four principal types (some of which have sub-types). In general, assertions are defined with respect to some \emph{assertion reference point} - a particular step of a captured data trace, defined by some reference condition which holds at a specified time step. The assertion is then defined as some spatio-temporal condition relative to the reference point, as shown in Fig.~\ref{fig:categories_of_assertions}.
-
-\begin{figure}[h!]
+\begin{figure}[!hb]
     \centering
-    \includegraphics[width=0.98\linewidth]{../other/figures/Assertion Categories Figure.png}
-    \caption{Categories of assertions}
+    \includegraphics[width=0.98\linewidth]{../other/figures/Assertion_Categories_Figure.png}
+    \caption{Types of assertions}
     \label{fig:categories_of_assertions}
 \end{figure}
 
 
-The four categories of assertions are:
+\subsection{Types of Assertions} \label{assertion_categories}
+
+The assertions to encode UKHC rules tend to fall into one of four principal types. Except for invariants, assertions are defined with respect to some \emph{assertion reference point} - a particular step of a captured data trace, defined by some reference condition which holds at a specified time step. The assertion is then defined as some spatio-temporal condition relative to the reference point, as shown in Fig.~\ref{fig:categories_of_assertions}.
+
+
+The four types of assertions are:
 \begin{itemize}
     \item Invariant Condition:
-    \begin{itemize}
-        \item An condition that must be satisfied at all time steps within the captured data trace (i.e. there is no specific assertion reference point, or the reference point is in effect the entire trace).
-    \end{itemize}
+%    \begin{itemize}
+%        \item 
+A condition that must be satisfied at all time steps within the captured data trace.
+% (i.e.\ there is no specific assertion reference point, or the reference point is in effect the entire trace).
+%    \end{itemize}
      \item Execution Condition:
+%    \begin{itemize}
+%        \item 
+A condition that must be satisfied at the assertion reference point.
+%    \end{itemize}
+    \item Pre-condition: %\\
+    A spatio-temporal phenomenon that must exist in the steps preceding the assertion reference point. Pre-conditions can be of one of two sub-types:
     \begin{itemize}
-        \item A condition that must be satisfied at the assertion reference point.
+        \item \textit{Temporal}: A time (step or period) prior to the assertion reference point, within which a specified condition holds. This is the temporal component of the pre-condition. %\\
+        \textit{Example: an assertion for a vehicle at a highway exit lane may check that the vehicle's indicators have been set continuously in a preceding period (e.g.\ 5s) before it crosses the exit lane boundary (i.e.\ checking for unduly late or intermittent indications).}
+        \item \textit{Physical}: A physical (e.g.\ spatial or state) condition that must be satisfied at a specified time (or within a  time period) before the assertion reference point. This is the physical component of the overall pre-condition. %\\
+        \textit{Example: a highway exit assertion may check, as the AV passes the exit lane boundary, that the vehicle's indicators were set at the last highway exit sign before the exit (i.e.\ checking for omitted indications).}
     \end{itemize}
-    \item Pre-condition: \\
-    A spatio-temporal phenomenon that must exist in the steps preceding the assertion reference point. Pre-conditions can be one of two sub-categories:
+    \item Post-condition: %\\
+    A spatio-temporal phenomenon that must exist in the steps following the assertion reference point. Post-conditions can be of one of two sub-types:
     \begin{itemize}
-        \item \textit{Temporal}: A time (step or period) prior to the assertion reference point, within which a specified condition holds true. Essentially, this is the temporal component of the pre-condition.\\
-        \textit{Example: an assertion for the behaviour of an AV at a highway exit lane may check that the vehicle's indicators have been set correctly in a preceding period (e.g. 5s) before it crosses the exit lane boundary (i.e. checking for unduly late or intermittent indications).}
-        \item \textit{Physical}: A physical (e.g. spatial or state) condition that must be satisfied at a specified time (or within a  time period) before the assertion reference point. This is the physical component of the overall pre-condition.\\
-        \textit{Example: a similar highway exit assertion may check, as the AV passes the the exit lane boundary, that the vehicle's indicators were set correctly at the last highway exit sign before the exit (i.e. checking for omitted indications).}
-    \end{itemize}
-    \item Post-condition: \\
-    A spatio-temporal phenomenon that must exist in the steps following the assertion reference point. Post-conditions can be one of two sub-categories:
-    \begin{itemize}
-        \item \textit{Temporal}: A time (period) after the assertion reference point, within which a specified condition holds true. This is the temporal component of the post-condition.\\
-        \textit{Example: a highway exit assertion may check that if the vehicle's starts indicating that it intends to leave at the exit lane, that it does enter the exit lane within a given time period (i.e. checking for unnecessarily early indications).}
-        \item \textit{Physical}: A condition that must be satisfied within a specified time after the assertion reference point, essentially the physical component of the post-condition.\\
-        \textit{Example: a highway exit  assertion may check that if the vehicle is indicating to leave at the exit lane, that it does in fact do so (i.e. checking for false or spurious indications).}
+        \item \textit{Temporal}: A time (period) after the assertion reference point, within which a specified condition holds. This is the temporal component of the post-condition. %\\
+        \textit{Example: a highway exit assertion may check that if a vehicle starts indicating to leave at the exit lane, then it does enter the exit lane within a given time period (i.e.\ checking for unnecessarily early indications).}
+        \item \textit{Physical}: A condition that must be satisfied within a specified time after the assertion reference point, essentially the physical component of the post-condition. %\\
+        \textit{Example: a highway exit  assertion may check that if a vehicle is indicating to leave at the exit lane, then it does in fact do so (i.e.\ checking for false or spurious indications).}
     \end{itemize}
 \end{itemize}
 
 % this following paragraph has not yet been revised, but should be updated to reflect the changes in the previous few paragraphs - TBD by Chris
-\subsection{Selecting relevant assertions} \label{assertion_triggers}
-We have also found that it may be useful at times to identify whether an assertion is relevant at a given time step of the simulation, in order to improve the performance of the assertion checking system. For example, two particular reasons for pre-selecting assertions are:
-\begin{itemize}
-    \item Some assertions may be applicable to mutually exclusive situations, and therefore should only be selected for their own  relevant scenarios if one wishes to avoid confusing reporting of assertion results. For example, an assertion which checks that an AV is braking smoothly (for example when approaching a T-junction or traffic light indicating 'stop') will inherently fail in a situation where it is required to accelerate (for example when moving off after having been stationary). If assertions of this kind are not filtered out in scenarios where their checks are not pertinent to what may identified as correct behaviour, they will generate nuisance failure results. Similarly, assertions related to motorway (highway) driving are not applicable to urban or rural road driving, so need not be applied (and may generate inappropriate or confusing results) while an AV is on any such road.
-    \item Where assertions are being applied in a more time-critical mode of operation - for example for simulation control (see Section \ref{Assertions_at_Sim_Time}), online warnings, or for self-adaptation (see Section \ref{assertions_at_run_time}) - the speed of their execution can be increased by filtering out those assertions that are not relevant to the situation concerned at a given time (step). If the category type can be embedded in the assertion (for example, as a special field in its script), then the Assertion Checking process in the Testbench (see Figures \ref{fig:SimulatorArchitecture} or \ref{fig:RuntimeArchitecture}) can be set to check only assertions of a given type, which can improve runtime performance.
-\end{itemize}
+\subsection{The importance of selecting relevant assertions} \label{assertion_triggers}
+Identifying which assertions are relevant in a given situation is critically important to manage the performance of assertion checking and to ensure the output is meaningful. 
+%
+%For example, two particular reasons for pre-selecting assertions are:
+%\begin{itemize}
+%\item 
+%
+For example, assertions related to highway driving are not applicable to urban or rural road driving.
+%, so need not be applied (and may generate inappropriate or confusing results) while an AV is on any such road.    
+%Some assertions may be applicable to mutually exclusive situations, and therefore should only be selected for their own  relevant scenarios if one wishes to avoid confusing reporting of assertion results. 
+Likewise, an assertion which checks that an AV is braking smoothly (for example when approaching a T-junction or traffic light indicating 'stop') will inherently fail in a situation where it is required to accelerate (for example when moving off after having been stationary). If assertions of this kind are not filtered out in scenarios where their checks are not pertinent to what may be identified as correct behaviour, they will generate nuisance failure results. 
+
+%\item 
+Where assertions are being applied in a more time-critical mode of operation - for example for simulation control (see Section \ref{Assertions_at_Sim_Time}), online warnings, or for self-adaptation (see Section \ref{assertions_at_run_time}) - the speed of their execution can be increased by filtering out those assertions that are not relevant to the situation concerned at a given time (step). If the type can be embedded in the assertion (for example, as a special field in its script), then the Assertion Checking process in the Testbench (see Figures \ref{fig:SimulatorArchitecture} or \ref{fig:RuntimeArchitecture}) can be set to check only assertions of a given type, which can improve runtime performance.
+%\end{itemize}
 
 Discrimination or pre-selection of assertions can also be achieved by specifying `trigger conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant.\footnote{This is similar to typical practice in computer hardware verification \cite{tao2009}, where an assertion may take the form ``under $<$environment conditions$>$ if $<$trigger$>$ then $<$expectation$>$", where \textit{$<$environment conditions$>$} may be ``we are not in RESET mode" and \textit{$<$trigger$>$} may be ``we receive a request" and \textit{$<$expectation$>$}  may be ``an acknowledge signal is driven high sometime in the X next cycles".} 
 
