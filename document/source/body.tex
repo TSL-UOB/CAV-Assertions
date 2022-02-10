@@ -128,51 +128,68 @@ The evaluation of assertions requires an environment to generate vehicle data, a
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.98\linewidth]{../other/figures/SimulatorAssertionsTestBenchArchitecture.jpg}
-    \caption{Simulation testbench architecture}
+    \includegraphics[width=0.98\linewidth]{../other/figures/SimulatorAssertionsCondensed.jpg}
+    \caption{Architecture for interpreting and monitoring assertions.}
     \label{fig:SimulatorArchitecture}
 \end{figure}
 
-  Figure~\ref{fig:SimulatorArchitecture} shows a layout for a simulation testbench that indicates the context in which the assertions database is used:
 
-  \begin{itemize}
-      \item During \emph{Experiment Instantiation}, specific test scenarios are generated from the \emph{Experiment Specification} which may include test objectives or requirements (defined in natural language). The Experiment Instantiation identifies the \emph{Static} information about the environment (e.g.\ maps, road features) and \emph{Dynamic} descriptions of the behaviour required of simulated actors (vehicles, other road users, traffic lights, and any third-party agents necessary to the test requirement). 
-%      The experimental configuration determines the test case that will contribute coverage towards the assertion.
 
-      \item The \emph{Simulator} interacts with the \emph{AV Control} - although for the purposes of this paper a dummy controller is used that can be set to pass or fail assertions to demonstrate the full extent of the assertion-based validation approach. The simulator used is the CARLA simulator\footnote{\url{https://carla.org/}}, but in principle this could be exchanged for other simulators with only moderate effort.
-      \item The \emph{Data Capture} records relevant simulation data about the driving situation of the AV, including actor positions and road network information, and at each time step of the simulation writes this information into the records of the database to be used for assertion checking.
-      \item The \emph{Assertion Checker} together with the \emph{Assertions} library constitute the test \emph{Oracle}. They evaluate all assertions relevant to the driving situation defined at each step of the simulation. 
-      \item The \emph{Outputs} are a set of Pass/Fail declarations.
-% which can be used to annotate the simulation log or be recorded in a separate file if desired. 
-\emph{Assertion coverage} with respect to the experiment specifications can also be monitored at the output. 
-  \end{itemize}
-  We will focus on describing the assertion oracle in greater detail in %the remainder of this paper
-  Section~\ref{geospatial_database}.
+% GC added this as condensetion of section III **************
+Figure~\ref{fig:SimulatorArchitecture} shows the testbench achitecture that was use to formalise and monitor assertions and interpret the diving situation.
 
-\subsection{Operational Monitoring}
-The key observation motivating our approach to assertion-based monitoring during operation is that the assertions we have developed for assertion-based monitoring in simulation can also be utilised as runtime monitors during operation of a vehicle.
-%
-Thus, the same Assertions and Assertion Checker as those shown in Figure~\ref{fig:SimulatorArchitecture} can also be used in operational monitoring mode. The system architecture required to achieve this is illustrated in Figure~\ref{fig:RuntimeArchitecture}, wherein:
-\begin{itemize}
-    \item The \emph{AV Sensors} acquire real-time information from the vehicle's sensors.
-    \item During \emph{Feature Extraction}, the data obtained from the vehicle's sensors are processed to provide a trace that is equivalent to that obtained from simulations, so that the \emph{Assertion Checker} can be applied in operational mode.
-    \item \emph{Data Capture}: as in % the simulation environment in
- Figure~\ref{fig:SimulatorArchitecture}, the data describing the vehicle's environment and observable actions is captured and stored in a database for  assertion checking.
-    \item The \emph{Assertion Checker} and \emph{Assertions} library are essentially identical to that of the simulation environment in Figure~\ref{fig:SimulatorArchitecture}, evaluating the relevant assertions and generating a pass or a fail verdict~\cite{RuntimeReview} as an output. 
-% KIE: taken out to shorten the paper, this can be said in the conclusion or under future work, perhaps. 
-% In some applications, there may be differences in the deployment (as shown in Figure~\ref{fig:RuntimeArchitecture}) compared to the simulation testbench, where the system would be deployed on embedded hardware. These applications include operational data recording for further processing or possibly its use as a real-time reward for online learning.
+
+
+
+
+
+
+% GC removed this ************
+% Figure~\ref{fig:SimulatorArchitecture} shows a layout for a simulation testbench that indicates the context in which the assertions database is used:
+%   \begin{itemize}
+%       \item During \emph{Experiment Instantiation}, specific test scenarios are generated from the \emph{Experiment Specification} which may include test objectives or requirements (defined in natural language). The Experiment Instantiation identifies the \emph{Static} information about the environment (e.g.\ maps, road features) and \emph{Dynamic} descriptions of the behaviour required of simulated actors (vehicles, other road users, traffic lights, and any third-party agents necessary to the test requirement). 
+% %      The experimental configuration determines the test case that will contribute coverage towards the assertion.
+
+%       \item The \emph{Simulator} interacts with the \emph{AV Control} - although for the purposes of this paper a dummy controller is used that can be set to pass or fail assertions to demonstrate the full extent of the assertion-based validation approach. The simulator used is the CARLA simulator\footnote{\url{https://carla.org/}}, but in principle this could be exchanged for other simulators with only moderate effort.
+%       \item The \emph{Data Capture} records relevant simulation data about the driving situation of the AV, including actor positions and road network information, and at each time step of the simulation writes this information into the records of the database to be used for assertion checking.
+%       \item The \emph{Assertion Checker} together with the \emph{Assertions} library constitute the test \emph{Oracle}. They evaluate all assertions relevant to the driving situation defined at each step of the simulation. 
+%       \item The \emph{Outputs} are a set of Pass/Fail declarations.
+% % which can be used to annotate the simulation log or be recorded in a separate file if desired. 
+% \emph{Assertion coverage} with respect to the experiment specifications can also be monitored at the output. 
+%   \end{itemize}
+%   We will focus on describing the assertion oracle in greater detail in %the remainder of this paper
+%   Section~\ref{geospatial_database}.
+
+% \subsection{Operational Monitoring}
+% The key observation motivating our approach to assertion-based monitoring during operation is that the assertions we have developed for assertion-based monitoring in simulation can also be utilised as runtime monitors during operation of a vehicle.
+% %
+% Thus, the same Assertions and Assertion Checker as those shown in Figure~\ref{fig:SimulatorArchitecture} can also be used in operational monitoring mode. The system architecture required to achieve this is illustrated in Figure~\ref{fig:RuntimeArchitecture}, wherein:
+% \begin{itemize}
+%     \item The \emph{AV Sensors} acquire real-time information from the vehicle's sensors.
+%     \item During \emph{Feature Extraction}, the data obtained from the vehicle's sensors are processed to provide a trace that is equivalent to that obtained from simulations, so that the \emph{Assertion Checker} can be applied in operational mode.
+%     \item \emph{Data Capture}: as in % the simulation environment in
+%  Figure~\ref{fig:SimulatorArchitecture}, the data describing the vehicle's environment and observable actions is captured and stored in a database for  assertion checking.
+%     \item The \emph{Assertion Checker} and \emph{Assertions} library are essentially identical to that of the simulation environment in Figure~\ref{fig:SimulatorArchitecture}, evaluating the relevant assertions and generating a pass or a fail verdict~\cite{RuntimeReview} as an output. 
+% % KIE: taken out to shorten the paper, this can be said in the conclusion or under future work, perhaps. 
+% % In some applications, there may be differences in the deployment (as shown in Figure~\ref{fig:RuntimeArchitecture}) compared to the simulation testbench, where the system would be deployed on embedded hardware. These applications include operational data recording for further processing or possibly its use as a real-time reward for online learning.
  
-\end{itemize}
+% \end{itemize}
 
-%However, to generate a verdict some sort of reference model is needed, which in this case are the PostgreSQL queries, to provide logical expressions of safety properties for what is to be classified as expected or unexpected behaviours (pass or fail) of the AV; and accordingly execute the appropriate steps to ensure safety.
-  
+% %However, to generate a verdict some sort of reference model is needed, which in this case are the PostgreSQL queries, to provide logical expressions of safety properties for what is to be classified as expected or unexpected behaviours (pass or fail) of the AV; and accordingly execute the appropriate steps to ensure safety.
  
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.98\linewidth]{../other/figures/RuntimeAssertionsTestBenchArchitecture.jpg}
-    \caption{Operational monitoring architecture}\todo[inline]{Revise to match new version of Fig. 1 almost exactly, i.e. replace AV Control with AV Sensors, replace Simulator with Feature Extraction, remove all above Simulator, leave rest as is. Done. :)}
-    \label{fig:RuntimeArchitecture}
-\end{figure}
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=0.98\linewidth]{../other/figures/RuntimeAssertionsTestBenchArchitecture.jpg}
+%     \caption{Operational monitoring architecture}\todo[inline]{Revise to match new version of Fig. 1 almost exactly, i.e. replace AV Control with AV Sensors, replace Simulator with Feature Extraction, remove all above Simulator, leave rest as is. Done. :)}
+%     \label{fig:RuntimeArchitecture}
+% \end{figure}
+
+
+
+
+
+
+
 
 
 \subsection{Geospatial Database for Assertion Checking} \label{geospatial_database}
@@ -253,6 +270,16 @@ To illustrate this, Figure~\ref{fig:assertion_database_annotated} shows the oper
 The assertion performs a check (as defined in UKHC Rule 162) that a safe distance ahead exists between an AV and the nearest vehicle in an oncoming lane, labelled the `Oncoming Vehicle' (OV) as the AV starts to overtake the `Vehicle Being Passed' (VBP). The start time of the overtake is defined as the time that the AV first begins to enter the adjacent lane (Overtaking Lane) of the road, at which point it must commit to the manoeuvre or else abort and return to driving in the initial lane (the Running Lane).
 
 In the case of assertions related to overtaking, it is necessary to determine whether the overtaking vehicle wholly or partly occupies a given road lane, since overtaking manoeuvres require it to move at least partially into an adjacent lane and back. Therefore, it is necessary for the database to include lane geometries (polygons) in order to allow checking of vehicle occupancy of lanes by testing for the overlap between vehicle and lane objects. Figure~\ref{fig:assertion_database_annotated} shows the lane polygons projected onto the map section (an extract from the map used for our initial assertion checking experiments described in Section~\ref{Experimental_scenario}). The start of an overtaking manoeuvre is identified as the first time step in which the vehicle overlaps the overtaking lane (and stops being wholly contained within the running lane), and the overtake manoeuvre ends when the vehicle is entirely within the running lane once more after having passed the VBP. Lane geometry objects (shape or bounding box polygons) are therefore an essential element of the assertions related to overtaking.
+
+
+
+
+
+
+
+
+
+
 
 \section{Assertion Development and Application}\label{Use_of_assertions}
 In this section we first identify the types of assertions that may exist. We then discuss how to develop assertions from the natural language statements of the UKHC. We also present how to use assertions, both in simulation and during operation.
