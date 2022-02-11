@@ -28,6 +28,9 @@
 \usepackage{listings}
 \usepackage[shortlabels]{enumitem}
 
+\newcommand{\pathToSourceFiles}{../source}
+\newcommand{\pathToOtherFiles}{../other}
+
 
 %-------------------------------------------------------------------------------
 
@@ -78,7 +81,7 @@ Digital Object Identifier ....
 % ***************************************************
 \begin{abstract}
 \noindent 
-\input{../source/abstract.tex}
+\input{\pathToSourceFiles/abstract.tex}
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -90,7 +93,7 @@ Verification and Validation (V\&V), Autonomous Driving, Autonomous Vehicles, Sim
 % ***************************************************
 %  Main Body
 % ***************************************************
-\input{../source/body.tex}
+\input{\pathToSourceFiles/body.tex}
 
 % ***************************************************
 %  Bib
@@ -129,7 +132,24 @@ is Professor of Computer Science and heads the Trustworthy Systems Laboratory at
 % ***************************************************
 %  Appendix
 % ***************************************************
-\input{../source/appendix.tex}
+% \input{\pathToSourceFiles/appendix.tex}
+\newpage
+\begingroup
+\let\clearpage\relax 
+\onecolumn 
+% \newpage
+\section*{Appendix A}\label{appendix_a}
+Figure \ref{fig:overtaking_analysis_diag} presents a model of an overtaking manoeuvre, showing the derivation of a formula for calculating Safe Distance Ahead, which was used in the simulation study results presented in Section \ref{sim_case_study}.
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=18cm]{\pathToOtherFiles/figures/Overtaking_Manoeuvre_Analysis_global_view_v2.png}
+    \caption{Schematic of Model-based Analysis of Overtaking Manoeuvre.}
+    \label{fig:overtaking_analysis_diag}
+\end{figure*}
+
+
+\endgroup
 
 
 \end{document}
