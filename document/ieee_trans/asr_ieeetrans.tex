@@ -1,6 +1,6 @@
 \documentclass[letterpaper, 10 pt, journal, twoside]{IEEEtran}
 % \input{archive/main.config.tex}
-\usepackage[maxnames=6,firstinits=true,doi=false,url=true,isbn=false]{biblatex}
+\usepackage[maxnames=3,firstinits=true,doi=false,url=true,isbn=false]{biblatex}
 \addbibresource{../source/assertion.bib}
 \usepackage{array}
 \usepackage{graphicx}
@@ -16,11 +16,12 @@
 \usepackage{dblfloatfix}
 \usepackage{booktabs}
 \usepackage{authblk}
-\newcommand{\TODO}[1]{{\color{red}\textbf{TODO: #1}}}
+% \newcommand{\TODO}[1]{{\color{red}\textbf{TODO: #1}}}
+\usepackage[disable]{todonotes}
 % \pagenumbering{gobble} %suppresses page numbers
 \usepackage{balance} %balance columns
 \usepackage{todonotes} 
-% \usepackage[disable]{todonotes}
+\usepackage[disable]{todonotes}
 \usepackage{siunitx}
 % \usepackage{draftwatermark}
 \usepackage{flushend}
@@ -106,48 +107,55 @@ Verification and Validation (V\&V), Autonomous Driving, Autonomous Vehicles, Sim
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{../other/mugs/chris.jpg}}]{Chris Harper}
 is a Research Fellow in Robotics Safety \& Control at Bristol Robotics Laboratory, researching methods and technologies for safety assurance of autonomous systems, machine learning and AI. For over 20 years Dr Harper has worked in both industry and academia as a safety assurance specialist with experience in system/software hazard and safety analysis, safety cases and safety management, and has also been involved in development of international industry safety standards for robotics. His research interests include assurance methods, high integrity design, safety validation, and safety arguments/cases of autonomous systems. He has recently been working on the CCAV-funded R\&D projects ROBOPILOT (autonomous parcel delivery), CAV Forth (autonomous bus service) and SafeMRX (requirements for CAV minimum risk manoeuvres) and on a project for the Assuring Autonomy International Programme (AAIP) on assistive robotics in healthcare. 
 \end{IEEEbiography}
-
+\vskip -2\baselineskip plus -1fil  
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{../other/mugs/greg.png}}]{Greg Chance}
-received the B.Sc. (Hons.) and Ph.D. degrees in physics from the University of Bath, Bath, U.K., in 2001 and 2005, respectively. He was previously at the Bristol Robotics Lab and is currently a Senior Research Associate with the Trustworthy Systems Laboratory, University of Bristol, Bristol, U.K. His current research interests are simulation-based verification for autonomous systems and cybersecurity. He has ten years industrial experience researching for Oxford Instruments, U.K., and BAE Systems, U.K. Dr Chance is a Chartered Engineer and a member of the Institute of Physics and holds a patent for a novel plasma control method. 
+received the B.Sc. (Hons.) and Ph.D.\ degrees in physics from the University of Bath, in 2001 and 2005, respectively. He was previously at the Bristol Robotics Lab and is currently a Senior Research Associate with the Trustworthy Systems Laboratory, University of Bristol. His current research interests are simulation-based verification for autonomous systems and cybersecurity. He has ten years industrial experience researching for Oxford Instruments, and BAE Systems. Dr Chance is a Chartered Engineer and a member of the Institute of Physics and holds a patent for a novel plasma control method. 
+\end{IEEEbiography}
+\vskip -2\baselineskip plus -1fil  
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{../other/mugs/abanoub}}]{Abanoub Ghobrial}
+received an MEng in mechanical engineering from the University of Bristol in 2018. He is currently pursuing a Ph.D.\ degree in computer science at the University of Bristol and is a part-time Research Associate with the Trustworthy Systems Lab, where he was a full-time Research Associate from 2018 to 2020. His current research interests are techniques to allow self-managing of autonomous safety-critical systems via continual learning during operation and the development of simulation-based verification techniques for autonomous systems.
 \end{IEEEbiography}
 
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{../other/mugs/abanoub}}]{Abanoub Ghobrial}
-received the MEng degree in mechanical engineering from the University of Bristol, Bristol,  U.K., in 2018. He is currently pursuing the Ph.D. degree in computer science at the University of Bristol and is a part-time Research Associate with the Trustworthy Systems Lab, Bristol,  U.K. From 2018 to 2020, he was a full-time Research Associate with the Trustworthy Systems Lab. His current research interests are techniques to allow self-managing of autonomous safety-critical systems via continual learning during operation; and the development of simulation-based verification techniques for autonomous systems.
-\end{IEEEbiography}
+\vskip -2\baselineskip plus -1fil  
 
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{../other/mugs/saquib.jpeg}}]{Saquib Alam}
 received a B. Tech  in engineering physics from the Indian Institute of Technology, Mumbai in 2015 and MSc in control systems and robotics from KTH Royal Institute of Technology, Stockholm in 2020 with a specialisation in autonomous control. Since then he has worked as a research engineer at the Bristol Robotics lab building a cloud testbench for autonomous vehicle verification using simulation. 
  \end{IEEEbiography}
 
+\vskip -2\baselineskip plus -1fil  
+
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{../other/mugs/tony}}]{Tony Pipe} 
-received his BSc (Hons.) degree in Electronic Engineering from Warwick in 1979 and, after an eight-year period in industry that included running a small company, received his PhD in Robotics from the University of the West of England (UWE) in 1997. Since 2010 he has been a Professor of Robotics and Autonomous Systems at UWE. He was a founding member of the Bristol Robotics Laboratory (BRL), and acted as one of its two Deputy Directors from its inception in 2006 until 2020. His research interests focus on safe and correct operation whilst in close-proximity to human beings. He has co-authored over 200 international refereed publications, supervised 35 PhDs, and created a BRL income of \pounds10M since 2013. He has acted as BRL-UWE PI on the EPSRC grant ‘Trustworthy Robotic Assistants’, the Programme/Hub grants ‘Robotics for Nuclear Environments’ and ‘National Centre for Nuclear Robotics’, and the Centre for Doctoral Training in Robotics and Autonomous Systems. Prof.\ Pipe has been involved with Connected Autonomous Vehicle research and development since 2015 via the Innovate UK/CCAV funded projects VENTURER, FLOURISH, MultiCAV, CAPRI, ROBOPILOT and CAV-Forth.
+received his BSc (Hons.) degree in Electronic Engineering from Warwick in 1979 and, after an eight-year period in industry that included running a small company, received his PhD in Robotics from the University of the West of England (UWE) in 1997. Since 2010 he has been a Professor of Robotics and Autonomous Systems at UWE. He was a founding member of the Bristol Robotics Laboratory (BRL), and acted as one of its two Deputy Directors from its inception in 2006 until 2020. His research interests focus on safe and correct operation whilst in close-proximity to human beings. He has co-authored over 200 international refereed publications, supervised 35 PhDs, and created a BRL income of \pounds10M since 2013. 
+%He has acted as BRL-UWE PI on the EPSRC grant ‘Trustworthy Robotic Assistants’, the Programme/Hub grants ‘Robotics for Nuclear Environments’ and ‘National Centre for Nuclear Robotics’, and the Centre for Doctoral Training in Robotics and Autonomous Systems. 
+Prof.\ Pipe has been involved with Connected Autonomous Vehicle research and development since 2015 via the Innovate UK/CCAV funded projects VENTURER, FLOURISH, MultiCAV, CAPRI, ROBOPILOT and CAV-Forth.
 \end{IEEEbiography}
-
+\vskip -2\baselineskip plus -1fil  
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{../other/mugs/kie}}]{{Kerstin Eder}} 
-is Professor of Computer Science and heads the Trustworthy Systems Laboratory at the University of Bristol, UK. She also leads the Verification and Validation for Safety in Robots research theme at the  Bristol Robotics Laboratory. She has gained extensive experience of verifying complex microelectronic designs while working with leading semiconductor design and Electronic Design Automation companies worldwide. Her research is focused on specification, verification and analysis techniques to verify or explore a system's behaviour in terms of functional correctness, safety, security, performance and energy efficiency. Prof.\ Eder's most recent contributions include agent-based testing, how to use assertions and theorem proving to verify control system designs, energy modeling and static resource analysis techniques to predict energy consumption of software. She holds a PhD in Computational Logic and an MSc in Artificial Intelligence from the University of Bristol, UK, as well as an MEng in Informatics (Dipl.\,Inf.) from the Technical University Dresden, Germany. In 2007 she was awarded an ``Excellence in Engineering'' prize from the Royal Academy of Engineering, UK.
-
+is Professor of Computer Science and heads the Trustworthy Systems Laboratory at the University of Bristol, UK. She also leads the Verification and Validation for Safety in Robots research theme at the  Bristol Robotics Laboratory. 
+%She has gained extensive experience of verifying complex microelectronic designs while working with leading semiconductor design and Electronic Design Automation companies worldwide. Her research is focused on specification, verification and analysis techniques to verify or explore a system's behaviour in terms of functional correctness, safety, security, performance and energy efficiency. 
+Prof.\ Eder's most recent contributions include agent-based testing, how to use assertions and theorem proving to verify control system designs as well as novel energy modeling and static resource analysis techniques to predict energy consumption of software. She holds a PhD in Computational Logic and an MSc in Artificial Intelligence from the University of Bristol, UK, in addition to an MEng in Informatics (Dipl.\,Inf.) from the Technical University Dresden, Germany. In 2007 she was awarded an ``Excellence in Engineering'' prize from the Royal Academy of Engineering, UK. 
 \end{IEEEbiography}
 
 
 % ***************************************************
 %  Appendix
 % ***************************************************
-% \input{\pathToSourceFiles/appendix.tex}
-\newpage
+% \input{\pathToSourceFiles/appendix.tex}/
+% \newpage
 \begingroup
-\let\clearpage\relax 
+% \let\clearpage\relax 
 \onecolumn 
 % \newpage
 \section*{Appendix A}\label{appendix_a}
+
 Figure \ref{fig:overtaking_analysis_diag} presents a model of an overtaking manoeuvre, showing the derivation of a formula for calculating Safe Distance Ahead, which was used in the simulation study results presented in Section \ref{sim_case_study}.
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[width=18cm]{\pathToOtherFiles/figures/Overtaking_Manoeuvre_Analysis_global_view_v2.png}
+    \includegraphics[width=14cm]{\pathToOtherFiles/figures/Overtaking_Manoeuvre_Analysis_global_view_v2.png}
     \caption{Schematic of Model-based Analysis of Overtaking Manoeuvre.}
     \label{fig:overtaking_analysis_diag}
 \end{figure*}
-
 
 \endgroup
 
