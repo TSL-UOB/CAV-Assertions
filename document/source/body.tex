@@ -590,9 +590,7 @@ We chose two case studies inspired from a challenging overtaking scenario; the f
 
 \subsection{Experimental Scenario} % (from the NHTSA/CARLA Challenge)}
 \label{carla_challenge}
-To demonstrate the functionality of the assertion based safety validation process, we chose to consider an overtaking scenario based on the driving situations from the NHTSA\footnote{\url{https://www.nhtsa.gov/}} pre-crash typology~\cite{nhtsa_precrash} that were used in the CARLA Challenge\footnote{\url{https://carlachallenge.org/}} The corresponding UKHC rules \cite{highwayCode} that apply to this scenario are Rules 162-169.
-
-Specifically, the scenario involves overtaking on a single-lane road where the test vehicle must perform a lane change to avoid a parked or broken down vehicle, Figure \ref{fig:carla_challenge_NHTSA_task6_LHS}. The vehicle must leave sufficient gap to the vehicle it is overtaking and also not endanger any vehicles that are oncoming.
+To demonstrate the functionality of the assertion based safety validation process, we chose to consider an overtaking scenario based on the driving situations from the NHTSA\footnote{\url{https://www.nhtsa.gov/}} pre-crash typology~\cite{nhtsa_precrash} that were used in the CARLA Challenge\footnote{\url{https://carlachallenge.org/}} The corresponding UKHC rules \cite{highwayCode} that apply to this scenario are Rules 162-169. Specifically, the scenario involves overtaking on a single-lane road where the test vehicle must perform a lane change to avoid a parked or broken down vehicle, Figure \ref{fig:carla_challenge_NHTSA_task6_LHS}. The vehicle must leave sufficient gap to the vehicle it is overtaking and also not endanger any vehicles that are oncoming.
 
 \begin{figure}
     \centering
@@ -834,10 +832,8 @@ Performance & significant delay & behaviour\\
 % \end{figure}
 
 \subsection{The Significance of Agent Intentions during Assertion Checking} %in Defining Validation Cases} \label{discussion_of_results}
-The initial work presented in this paper has raised a number of consequent issues that require further investigation.
-
-One significant topic is the extent to which assertions checking the UKHC require access to states of internal decision making within the autonomous vehicle being checked monitored or validated. 
-Many UKHC rules are advisories to drivers or other road users to be aware of potentially hazardous situations, and to actively perceive, deliberate, and take special or particular action to avoid harmful events. The following extracted rule is an example:
+The initial work presented in this paper has raised a number of consequent issues that require further investigation. One significant topic is the extent to which assertions require access to states of internal decision making within the autonomous vehicle being monitored. Many UKHC rules are advisories to %drivers or other road users to be aware of 
+potentially hazardous situations, and to actively perceive, deliberate, and take special or particular action to avoid harmful events. The following extracted rule is an example:
 \begin{quote}
     \textit{
     \textbf{Rule 146}
@@ -853,18 +849,14 @@ Many UKHC rules are advisories to drivers or other road users to be aware of pot
     }
 \end{quote}
 % Each of the bullet-items listed above would probably require at least one distinct test case (often more than one). But several items
-Several bullet-items listed above ask the road-user to consider particular situations explicitly, advising that increased attention or effort be put into the perception of particular conditions, features of, or objects in the environment (e.g. blind summits, pedestrians, unmarked junctions). If we want to validate 
-the correctness of an AV's behaviour in respect of these rules, either in simulation or in runtime monitoring, we must have the capability to observe the decisions made by the AV or its control system as they are made. 
+Several bullet-items listed above ask the road-user to consider particular situations explicitly, advising that increased attention or effort be put into the perception of particular conditions, features of, or objects in the environment (e.g. blind summits, pedestrians, unmarked junctions). If we want to validate the correctness of an AV's behaviour in respect of these rules we must have the capability to observe the decisions made by the AV or its control system as they are made. 
 
+\TODO{GC can this be cut, is explainable AI our focus here?}
 This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. The complexity and opacity of internal functional representations in many AI technologies, combined with the non-deterministic nature of complex operational situations in real world environments means that they may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. This requires some form of communication protocol or interface from the decision-making centres of the system to the outside world, so that the decisions can be observed and recorded for later analysis. This is a significant motivation behind the use of assertion checking oracle subsystems as a runtime analysis facility, discussed in Section \ref{assertions_at_run_time}.
 
 At present, we are not in a position to perform assertion checking for this kind of safety property by means of an independent assertion monitoring oracle. There is no externally objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
 
-In the absence of any such explanation capabilities or facilities, it is still possible to achieve some degree of validation by performing checks 
-%test cases or scenarios 
-derived from the text of the rule, which attempt to challenge the hypothesis expressed or implied by the UKHC rule or rule clause (
-%in other words,
-e.g.\emph{falsification testing} of the safety property). 
+In the absence of any such explanation capabilities or facilities, it is still possible to achieve some degree of validation by performing checks derived from the text of the rule, which attempt to challenge the hypothesis expressed or implied by the UKHC rule or rule clause (\emph{e.g. falsification testing}) of the safety property. 
 %
 For example, in the testing phase of an AV, to exercise the last bullet item of Rule 146 above one could construct a test case, perhaps similar in nature to those defined in \cite{EuroNCAP}, where simulated `children agents' (that model the physical appearance of children as well as some aspects of their behaviour) step out into a road in front of the AV agent, having appeared either to be looking away from an AV agent, towards it, or some mix of the two focuses of attention. 
 %
