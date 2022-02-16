@@ -245,7 +245,7 @@ Where such concepts are used in multiple rules, the corresponding abstractions f
 \begin{figure}
     \centering
     \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/assertion_database_annotated.jpg}
-    \caption{Database view of a driving scenario}
+    \caption{Database view of a driving scenario.}
     \label{fig:assertion_database_annotated}
 \end{figure}
 
@@ -271,7 +271,7 @@ In this section we first identify the types of assertions that may exist. We the
 \begin{figure}[!b]
     \centering
     \includegraphics[width=0.98\linewidth]{\pathToOtherFiles/figures/Assertion_Categories_Figure.png}
-    \caption{Types of assertions}
+    \caption{Types of assertions.}
     \label{fig:categories_of_assertions}
 \end{figure}
 
@@ -527,7 +527,7 @@ The ensemble of parameter values can therefore define a \emph{driving profile} f
 As with the problem of direct translation of the UKHC rules, the approach aimed to develop a model using the concepts of the natural language of the rule rather than by other parameters, for example time-to-collision, which has been found in human factors studies to be the most significant parameter characterising overtaking manoeuvres \cite{lenard2018, Chen2015}. Hence the model developed for the Safe Distance Ahead measurement differs to many that have been developed for analysis of overtaking manoeuvres, which aim to capture the decision making of the driver rather than the characteristics of the legal code of behaviour that is essentially an independent observer's perspective on the scenario.
 
 \subsubsection{Geospatial Database for Assertion Checking}
-Analysis of the overtaking manoeuvre problem fits neatly into the geospatial database framework for assertion checking. The vehicles can be represented as shape objects using the postgis system extension which allows for logical tests and measurement metrics to be efficiently calculated between shapes. An Entity Relation Diagram (ERD), Figure \ref{fig:erd}, shows the variables within the database structure and the relation between them. 
+Analysis of the overtaking manoeuvre problem fits neatly into the geospatial database framework for assertion checking. The vehicles can be represented as shape objects using the postgis system extension which allows for logical tests and measurement metrics to be efficiently calculated between shapes. An Entity Relation Diagram (ERD), Figure \ref{fig:erd}, shows the variables within the database structure and the relation between them (for cardinality see \textit{crow's foot} notation\footnote{\url{https://en.wikipedia.org/wiki/Entity-relationship\_model}}). 
 
 For each log file there exists an environment table containing map information, which in this case is based on the openDrive\footnote{\url{https://www.asam.net/standards/detail/opendrive/}} and lanelet formats. From the lanelet data we derive a table containing useful entries such as lane width and orientation for the environment. Captured data from the simulation (or real-time monitor), contains a state vector for the actors (vehicles in this case) in $data\_capture.actor\_state$ which contains position and orientation information. From this captured data table we can calculate dynamic state information, that is information that is not fixed but may change over time (e.g. velocity, acceleration) or with vehicle speed (e.g. braking distance). 
 
@@ -536,7 +536,7 @@ Further insight to the driving situation can be derived when combining actor sta
 \begin{figure}
     \centering
     \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/ERD2.png}
-    \caption{Entity Relationship Diagram for the PostgreSQL database, for cardinality see crow's foot notation (See URL: \url{https://en.wikipedia.org/wiki/Entity-relationship\_model} Accessed: 2021-08-17.)}
+    \caption{PostgreSQL database Entity Relationship Diagram.}
     \label{fig:erd}
 \end{figure}
 
@@ -595,7 +595,7 @@ To demonstrate the functionality of the assertion based safety validation proces
 \begin{figure}
     \centering
     \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/carla_challenge_NHTSA_task6_LHS.jpg}
-    \caption{Overtaking scenario from NHTSA~\cite{nhtsa_precrash}}
+    \caption{Overtaking scenario from NHTSA~\cite{nhtsa_precrash}.}
     \label{fig:carla_challenge_NHTSA_task6_LHS}
 \end{figure} 
 
