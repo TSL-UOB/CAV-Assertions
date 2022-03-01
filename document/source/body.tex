@@ -11,7 +11,7 @@ Verification and validation are important to earning trust and gaining confidenc
 %
 
 % GC ADDED THIS
-There has been some recent work to make autonomous vehicles abide by highway traffic laws by formalizing the rules in a language that autonomous systems can understand~\cite{?}. This is challenging not only because driving rules are often vague and may be conflicting, but also because of the contextual and common sense knowledge required to interpret these rules into appropriate driving actions. 
+There has been some recent work to make autonomous vehicles abide by highway traffic laws by formalising the rules in a language that autonomous systems can understand. This is challenging not only because driving rules are often vague and may be conflicting, but also because of the contextual and common sense knowledge required to interpret these rules into appropriate driving actions. 
 %
 Field testing, often the traditional approach to validating systems in their target environments, is likely to be prohibitively expensive for autonomous systems, if a high degree of coverage or statistical confidence is required. This has led to much interest and research into the use of driving simulators\footnote{Examples include \url{https://www.rfpro.com} and \url{http://carla.org}.} for validation. 
 %
@@ -63,9 +63,13 @@ A geospatial information system in an SQL database has been developed for valida
 
 
 %\subsection{Safety argument}
-Assetion monitoring may be used as evidence to show functional safety compliance to national regulations or codes of practice, the general safety argument being that if an AV satisfies all the rules that may be legally expected of a human driver, then its behaviour is comparable to that of human drivers and therefore should be acceptable, or at least legal. It should be noted that acceptance may therefore be somewhat context-specific, against the code of practice for each country, and what passes under one legal code may not be acceptable in another. We anticipate that there may need to be extensive harmonization of national driving codes in order to avoid having to re-certify vehicles for each new national market and improve the cost-effectiveness of AV certification processes, but this is outside the scope of this paper.
+% GC added sentence on UK law commission
+Safety assurance is emerging as a legislative practice and an essential aspect of AV verification and certification, such as recommendations set out in the recent UK Law commission report which specifically mentions evaluation of AV behaviour against the rules of the road~\cite{law_commission_UK}. 
+%
+Assertion monitoring may be used as evidence to show functional safety compliance against national regulations or codes of practice, the general safety argument being that if an AV satisfies all the rules that may be legally expected of a human driver, then its behaviour is comparable to that of human drivers and therefore should be acceptable, or at least legal. It should be noted that acceptance may therefore be somewhat context-specific, against the code of practice for each country, and what passes under one legal code may not be acceptable in another. We anticipate that there may need to be extensive harmonization of national driving codes in order to avoid having to re-certify vehicles for each new national market and improve the cost-effectiveness of AV certification processes, but this is outside the scope of this paper.
 
-The need to measure the compliance of an AV's behaviour with legal codes of practice may go beyond the initial design validation or certification stage as performed in simulation and (to some extent) road tests. It may become necessary to measure such compliance during vehicle operation, for example to establish that the vehicle's behaviour is correct (or otherwise) in the event of an incident that requires subsequent investigation. If an AV is involved in an incident, but it can be shown by assertion-based assessment during operation that it was adhering to all relevant legal standards of driving behaviour, then this may have an impact on any liability or insurance-based compensation that may be due as a consequence of the incident. A detailed discussion of the rationale and requirements for explainability of AV decision-making in post-incident investigation is beyond the scope of this paper.
+The need to measure the compliance of an AV's behaviour with legal codes of practice may go beyond the initial design validation or certification stage as performed in simulation and (to some extent) road tests. It may become necessary to measure such compliance during vehicle operation, for example to establish that the vehicle's behaviour is correct (or otherwise) in the event of an incident that requires subsequent investigation. If an AV is involved in an incident, but it can be shown by assertion-based assessment during operation that it was adhering to all relevant legal standards of driving behaviour, then this may have an impact on any liability or insurance-based compensation that may be due as a consequence of the incident. A detailed discussion of the rationale and requirements for explainability~\cite{rosenfeld2019explainability} of AV decision-making in post-incident investigation is beyond the scope of this paper.
+
 \todo[inline]{find some literature?}
 \todo[inline, color=green]{Chris do you want to expand this point or remove it?}
 \todo[inline]{This is where we ought to say how the paper is structured}
@@ -134,7 +138,7 @@ The evaluation of assertions requires an environment to generate vehicle data, a
 
 
 % GC added this as condensetion of section III **************
-Figure~\ref{fig:SimulatorArchitecture} shows the testbench achitecture that was used to formalise and monitor assertions and interpret the diving situation. The testbench is used by starting with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) that converts human-readable rules into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
+Figure~\ref{fig:SimulatorArchitecture} shows the testbench architecture that was used to formalise and monitor assertions and interpret the diving situation. The testbench is used by starting with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) that converts human-readable rules into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
 %
 Automated assertion checking happens within the DBMS, where \emph{SQL Assertions} are stored which have been written to logically express the formalisations of the UKHC in the SQL language. At each time step the \emph{Assertion Checking} process executes a query engine that evaluates the relevant assertions encoded with the assertion logic against the stored records and generates a pass or a fail verdict as an \emph{Output}.
 
@@ -291,7 +295,7 @@ In this section we first identify the types of assertions that may exist. We the
 
 \subsection{Types of Assertions} \label{assertion_categories}
 
-The assertions to encode UKHC rules tend to fall into one of four principal types. Except for invariants, assertions are defined with respect to some \emph{assertion reference point} - a particular step of a captured data trace, defined by some reference condition which holds at a specified time step. The assertion is then defined as some spatio-temporal condition relative to the reference point, as shown in Fig.~\ref{fig:categories_of_assertions}.
+The assertions to encode UKHC rules tend to fall into one of four principal types. Except for invariants, assertions are defined with respect to some \emph{assertion reference point} - a particular step of a captured data trace, defined by some reference condition which holds at a specified time step. The assertion is then defined as some spatio-temporal condition relative to the reference point, as shown in Figure~\ref{fig:categories_of_assertions}.
 
 
 The four types of assertions are:
@@ -339,7 +343,7 @@ For example, assertions related to highway driving are not applicable to urban o
 Likewise, an assertion which checks that an AV is braking smoothly (for example when approaching a T-junction or traffic light indicating 'stop') will inherently fail in a situation where it is required to accelerate (for example when moving off after having been stationary). If assertions of this kind are not filtered out in scenarios where their checks are not pertinent to what may be identified as correct behaviour, they will generate nuisance failure results. 
 
 %\item 
-Where assertions are being applied in a more time-critical mode of operation - for example for simulation control (see Section \ref{Assertions_at_Sim_Time}), online warnings, or for self-adaptation (see Section \ref{assertions_at_run_time}) - the speed of their execution can be increased by filtering out those assertions that are not relevant to the situation concerned at a given time (step). If the type can be embedded in the assertion (for example, as a special field in its script), then the Assertion Checking process in the Testbench (see Figure \ref{fig:SimulatorArchitecture}) can be set to check only assertions of a given type, which can improve runtime performance.
+Where assertions are being applied in a more time-critical mode of operation - for example for simulation control (see Section \ref{Assertions_at_Sim_Time}), online warnings, or for self-adaptation (see Section \ref{assertions_at_run_time}) - the speed of their execution can be increased by filtering out those assertions that are not relevant to the situation concerned at a given time (step). If the type can be embedded in the assertion (for example, as a special field in its script), then the Assertion Checking process in the Testbench (see Figure~\ref{fig:SimulatorArchitecture}) can be set to check only assertions of a given type, which can improve runtime performance.
 %\end{itemize}
 
 Discrimination or pre-selection of assertions can also be achieved by specifying `trigger conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant.\footnote{This is similar to typical practice in computer hardware verification \cite{tao2009}, where an assertion may take the form ``under $<$environment conditions$>$ if $<$trigger$>$ then $<$expectation$>$", where \textit{$<$environment conditions$>$} may be ``we are not in RESET mode" and \textit{$<$trigger$>$} may be ``we receive a request" and \textit{$<$expectation$>$}  may be ``an acknowledge signal is driven high sometime in the X next cycles".} 
@@ -492,12 +496,12 @@ While this seems an apparently simple, innocuous requirement, the natural langua
 In order to produce a measurable assertion it was necessary to develop a dynamic model of the overtaking manoeuvre to derive formulae for the road distance consumed by performing various stages of the manoeuvre. 
 %
 The model divides the whole overtaking manoeuvre into three distinct phases: Pulling Out (into the oncoming lane), Passing the VBP, and Cutting In (to the original running lane), and defines four time points (way points) at which the distances covered by the vehicles involved are measured. Ultimately, a formula was developed for the overall distance required to complete the manoeuvre without violating safety constraints (such as impingement upon vehicle thinking or braking distance %danger spaces 
-(see Figure \ref{fig:assertion_database_annotated}) or clearance distances around the VBP). 
+(see Figure~\ref{fig:assertion_database_annotated}) or clearance distances around the VBP). 
 
 A diagram of the full analysis model, and the derivation of the formula for Safe Distance Ahead, is provided in %Figure \ref{fig:overtaking_analysis_diag} in 
 Appendix A. For the purposes of describing the general approach we describe the analysis of one of the way points as a typical example. 
 
-The second waypoint is set at the transition from pull-out to passing the VBP, as shown in Figure \ref{fig:Passing_t1}. The figure shows the expressions for the distance travelled by all vehicles in the \textit{$[t_0, t_1]$} time period (taking into account aspects such as the movement of the AV into the oncoming traffic lane):
+The second waypoint is set at the transition from pull-out to passing the VBP, as shown in Figure~\ref{fig:Passing_t1}. The figure shows the expressions for the distance travelled by all vehicles in the \textit{$[t_0, t_1]$} time period (taking into account aspects such as the movement of the AV into the oncoming traffic lane):
  \begin{figure}
     \centering
     \includegraphics[width=0.98\linewidth]{\pathToOtherFiles/figures/Passing_t1_v2.png}
@@ -510,7 +514,7 @@ derives expressions for distance covered by each vehicle in the time periods bet
 
 The analysis identifies several key characteristic parameters that characterise the overtaking manoeuvre. These include:
 \begin{itemize}
-    \item \emph{Stopping distance} (SD) is defined as the sum of the `thinking distance' and `braking distance' of the vehicle (assuming it has a human driver) as defined in UKHC Rule 126 and illustrated in Figure \ref{fig:assertion_database_annotated}.
+    \item \emph{Stopping distance} (SD) is defined as the sum of the `thinking distance' and `braking distance' of the vehicle (assuming it has a human driver) as defined in UKHC Rule 126 and illustrated in Figure~\ref{fig:assertion_database_annotated}.
     % 
     A table of the typical stopping distances for travelling speeds ($v$) between 20 mph - 70 mph is provided with Rule 126 in the UKHC.
     %
@@ -540,7 +544,7 @@ The ensemble of parameter values can therefore define a \emph{driving profile} f
 As with the problem of direct translation of the UKHC rules, the approach aimed to develop a model using the concepts of the natural language of the rule rather than by other parameters, for example time-to-collision, which has been found in human factors studies to be the most significant parameter characterising overtaking manoeuvres \cite{lenard2018, Chen2015}. Hence the model developed for the Safe Distance Ahead measurement differs to many that have been developed for analysis of overtaking manoeuvres, which aim to capture the decision making of the driver rather than the characteristics of the legal code of behaviour that is essentially an independent observer's perspective on the scenario.
 
 \subsubsection{Geospatial Database for Assertion Checking}
-Analysis of the overtaking manoeuvre problem fits neatly into the geospatial database framework for assertion checking. The vehicles can be represented as shape objects using the postgis system extension which allows for logical tests and measurement metrics to be efficiently calculated between shapes. An Entity Relation Diagram (ERD), Figure \ref{fig:erd}, shows the variables within the database structure and the relation between them (for cardinality see \textit{crow's foot} notation\footnote{\url{https://en.wikipedia.org/wiki/Entity-relationship\_model}}). 
+Analysis of the overtaking manoeuvre problem fits neatly into the geospatial database framework for assertion checking. The vehicles can be represented as shape objects using the postgis system extension which allows for logical tests and measurement metrics to be efficiently calculated between shapes. An Entity Relation Diagram (ERD), Figure~\ref{fig:erd}, shows the variables within the database structure and the relation between them (for cardinality see \textit{crow's foot} notation\footnote{\url{https://en.wikipedia.org/wiki/Entity-relationship\_model}}). 
 
 For each log file there exists an environment table containing map information, which in this case is based on the openDrive\footnote{\url{https://www.asam.net/standards/detail/opendrive/}} and lanelet formats. From the lanelet data we derive a table containing useful entries such as lane width and orientation for the environment. Captured data from the simulation (or real-time monitor), contains a state vector for the actors (vehicles in this case) in $data\_capture.actor\_state$ which contains position and orientation information. From this captured data table we can calculate dynamic state information, that is information that is not fixed but may change over time (e.g. velocity, acceleration) or with vehicle speed (e.g. braking distance). 
 
@@ -603,14 +607,16 @@ We chose two case studies inspired from a challenging overtaking scenario; the f
 
 \subsection{Experimental Scenario} % (from the NHTSA/CARLA Challenge)}
 \label{carla_challenge}
-To demonstrate the functionality of the assertion based safety validation process, we chose to consider an overtaking scenario based on the driving situations from the NHTSA\footnote{\url{https://www.nhtsa.gov/}} pre-crash typology~\cite{nhtsa_precrash} that were used in the CARLA Challenge\footnote{\url{https://carlachallenge.org/}} The corresponding UKHC rules \cite{highwayCode} that apply to this scenario are Rules 162-169. Specifically, the scenario involves overtaking on a single-lane road where the test vehicle must perform a lane change to avoid a parked or broken down vehicle, Figure \ref{fig:carla_challenge_NHTSA_task6_LHS}. The vehicle must leave sufficient gap to the vehicle it is overtaking and also not endanger any vehicles that are oncoming.
+To demonstrate the functionality of the assertion based safety validation process, we chose to consider an overtaking scenario based on the driving situations from the NHTSA\footnote{\url{https://www.nhtsa.gov/}} pre-crash typology~\cite{nhtsa_precrash} that were used in the CARLA Challenge\footnote{\url{https://carlachallenge.org/}} The corresponding UKHC rules \cite{highwayCode} that apply to this scenario are Rules 162-169. Specifically, the scenario involves overtaking on a single-lane road where the test vehicle must perform a lane change to avoid a parked or broken down vehicle. 
+% , Figure~\ref{fig:carla_challenge_NHTSA_task6_LHS}. 
+The vehicle must leave sufficient gap to the vehicle it is overtaking and also not endanger any vehicles that are oncoming.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/carla_challenge_NHTSA_task6_LHS.jpg}
-    \caption{Overtaking scenario from NHTSA~\cite{nhtsa_precrash}.}
-    \label{fig:carla_challenge_NHTSA_task6_LHS}
-\end{figure} 
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/carla_challenge_NHTSA_task6_LHS.jpg}
+%     \caption{Overtaking scenario from NHTSA~\cite{nhtsa_precrash}.}
+%     \label{fig:carla_challenge_NHTSA_task6_LHS}
+% \end{figure} 
 
 This scenario is difficult from the side of the autonomous vehicle as there are competing goals firstly to ensure safety and avoid accidents but also to make reasonable progress along the road network given the conditions, i.e. maintain \textit{liveness}. There is also significant challenge in validating the safety of the vehicle in such a scenario, whether in real-world trials or in a simulated environment. For the overtaking scenario several parameters need to be monitored in order to check each assertion. 
 
@@ -635,9 +641,9 @@ We ran the simulation on one of the straight sections of road, for the sake of s
 
 As discussed in Section \ref{geospatial_database}, lane polygons are required for efficient measurement of vehicle lateral movement within, and partial occupancy of, road lanes; in this simulator case study we used a lane partitioning concept termed \textit{lanelets}~\cite{lanelets2014}, which allows exactly this level of description of the scene. We used an open-source software conversion package~\cite{lanelets_to_openDrive} to generate the lanelet data from the openDrive~\cite{opendrive} description of a road network and divides roads into individual sub-lanes. This data was imported into the PostgreSQL database as a table of lane segment polygon objects ($lanelets.lanelet\_shape$) covering the whole of the road layout used for the study. Additionally, information about the lanes boundaries and orientations, required to identify road orientations and running lane directions, was appended to this data. 
 %
-Figure \ref{fig:assertion_database_annotated} shows an example of the lanelet shape object overlaid onto a road network. The blue boxes represent the dynamic actors, which in our case are the vehicles involved in the overtaking scenario. 
+Figure~\ref{fig:assertion_database_annotated} shows an example of the lanelet shape object overlaid onto a road network. The blue boxes represent the dynamic actors, which in our case are the vehicles involved in the overtaking scenario. 
 %
-All of the above world map information was pre-loaded statically into the database, for use by the SQL query engine running the assertions queries, as discussed in Section \ref{generic_sim_system} and shown in Figure \ref{fig:SimulatorArchitecture}.
+All of the above world map information was pre-loaded statically into the database, for use by the SQL query engine running the assertions queries, as discussed in Section \ref{generic_sim_system} and shown in Figure~\ref{fig:SimulatorArchitecture}.
 
 \subsubsection{Overtaking Profiles} \label{overtaking_profiles}
 The design intent of the assertion we applied to the simulation data was to assess whether or not the distance ahead of the simulated AV was sufficient for it to complete an overtaking manoeuvre safely. But in practice, the sufficiency of the distance ahead is dependent on the driving style (see Section \ref{model_based_analysis}) that the AV controller has selected to perform. Also, it is always possible for the AV to change its profile in mid-manoeuvre, thereby shortening the remaining distance required, which can be applied as an emergency action if the risk of the situation should increase for any reason. 
@@ -649,7 +655,7 @@ In our experiment, we developed three different variations of the Safe Distance 
 
 The simulator used for the case study was a minimal version of the generic simulator testbench architecture described in Section \ref{generic_sim_system}. The system used the CARLA simulation software \cite{CarlaSimulator}, an open-source autonomous driving simulation environment. Dynamic state data generated by the simulator was passed to a PostgreSQL database as shown in Figure~\ref{fig:SimulatorArchitecture}, with the SQL assertion script being applied in retrospective analysis mode as discussed in Section \ref{Assertions_at_Sim_Time}.
 
-The paths followed by each simulated vehicle (AV, VBP, OV - see Figure \ref{fig:assertion_database_annotated}) were manually designed to follow a series of way-points. Using fixed vehicle paths facilitates evaluation of the assertion, as it made the test repeatable\footnote{Test repeatability is needed to ensure trust in the simulated assertion results and also to ensure software bugs are found and fixed efficiently. Repeatability relies on deterministic simulation code and hardware. If the \emph{simulation variance} is within tolerance then verification coverage results are stable and if an assertion fails the test can be re-run to provide the same output as described in~\cite{chance2021}.} and allowed us to see how different characteristic parameters affected the assertion checking (see Section~\ref{sim_results} for details). 
+The paths followed by each simulated vehicle (AV, VBP, OV - see Figure~\ref{fig:assertion_database_annotated}) were manually designed to follow a series of way-points. Using fixed vehicle paths facilitates evaluation of the assertion, as it made the test repeatable\footnote{Test repeatability is needed to ensure trust in the simulated assertion results and also to ensure software bugs are found and fixed efficiently. Repeatability relies on deterministic simulation code and hardware. If the \emph{simulation variance} is within tolerance then verification coverage results are stable and if an assertion fails the test can be re-run to provide the same output as described in~\cite{chance2021}.} and allowed us to see how different characteristic parameters affected the assertion checking (see Section~\ref{sim_results} for details). 
 
 
 CARLA generates dynamic state information about the simulation actors (vehicles), which is made available via an API, and Python scripts were written to transfer data from the simulator into the PostgreSQL database on a step-by-step basis.
