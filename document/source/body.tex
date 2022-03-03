@@ -300,53 +300,37 @@ The assertions to encode UKHC rules tend to fall into one of four principal type
 
 The four types of assertions are:
 \begin{itemize}
-    \item Invariant Condition:
-%    \begin{itemize}
-%        \item 
-A condition that must be satisfied at all time steps within the captured data trace.
-% (i.e.\ there is no specific assertion reference point, or the reference point is in effect the entire trace).
-%    \end{itemize}
-     \item Execution Condition:
-%    \begin{itemize}
-%        \item 
-A condition that must be satisfied at the assertion reference point.
-%    \end{itemize}
-    \item Pre-condition: %\\
-    A spatio-temporal phenomenon that must exist in the steps preceding the assertion reference point. Pre-conditions can be of one of two sub-types:
-    \begin{itemize}
-        \item \textit{Temporal}: A time (step or period) prior to the assertion reference point, within which a specified condition holds. This is the temporal component of the pre-condition. %\\
-        \textit{Example: an assertion for a vehicle at a highway exit lane may check that the vehicle's indicators have been set continuously in a preceding period (e.g.\ 5s) before it crosses the exit lane boundary (i.e.\ checking for unduly late or intermittent indications).}
-        \item \textit{Physical}: A physical (e.g.\ spatial or state) condition that must be satisfied at a specified time (or within a  time period) before the assertion reference point. This is the physical component of the overall pre-condition. %\\
-        \textit{Example: a highway exit assertion may check, as the AV passes the exit lane boundary, that the vehicle's indicators were set at the last highway exit sign before the exit (i.e.\ checking for omitted indications).}
-    \end{itemize}
-    \item Post-condition: %\\
-    A spatio-temporal phenomenon that must exist in the steps following the assertion reference point. Post-conditions can be of one of two sub-types:
-    \begin{itemize}
-        \item \textit{Temporal}: A time (period) after the assertion reference point, within which a specified condition holds. This is the temporal component of the post-condition. %\\
-        \textit{Example: a highway exit assertion may check that if a vehicle starts indicating to leave at the exit lane, then it does enter the exit lane within a given time period (i.e.\ checking for unnecessarily early indications).}
-        \item \textit{Physical}: A condition that must be satisfied within a specified time after the assertion reference point, essentially the physical component of the post-condition. %\\
-        \textit{Example: a highway exit  assertion may check that if a vehicle is indicating to leave at the exit lane, then it does in fact do so (i.e.\ checking for false or spurious indications).}
-    \end{itemize}
+    \item Invariant Condition: A condition that must be satisfied at all time steps within the captured data trace.
+    % (i.e.\ there is no specific assertion reference point, or the reference point is in effect the entire trace).
+    \item Execution Condition: A condition that must be satisfied at the assertion reference point.
+    \item Pre-condition: A spatio-temporal phenomenon that must exist in the steps preceding the assertion reference point. 
+    \item Post-condition: A spatio-temporal phenomenon that must exist in the steps following the assertion reference point.
+\end{itemize}
+
+Pre-conditions and post-conditions can be one of two sub-types:
+\begin{itemize}
+	\item \textit{Temporal}: A time period preceding or following the assertion reference point, within which a specified condition holds. This is the temporal component of the overall spatio-temporal condition. Examples include:
+	\begin{itemize}
+		\item \textit{Temporal pre-condition: as a vehicle crosses a highway exit lane boundary (reference point) an assertion checking that the vehicle's indicators have been set continuously in a preceding period (e.g.\ 5s) (i.e.\ checking for unduly late or intermittent indications).}
+		\item\textit{Temporal post-condition: a highway exit assertion may check that if a vehicle starts indicating to leave at the exit lane, then it does enter the exit lane within a given time period (i.e.\ checking for unnecessarily early indications).}
+	\end{itemize}
+	
+	\item \textit{Physical}: A physical (e.g.\ spatial or state) condition that must be satisfied at a specified time(s) before or after the assertion reference point. This is the physical component of the overall spatio-temporal condition. Examples include:
+	\begin{itemize}
+		\item \textit{Physical pre-condition}: a check that, as it passes the exit lane boundary, a vehicle's indicators were set at the last highway exit sign before the exit (i.e.\ checking for omitted indications).
+		\item \textit{Physical post-condition}: a check that if a vehicle is indicating to leave in the approach to an exit lane, then it does in fact leave the lane (i.e.\ this is a check for false or spurious indications).
+	\end{itemize} 
 \end{itemize}
 
 % this following paragraph has not yet been revised, but should be updated to reflect the changes in the previous few paragraphs - TBD by Chris
 \subsection{The importance of selecting relevant assertions} \label{assertion_triggers}
-Identifying which assertions are relevant in a given situation is critically important to manage the performance of assertion checking and to ensure the output is meaningful. 
-%
-%For example, two particular reasons for pre-selecting assertions are:
-%\begin{itemize}
-%\item 
-%
-For example, assertions related to highway driving are not applicable to urban or rural road driving.
-%, so need not be applied (and may generate inappropriate or confusing results) while an AV is on any such road.    
-%Some assertions may be applicable to mutually exclusive situations, and therefore should only be selected for their own  relevant scenarios if one wishes to avoid confusing reporting of assertion results. 
-Likewise, an assertion which checks that an AV is braking smoothly (for example when approaching a T-junction or traffic light indicating 'stop') will inherently fail in a situation where it is required to accelerate (for example when moving off after having been stationary). If assertions of this kind are not filtered out in scenarios where their checks are not pertinent to what may be identified as correct behaviour, they will generate nuisance failure results. 
+Identifying which assertions are relevant in a given situation is important to manage the performance of assertion checking and to ensure the output is meaningful. For example, assertions checking highway driving behaviour are not applicable in urban or rural road environments, and may cause confusion if applied in inappropriate contexts. 
+Similarly, different assertions checking for mutually exclusive conditions will be guaranteed to generate errors unless the inappropriate assertions are filtered out. For example, checking that an AV is braking smoothly will inherently fail in a situation where it is required to accelerate. If assertions of this kind are not selected correctly, they will generate nuisance failure results. 
 
-%\item 
-Where assertions are being applied in a more time-critical mode of operation - for example for simulation control (see Section \ref{Assertions_at_Sim_Time}), online warnings, or for self-adaptation (see Section \ref{assertions_at_run_time}) - the speed of their execution can be increased by filtering out those assertions that are not relevant to the situation concerned at a given time (step). If the type can be embedded in the assertion (for example, as a special field in its script), then the Assertion Checking process in the Testbench (see Figure~\ref{fig:SimulatorArchitecture}) can be set to check only assertions of a given type, which can improve runtime performance.
-%\end{itemize}
+Filtering assertions can also improve real-time performance of the simulator when they are being applied in a more time-critical mode of operation - for example  simulation control (see Section \ref{Assertions_at_Sim_Time}). If the assertion type can be embedded in its script (for example, in its header), then the Assertion Checking process in the Testbench (see Figure~\ref{fig:SimulatorArchitecture}) can be set to check only assertions of a given type.
 
-Discrimination or pre-selection of assertions can also be achieved by specifying `trigger conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant.\footnote{This is similar to typical practice in computer hardware verification \cite{tao2009}, where an assertion may take the form ``under $<$environment conditions$>$ if $<$trigger$>$ then $<$expectation$>$", where \textit{$<$environment conditions$>$} may be ``we are not in RESET mode" and \textit{$<$trigger$>$} may be ``we receive a request" and \textit{$<$expectation$>$}  may be ``an acknowledge signal is driven high sometime in the X next cycles".} 
+Discrimination or pre-selection of assertions can also be achieved by specifying `trigger conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant.
+\footnote{This is similar to typical practice in computer hardware verification \cite{tao2009}, where an assertion may take the form ``under $<$environment conditions$>$ if $<$trigger$>$ then $<$expectation$>$", where \textit{$<$environment conditions$>$} may be ``we are not in RESET mode" and \textit{$<$trigger$>$} may be ``we receive a request" and \textit{$<$expectation$>$}  may be ``an acknowledge signal is driven high sometime in the X next cycles".} 
 
 %Category codes for these types have been embedded in the header information of each assertion source code file. This allows the %simulator
 %test-bench system to select automatically which types of assertions to run, depending on the mode of operation of the Assertion Checking subsystem %during a simulation run 
@@ -355,13 +339,14 @@ Discrimination or pre-selection of assertions can also be achieved by specifying
 %system can opt to apply only the invariant and execution conditions, %leaving the pre- and post-condition assertions (which may have greater %processing overheads) to be applied retrospectively after the data log %has been fully captured. %simulation run has been completed.
 
 \subsection{Deriving machine-oriented logical assertions from human-oriented Highway Code rules}
-In this section we discuss how to develop assertions from the UKHC. We discuss issues of interpreting the natural language of the Code in a consistent manner, and two approaches to constructing logical assertions from the text. 
+Developing assertions from the UKHC - a natural language developed for human readers - requires that it be interpreted in a consistent manner; we present two approaches to constructing logical assertions from the text. 
 
 \subsubsection{Interpretation of Natural Language UKHC Rules} \label{interp_nat_lang_UKHC_rules}
 
 The UKHC comprises several hundred rules and guidelines, applicable to different categories of road user (including those on foot - pedestrians, cyclists, horse riders - as well as the usual cars, vans, or trucks and buses) and covering a number of different aspects of road use (including general driving advice, instructions for maintenance and repair of vehicles, and instructions for management of situations such as emergencies). The UKHC rules are written entirely for human readers, and seek to offer guidance in common sense terms that any reader should understand clearly. For example, two rules of central interest to this paper relate to overtaking manoeuvres:
+
 \begin{quote}
-    Rule 162
+    \underline{Rule 162}
     
     \textbf{Before overtaking} you should make sure
     \begin{itemize}
@@ -369,8 +354,8 @@ The UKHC comprises several hundred rules and guidelines, applicable to different
         \item road users are not beginning to overtake you
         \item there is a suitable gap in front of the road user you plan to overtake.
     \end{itemize}
-    
-    Rule 163
+
+    \underline{Rule 163}
     
     \textbf{Overtake only} when it is safe and legal to do so. You should
     \begin{itemize}
@@ -385,9 +370,11 @@ The UKHC comprises several hundred rules and guidelines, applicable to different
         \item give motorcyclists, cyclists and horse riders at least as much room as you would when overtaking a car (see Rules 211 to 215).
     \end{itemize}
 \end{quote}
-There are several problems to resolve in converting rules of this kind into structured logical assertions of a kind usable by computer:
+
+This rule illustrates several characteristics found frequently in UKHC rules.
+%There are several problems to resolve in converting rules of this kind into structured logical assertions of a kind usable by computer:
 \begin{enumerate}
-    \item As these examples show, the rules are expressed in a second-person tense, offering advice directly to the reader. To convert them into assertions that are in effect performed (measured) from an external third-person perspective requires changes of perspective that may transform the logic of the rule to some extent.
+    \item Rules are often expressed in a second-person tense, offering advice directly to the reader. Converting them into assertions that are in effect performed (measured) from an external third-person perspective requires changes of perspective that may transform the logic of the rule to some extent.
     \item The logical sense of the safety property expression (i.e. whether the rule expresses a pass or a fail condition) varies depending on the concept being expressed. Since the general guidance for direct conversion of rules is to keep as close as possible to the top level natural language, the logical sense of the assertions will follow suit. This contrasts with typical practice for assertions as used in conventional computer programming, where the standard practice is to encode an assertion such that a pass condition permits a program to continue running normally, and a fail causes an exception to be triggered.
     \item Being written at a natural human-readable level of abstraction, the rules and guidelines rely greatly on the reader having sufficient background knowledge and capability to resolve their generalized constraints to the point where actions can be selected that satisfy them.
     
