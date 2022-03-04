@@ -354,7 +354,7 @@ The UKHC comprises several hundred rules and guidelines, applicable to different
         \item road users are not beginning to overtake you
         \item there is a suitable gap in front of the road user you plan to overtake.
     \end{itemize}
-
+	\vspace{8mm}	% This vspace pushes the Rule 163 title onto the next page alongside the rule text - looks neater. Modify or delete as needed if the text gets reformatted.
     \underline{Rule 163}
     
     \textbf{Overtake only} when it is safe and legal to do so. You should
@@ -371,50 +371,66 @@ The UKHC comprises several hundred rules and guidelines, applicable to different
     \end{itemize}
 \end{quote}
 
-This rule illustrates several characteristics found frequently in UKHC rules.
-%There are several problems to resolve in converting rules of this kind into structured logical assertions of a kind usable by computer:
+This example illustrates several characteristics found frequently in UKHC rules:
 \begin{enumerate}
-    \item Rules are often expressed in a second-person tense, offering advice directly to the reader. Converting them into assertions that are in effect performed (measured) from an external third-person perspective requires changes of perspective that may transform the logic of the rule to some extent.
-    \item The logical sense of the safety property expression (i.e. whether the rule expresses a pass or a fail condition) varies depending on the concept being expressed. Since the general guidance for direct conversion of rules is to keep as close as possible to the top level natural language, the logical sense of the assertions will follow suit. This contrasts with typical practice for assertions as used in conventional computer programming, where the standard practice is to encode an assertion such that a pass condition permits a program to continue running normally, and a fail causes an exception to be triggered.
+    \item Rules are often expressed in a second-person tense, offering advice directly to the reader. Converting them into assertions that are in effect performed (measured) from an external third-person perspective requires changes that may transform the logic of the rule to some extent.
+    
+    \item The logical sense of the safety property expression (i.e. whether the rule expresses a pass or a fail condition) varies depending on the concept being expressed. Since the general guidance for direct conversion of rules is to keep as close as possible to the top level natural language, the logical sense of the assertions will follow suit. This contrasts with typical practice for their use in conventional computer programming, where the standard practice is to encode an assertion such that a pass condition permits a program to continue running normally, and a fail causes an exception to be triggered.
+    
     \item Being written at a natural human-readable level of abstraction, the rules and guidelines rely greatly on the reader having sufficient background knowledge and capability to resolve their generalized constraints to the point where actions can be selected that satisfy them.
     
     This abstraction also interferes with the ability to validate the assertions by any means other than manual design review; formalization of the assertions may require all the hidden complexity to be reintroduced.
-    \item Many clauses of UKHC rules offer advice to drivers about their internal decision making, often in the form of constraints. The third bullet-item of Rule 163 is a typical example. These clauses cannot be measured externally without some form of communication by the driving agent (for example, an AV) of the results of its decision-making processes. To date we have not attempted to establish assertions of this kind, as there are no standards or conventions by which an AV might explain and communicate its actions. However, we note that this is an interesting direction of future work (see Section \ref{future_work}). 
+    
+    \item Many clauses of UKHC rules offer advice to drivers about their internal decision making, often in the form of constraints. The third bullet-item of Rule 163 is a typical example. These clauses cannot be measured externally without some form of communication by the driving agent (for example, an AV) of the results of its decision-making processes. To date we have not attempted to establish assertions of this kind, as there are no standards or conventions by which an AV might explain and communicate its actions. However, we note that this is an interesting direction of future work (see Section \ref{discussion}). 
 \end{enumerate}
 
-Two methods have evolved for developing assertions from the UKHC: direct translation into logic, and the use of modelling. These are discussed in the next subsections.
+Two methods have emerged for developing assertions from the UKHC: direct translation into logic, and the use of modelling. These are discussed in the next subsections.
 
 \subsubsection{Method 1: Direct translation into logic} \label{direct_translation}
 
-The basic approach involves simply converting the natural language text into a logical predicate that captures the entities described and their relationship to one another, by the following steps: 
+The basic approach involves simply converting the natural language text into a logical predicate. We developed a procedure containing the following steps: 
 \begin{enumerate}
-    \item Identify and extract the natural language clause, for which an assertion is to be developed. A separate assertion will be required for every distinct subject-verb-object clause in the text (meaning that a given UKHC rule could easily require on the order of 5-10 separate assertions to be fully covered). Note that the clause must define a \emph{testable} requirement - some UKHC rules are (at least at present) not testable. Refer to Section \ref{discussion} for further discussion of the testability of UKHC rules.
-    \item Write a natural language hypothesis that reflects the safety property intended by the UKHC rule. One useful approach to doing this is to phrase the natural language hypothesis interrogatively, i.e. as a question. Many rules are written imperatively, as orders or advice for road users to follow. The hypothesis is in effect an interrogative statement, asking whether or not a condition is true (this condition being the safety property to be satisfied). 
-    \item Write a logical statement that reflects as closely as possible the relationships between concepts in natural language of the rule (albeit that changes of perspective may need to be applied). Define each high-level concept as a predicate and develop expressions for each in terms of variables in captured or derived data, or in terms of functions/ predicates of the PostGIS library. The concept-predicates will be implemented as the library functions discussed in Section \ref{generic_sim_system}.% and Figure \ref{fig:dbms_deployment}.
-    \item Verify the correctness of the above steps by manual design review. (As previously mentioned, this is pragmatically the only method available.)
+    \item \emph{Identify and extract a given UKHC rule clause.} 
+    \begin{itemize}
+    	\item A separate assertion will be required for every distinct subject-verb-object clause in the text; a given UKHC rule could easily require on the order of 5-10 separate assertions to be fully covered;
+    	\item the clause must define a \emph{testable} requirement - some UKHC rules are (at least at present) not testable. [We discuss this issue further in Section \ref{discussion}.]
+    \end{itemize} 
+    \item \emph{Write a natural language hypothesis that captures the safety property of the rule.} 
+    \begin{itemize}
+    	\item A useful way to do this is to phrase the natural language hypothesis interrogatively, i.e. as a question.
+    	\item Many rules are written imperatively, as orders or advice for road users to follow. The associated hypothesis is straightforward: were the conditions of the instruction(s) satisfied?
+    \end{itemize}
+      
+    \item \emph{Write a logical statement that reflects accurately the assertion hypothesis}
+    \begin{itemize}
+    	\item Note that the perspective of the hypothesis may need to be transformed to a 'third-person' (external) point of view.
+    	\item Write the assertion logic as closely as possible to the language of the assertion hypothesis, keeping the same high-level terms (These can then be elaborated and evaluated as stored procedures in the database management system, as discussed in Section \ref{generic_sim_system}) 
+    \end{itemize}
+   
+    \item \emph{Verify assertion logic correctness by manual design review.} 
+    \begin{itemize}
+    	\item As previously mentioned, pragmatically this is the only method available. But if the assertion logic is directly comparable to the  natural language of the assertion hypothesis, this step should be reasonably self-evident.
+    \end{itemize}
+    
 \end{enumerate}
 
-As an example, consider the following extract from UKHC Rule 258:
-\\
+As an example of the direct translation method, consider the following clause from UKHC Rule 258. The procedure could be applied as follows:
+
 \begin{itemize}
-    \item \underline{UKHC rule (Imperative instruction or advice):}\\
-        The natural language statement is as follows:
-        \vspace{2mm}
+    \item \emph{UKHC rule clause:}
+	    \begin{quote}
+			\textit{\textbf{Red flashing lights.} If red lights flash on a signal and a red `X' is showing, you MUST NOT drive in the lane shown as closed beyond the signal.}
+		\end{quote}
+    \item \emph{Assertion Hypothesis:}
         \begin{quote}
-            \textit{\textbf{Rule 258: Red flashing lights.} If red lights flash on a signal and a red `X' is showing, you MUST NOT drive in the lane shown as closed beyond the signal.}\\
+        	The hypothesis question is: \textit{Does the AV pass a `Lane Closed’ overhead gantry signal?}
         \end{quote}
-        \vspace{2mm}
-    \item \underline{Assertion Hypothesis (Interrogative question):}\\
-        The assertion hypothesis (test condition) embodied in the rule can be captured as the following question:
-        % \vspace{2mm}
-        \begin{quote}
-        	\textit{Does the AV pass a `Lane Closed’ overhead gantry signal?}
-        \end{quote}
-        \vspace{2mm}
-        
-    \item \underline{Assertion Statement (Predicate logic):}\\
-        Since the UKHC rule applies to roads with an overhead sign gantry, such as Automatic Traffic Management (ATM) motorways, the assertion is an Execution Condition that need only be applied when the AV is on such a road. The assertion question concept of passing a sign then becomes a test of whether the AV bounding-box geometry overlaps with a boundary line between the posts of the overhead gantry object, which must lie across the roadway. This could be converted into the following essential SQL query: \footnote{It should be noted the skeleton SQL schemas presented in this section are illustrative examples only and have not yet been tested experimentally. The experimental results presented in section \ref{Experimental_scenario} are based on a clause from UKHC Rule 162 on overtaking.}\\
-    
+    \item \emph{Assertion Statement (Predicate logic):}
+         The assertion question concept of passing a sign then becomes a test of whether the AV bounding-box geometry overlaps with a boundary line between the posts of an overhead gantry object, which must lie across the roadway.
+               
+         This can be converted into an SQL query (SELECT statement) returning all time steps where the bounding box shape of a vehicle overlaps the line between the posts of an overhead gantry and the overhead sign of that gantry reads "Lane Closed" for the road lane occupied by the vehicle.      
+         \footnote{Note: this skeleton SQL schema is an illustrative example only and was not tested experimentally. The experimental results presented in section \ref{Experimental_scenario} are based on a clause from UKHC Rule 162 on overtaking.}\\
+\scriptsize    %scriptsize gets all the SQL code into a column width
 \begin{lstlisting}[
            language=SQL,
            showspaces=false,
@@ -423,67 +439,42 @@ As an example, consider the following extract from UKHC Rule 258:
            numberstyle=\tiny,
            commentstyle=\color{gray}
         ]
-SELECT
-( time,
-  ST_Overlap(
-    AV.geom::geography,
-    CurrentGantryLine::geography)
-) ASC LIMIT 1
-FROM simulation_data
+SELECT (time, ST_Overlap(AV.geom::geography,
+    	      GantryLine::geography) ) ASC LIMIT 1
+FROM simulation_data AS sd
 WHERE
-  simulation_data.agent_id
-    = /* the AV's ID */  AND
-  CurrentRoadType(agent_id)
-    = 'ATM_MOTORWAY'     AND
-  CurrentLaneStatus(agent_id)
-    = 'LANE_CLOSED'      AND
-  CurrentGantryLine
-    = FindCurrentGantryLine(agent_id);
-\end{lstlisting} 
-    
-The key concepts of the assertion question become predicates in the assertion logic, and will be implemented as SQL procedural functions in the PostgreSQL database (refer back to Section \ref{generic_sim_system}). %and Figure \ref{fig:dbms_deployment}). 
-It should be noted that there are library functions available to generate (or retrieve) the boundary line of the overhead gantry immediately ahead of the current position of the AV. A skeleton SQL schema to create such a function could be: 
-
-    \begin{lstlisting}[
-           language=SQL,
-           showspaces=false,
-           basicstyle=\ttfamily,
-           numbers=none,
-           numberstyle=\tiny,
-           commentstyle=\color{gray}
-        ]
-CREATE FUNCTION
-  FindCurrentGantryLine(INT agent_id) 
-RETURNS 
-  geometry CurrentGantryLine
-  AS $$
-    SELECT 
-    ST_Distance(agent_id::geography, 
-        GantryLines::geography)
-            ASC LIMIT 1
-FROM simulation_data
-WHERE gantry line location is ahead 
-                    of the vehicle
-$$ LANGUAGE SQL;
+  sd.agent_id = /* the AV's ID */ AND
+  RoadType(sd.agent_id) = 'ATM_MOTORWAY' AND
+  LaneStatus(sd.agent_id) = 'LANE_CLOSED' AND
+  GantryLine = FindNextGantryLine(agent_id);
 \end{lstlisting}
-    We anticipate that typically assertion queries will make use of PostGIS relational operators and functions for object geometries, whereas the library functions will typically use PostGIS geometry constructors to set up the geometric objects for the assertions as variables derived from the captured simulation data (as discussed in Section \ref{generic_sim_system}). A hierarchical organization of queries and procedural functions (from Assertions to CAV DBMS library functions to PostGIS functions to captured simulation data) emerges from this approach.
-\end{itemize}
+\normalsize %normalsize resets the font size
+Key concepts of the assertion (for example, boundary lines of overhead gantry signals) become predicates in the assertion logic, and can be implemented as SQL procedural functions stored in the PostgreSQL database (refer back to Section \ref{generic_sim_system}).
 
+We anticipate that typically assertion queries will make use of PostGIS relational operators and functions for object geometries, whereas the library functions will typically use PostGIS geometry constructors to set up the geometric objects for the assertions as variables derived from the captured simulation data (as discussed in Section \ref{generic_sim_system}). A hierarchical organization of queries and procedural functions (from Assertions to CAV DBMS library functions to PostGIS functions to captured simulation data) emerges from this approach.\\
+\end{itemize}
 
 \subsubsection{Method 2: Model-based Analysis} \label{model_based_analysis}
 
-While many UKHC rules can be translated directly into logical conditions or constraints expressible as simple Boolean predicates, some describe more complex situations that may require more explicit modelling to identify the logical basis of the assertion hypothesis. We require no particular constraints on the modelling methodology used, except that a well formed logical expression deriving the essential parameter of the assertion hypothesis from the captured data stream should be produced as the result.
+While many UKHC rules can be translated directly into logical conditions or constraints expressible as simple Boolean predicates, some describe more complex situations that may require more explicit modelling to identify the assertion hypothesis and logical expression. We require no particular constraints on the modelling methodology used, except that it needs to produce a well formed logical expression deriving the essential parameter of the assertion hypothesis from the captured data trace of the simulation.
 
-As a worked example, we present an assertion we developed from Rule 162, which we applied experimentally as discussed later in Section \ref{Experimental_scenario}. The particular clause within this rule that we studied is:
-\begin{quote}
-    \textit{Before overtaking you should make sure the road is sufficiently clear ahead.}
-\end{quote}
-While this seems an apparently simple, innocuous requirement, the natural language actually encapsulates a complex judgement that a vehicle driver must make, at the moment the overtake manoeuvre commences. The driver must judge whether the distance between their vehicle and any oncoming vehicle in the adjacent road lane is sufficient to allow the manoeuvre to be completed safely, which is contingent on the (relative) speeds of the driver's vehicle (the AV), the VBP and the OV, the line-of-sight distances to limits of view or obscuring obstacles such as bends in the road, blind summits/dips, or road-side buildings, as well as the style of manoeuvre that the driver intends to perform - an `aggressive' overtake manoeuvre can probably be completed in less distance than a `relaxed' one~\cite{decastro2018counterexample, tkachenko2018line}.\footnote{The internal plans and intentions of an AV may not be available to the external validation system, so the definition of the assertions may need to make default assumptions about its intentions, or make a `worst case' test that checks against the most conservative case that can be assumed. For example, using the case of Overtaking, the assertion could assume that the AV was making a `relaxed' overtake manoeuvre, in which case an assertion might register a safety violation for anything less than large separation distances between the AV and oncoming vehicle at the start of the manoeuvre, even though the manoeuvre could probably be completed safely if a more urgent profile were performed.} 
+As a worked example, we present an assertion we developed from Rule 162, which we applied experimentally as discussed later in Section \ref{Experimental_scenario}.
+The first two steps of this method are the same as for Method 1: identify the UKHC clause and the associated assertion hypothesis:
+\begin{itemize}
+	\item \emph{UKHC rule clause:}
+		\begin{quote}
+			\textit{Before overtaking you should make sure the road is sufficiently clear ahead.}
+		\end{quote}
+	\item \emph{Assertion Hypothesis:}
+	\begin{quote}
+		The hypothesis question is: \textit{Is the distance between the AV and OV sufficiently large to complete the overtake manoeuvre, at the moment the AV starts it (i.e.\ as it crosses the road centre line into the overtaking lane)?}
+	\end{quote}
+\end{itemize}
+While the UKHC rule clause seems an apparently simple, innocuous requirement, the natural language actually encapsulates a complex judgement that a vehicle driver must make at the moment they begin an overtake manoeuvre. The driver must judge whether the distance between their vehicle and any oncoming vehicle in the adjacent road lane is sufficient to allow the manoeuvre to be completed safely. This is contingent on the (relative) speeds of the driver's vehicle (the AV), the VBP and the OV, the line-of-sight distances to limits of view or obscuring obstacles such as bends in the road, blind summits/dips, or road-side buildings, as well as the style of manoeuvre that the driver intends to perform - an `aggressive' overtake manoeuvre can probably be completed in less distance than a `relaxed' one~\cite{decastro2018counterexample, tkachenko2018line}.\footnote{The internal plans and intentions of an AV may not be available to the external validation system, so the definition of the assertions may need to make default assumptions about its intentions, or make a `worst case' test that checks against the most conservative case that can be assumed. For example, using the case of Overtaking, the assertion could assume that the AV was making a `relaxed' overtake manoeuvre, in which case an assertion might register a safety violation for anything less than large separation distances between the AV and oncoming vehicle at the start of the manoeuvre, even though the manoeuvre could probably be completed safely if a more urgent profile were performed.}
 
-In order to produce a measurable assertion it was necessary to develop a dynamic model of the overtaking manoeuvre to derive formulae for the road distance consumed by performing various stages of the manoeuvre. 
-%
-The model divides the whole overtaking manoeuvre into three distinct phases: Pulling Out (into the oncoming lane), Passing the VBP, and Cutting In (to the original running lane), and defines four time points (way points) at which the distances covered by the vehicles involved are measured. Ultimately, a formula was developed for the overall distance required to complete the manoeuvre without violating safety constraints (such as impingement upon vehicle thinking or braking distance %danger spaces 
-(see Figure~\ref{fig:assertion_database_annotated}) or clearance distances around the VBP). 
+There is a complex dynamic/kinematic relationship between all the elements of this assertion: the vehicles, their locations and relative velocities, that is quantitative in nature and hence an algebraic formula must be developed that cannot be derived from the predicate ('true' or 'false') sentence that expresses the assertion hypothesis. 
+
+Therefore, in the case of this Rule 162 example, it was necessary to develop a dynamical/kinematic model of the overtaking manoeuvre in order to produce an executable assertion. This was done by analysing the overtaking manoeuvre in various stages and deriving formulae for distances covered by the AV as a function of the relative position and velocity of the other actors in the scenario (VBP and OV). The model divides the whole overtaking manoeuvre into three distinct phases: Pulling Out (into the oncoming lane), Passing the VBP, and Cutting In (to the original running lane), and defines four time points (way points) at which the distances covered by the vehicles involved are measured. Ultimately, a formula was developed for the overall distance required to complete the manoeuvre without violating safety constraints (such as impingement upon vehicle thinking or braking distance (see Figure~\ref{fig:assertion_database_annotated}) or clearance distances around the VBP). 
 
 A diagram of the full analysis model, and the derivation of the formula for Safe Distance Ahead, is provided in %Figure \ref{fig:overtaking_analysis_diag} in 
 Appendix A. For the purposes of describing the general approach we describe the analysis of one of the way points as a typical example. 
