@@ -25,24 +25,26 @@ Field testing, often the traditional approach to validating systems in their tar
 %
 % can also lead to infeasible testing time and resource usage even for simulators. So, care must be taken to ensure simulators are used efficiently and effectively, obtaining as much validation information as possible and getting to the important test conditions that provide key information about the safety properties of a system as fast as possible, rather than by `brute force' approaches such as statistical testing.
 
-We specifically focus on test methodologies that incorporate the classification, measurement and evaluation of a system's situated behaviour. One such approach is based on the specification of situated behavioural properties as \emph{assertions}, logical expressions that can be applied 
+We specifically focus on methodologies that incorporate the classification, measurement and evaluation of a system's situated behaviour. One such approach is based on the specification of situated behavioural properties as \emph{assertions}, logical expressions that can be applied 
 %at some or even all steps of a simulation session\todo[inline]{or at runtime, so I'd take this out from ``at some'' up to here} 
 to monitor the behaviour of the system under test and to report any property violations. 
 %
-These properties %(oracles) 
-relate to the observable driving behaviour of road vehicles. They characterise what any vehicle operator, autonomous or human, %a vehicle
+These properties relate to the observable driving behaviour of road vehicles. They characterise what any vehicle operator, autonomous or human, %a vehicle
 %
 % \todo[inline]{really any vehicle, i.e.\ these could also be part of a driving simulator to be used by learner drivers} 
 %
 may be expected or legally required to achieve on public roads. 
 %
-An oracle is defined here as a process to determine the outcome of a test and, in the case of AV safety validation, this test is the process to determine compliance with the ``rules of the road'' or the legal driving codes for human drivers.
+An oracle is defined as a process or mechanism to check the output of a test~\cite{howden1978theoretical}
+and, in the case of AV safety validation, this test is the process to determine compliance with the 
+% ``rules of the road'' or the 
+legal driving codes for human drivers.
 %
 % GC remove
 % The class of oracles we are investigating is the ``rules of the road'' legal driving codes for human drivers, which exist in most countries. 
 %
 % In this paper we use the UK Highway Code~\cite{highwayCode} (UKHC), as a working example.
-In this paper we use the UK Highway Code~\cite{highwayCode} (UKHC), as exemplar diving conduct and thus can be used to create validation assertions for properties such as safety and liveness.
+We use the UK Highway Code~\cite{highwayCode} (UKHC), as exemplar diving conduct and thus can be used to create validation assertions for properties such as safety and mission performance. %liveness.
 
 % GC HAVE COMMENTED THIS OUT:
 % The UKHC is a long established document, about a century old at time of writing\footnote{\url{https://en.wikipedia.org/wiki/The\_Highway\_Code\#History}}, and has been subject to continual revision and evolution of the set of rules contained therein. We consider the UKHC to be a mature and valid reference source for a safe driving code of practice. Publicly available data\footnote{\url{https://en.wikipedia.org/wiki/Reported\_Road\_Casualties\_Great\_Britain}} indicates that despite a significant increase in road users, UK road deaths have been decreasing monotonically since 1966. While there have been many causal factors contributing this trend (e.g.\ seat belts, airbags etc.), we argue that the advice given in the UKHC must have at least some partial contribution to this trend. \todo[inline]{Leave out? Had any advice given at any particular time been confusing or contradictory, then it may have led to increases in accident rates, or would have been detected and corrected over time by UK motoring institutions such as driving instructors, driving test agencies, etc.} Since much of the content of the UKHC has been largely stable for many years, we argue that this is because the advice given is sound, and hence we conclude that it can be a valid reference for constructing safety validation assertions.\todo[inline]{Why only safety? Liveness is also important. Or not?}
@@ -50,39 +52,44 @@ In this paper we use the UK Highway Code~\cite{highwayCode} (UKHC), as exemplar 
 % GC ADDED THIS
 % The UKHC is a mature reference source for a driving code of practice. It comprises a set of driving rules that are in effect an oracle for correct behaviour on the road and thus can be used to create validation assertions for properties such as safety and liveness. 
 %
-We demonstrate how to systematically transform these rules into assertions. To achieve this, the driving rules must be translated from human-readable format to machine-readable expressions that can be automatically monitored during simulation-based testing and also during operation. Although we select the UKHC as the reference of our oracle for pragmatic reasons, it could equally be replaced with other metrics pertaining to functionality or even social convention. We review some related work in Section~\ref{Related_work}, in which other potential sources for oracles have been identified.
+We demonstrate how to systematically transform these rules into assertions. To achieve this, the driving rules must be translated from human-readable format to machine-readable expressions that can be automatically monitored. % during simulation-based testing and also during operation. 
+Although we select the UKHC as the reference of our oracle for pragmatic reasons, it could equally be replaced with other metrics pertaining to functionality or even social convention. We review some related work in Section~\ref{Related_work}, in which other potential sources for assertion-based oracles have been identified.
 %
 %\todo[inline]{Say what we do and that we do it on two examples} 
 %
 
 % GC ADDED THIS
 %
-We illustrate the approach with two examples of assertion checking lane changes during an overtaking scenario. We adopt the terms scene, scenario and situation from~\cite{Ulbrich2015} throughout this paper. 
-A geospatial information system in an SQL database has been developed for validation of the assertions and also for performance assessment of both the simulation testbench and the operational monitoring system. Note that the same assertions and assertion checkers can be used for either case.
+We illustrate the %approach
+assertion-based oracle with two examples of %assertion checking
+lane changing during an overtaking scenario. We adopt the terms scene, scenario and situation from~\cite{Ulbrich2015} throughout this paper. 
+A geospatial information system in an SQL database was used for validation of the assertions and also for performance assessment of both simulation and the operational monitoring system. Note that the same assertions and assertion checkers can be used for either case.
 %
 
 
 %\subsection{Safety argument}
 % GC added sentence on UK law commission
-Safety assurance is emerging as a legislative practice and an essential aspect of AV verification and certification, such as recommendations set out in the recent UK Law commission report which specifically mentions evaluation of AV behaviour against the rules of the road~\cite{law_commission_UK}. 
+Safety assurance is emerging as a legislative practice and an essential aspect of AV verification and certification, e.g. see recommendations set out in the recent UK Law commission report which specifically mentions evaluation of AV behaviour against the rules of the road~\cite{law_commission_UK}. 
 %
-Assertion monitoring may be used as evidence to show functional safety compliance against national regulations or codes of practice, the general safety argument being that if an AV satisfies all the rules that may be legally expected of a human driver, then its behaviour is comparable to that of human drivers and therefore should be acceptable, or at least legal. It should be noted that acceptance may therefore be somewhat context-specific, against the code of practice for each country, and what passes under one legal code may not be acceptable in another. We anticipate that there may need to be extensive harmonization of national driving codes in order to avoid having to re-certify vehicles for each new national market and improve the cost-effectiveness of AV certification processes, but this is outside the scope of this paper.
+Assertion monitoring may be used as evidence to show functional safety compliance against national regulations or codes of practice, the general safety argument being that if an AV satisfies all the rules that may be legally expected of a human driver, then its behaviour is comparable to that of human drivers and therefore should be acceptable, or at least legal. It should be noted that acceptance may therefore be somewhat context-specific, against the code of practice for each country, and what passes under one legal code may not be acceptable in another. 
+% 
+We anticipate that there may need to be extensive harmonization of national driving codes to avoid having to re-certify vehicles for each new national market and improve the cost-effectiveness of certification processes, but this is outside of the paper's scope.
 
 The need to measure the compliance of an AV's behaviour with legal codes of practice may go beyond the initial design validation or certification stage as performed in simulation and (to some extent) road tests. It may become necessary to measure such compliance during vehicle operation, for example to establish that the vehicle's behaviour is correct (or otherwise) in the event of an incident that requires subsequent investigation. If an AV is involved in an incident, but it can be shown by assertion-based assessment during operation that it was adhering to all relevant legal standards of driving behaviour, then this may have an impact on any liability or insurance-based compensation that may be due as a consequence of the incident. A detailed discussion of the rationale and requirements for explainability~\cite{rosenfeld2019explainability} of AV decision-making in post-incident investigation is beyond the scope of this paper.
 
-\todo[inline]{find some literature?}
-\todo[inline, color=green]{Chris do you want to expand this point or remove it?}
-\todo[inline]{This is where we ought to say how the paper is structured}
-\todo[inline, color=green]{Have brought paper structure up to this point, added subsection}
+% \todo[inline]{find some literature?}
+% \todo[inline, color=green]{Chris do you want to expand this point or remove it?}
+% \todo[inline]{This is where we ought to say how the paper is structured}
+% \todo[inline, color=green]{Have brought paper structure up to this point, added subsection}
 
 
 %\todo[inline, color=green]{Have brought contribution down here, added subsection}
 %\subsection{Contribution}
 This paper makes the following contributions. We present a novel technique for deriving, systematically formalising and encoding assertions from the UKHC and applying them in two modes: (i) within a Geospatial Information System (GIS) database linked to a vehicle simulator, and (ii) within a real-time monitoring system during vehicle operation.
 %
-In the first mode of use, we encode the UKHC assertions~\cite{highwayCode} as SQL queries and run them within a PostgreSQL database with a PostGIS extension.\footnote{Refer to \url{https://www.postgresql.org/} and \url{http://postgis.net}.} In this mode, the assertions can make use of any data stream available, passed into the database records.
+In the first mode of use, we encode the UKHC assertions as SQL queries and run them within a PostgreSQL database with a PostGIS extension.\footnote{Refer to \url{https://www.postgresql.org/} and \url{http://postgis.net}.} In this mode, the assertions can make use of any data stream available, passed into the database records.
 %
-In the second mode of use, the principal requirement is that data about the AV, other road users and the adjacent environment wrt.\ test vehicle is sufficient to evaluate the assertions during operation. The same PostgreSQL-based database as used in the simulator can therefore be installed as embedded software, but is receiving its data directly from vehicle sensors instead of a simulator. This captured data need not be of a high fidelity, but rather should have ``just enough'' detail~\cite{Koopman2018} to allow the assertions to be evaluated with good confidence.
+In the second mode of use, the principal requirement is that data about the AV, other road users and the adjacent environment wrt.\ the test vehicle is sufficient to evaluate the assertions during operation. The same PostgreSQL-based database as used in the simulator can therefore be installed as embedded software, but is receiving its data directly from vehicle sensors instead of a simulator. This data stream need not be of a high fidelity, but rather should have ``just enough'' detail~\cite{Koopman2018} to allow the assertions to be evaluated with good confidence.
 
 
 
@@ -103,9 +110,9 @@ In the following, related work is reviewed in Section~\ref{Related_work}. Sectio
 % GC MOVED THIS TO INTO
 % There has been some recent work to make autonomous vehicles abide by highway traffic laws by formalizing the rules in a language that autonomous systems can understand.\todo[inline]{This sentence fits better into our introduction? This is challenging not only because the traffic rules are often vague and conflicting, but also due to rule changes and the need for common sense knowledge.} 
 
-Challenges exist to formalise human-defined traffic rules that can then be used as an oracle to verify the correctness of a vehicle's observed behaviour. 
+Challenges exist to formalise human-defined traffic rules that can then be used as the ground truth for an oracle to verify the correctness of a vehicle's behaviour. 
 %
-Prakken et al.~\cite{lawabidingstudy} discusses some of these issues and argue in favour of the need for formalisation of traffic rules. Rizaldi et al.~\cite{acountability} use the formalisation as a means to resolve accountability issues in an event of an accident. To the best of our knowledge, most work~\cite{acountability, esterle, rizaldi, alves} advocates the use of Higher-Order Logic (HOL) to codify a wide range of traffic rules into a formal language. The authors of~\cite{acountability, esterle, rizaldi, alves} use Linear Temporal Logics (LTL) to construct a set of equations for various manoeuvres to ensure road safety. To construct these equations, a formal model of each lane and lane marking is required. The authors of~\cite{rizaldi} used \textit{lanelets}~\cite{lanelets2014} to build these lane models. While many works use the German or Vienna convention~\cite{vienna} on road traffic, in~\cite{alves} a road junction rule from the UKHC~\cite{highwayCode} is used to demonstrate their methodology. Some researchers~\cite{sqlhuang, sqlgueffaz} have used temporal logic queries to formulate the HOL, using a variety of query languages like SQL, OQL, RQL, etc.  
+Prakken et al.~\cite{lawabidingstudy} discusses some of these issues and argue in favour of the need for formalisation of traffic rules. Rizaldi et al.~\cite{acountability} use the formalisation as a means to resolve accountability issues in an event of an accident. To the best of our knowledge, most work~\cite{acountability, esterle, rizaldi, alves} advocates the use of Higher-Order Logic (HOL) to codify a wide range of traffic rules into a formal language. The authors of~\cite{acountability, esterle, rizaldi, alves} use Linear Temporal Logics (LTL) to construct a set of equations for various manoeuvres to ensure road safety. To construct these equations, a formal model of each lane and lane marking is required. The authors of~\cite{rizaldi} used \textit{lanelets}~\cite{lanelets2014} to build these lane models. While many works use the German or Vienna convention~\cite{vienna} on road traffic, in~\cite{alves} a road junction rule from the UKHC is used to demonstrate their methodology. Some researchers~\cite{sqlhuang, sqlgueffaz} have used temporal logic queries to formulate the HOL, using a variety of query languages like SQL, OQL, RQL, etc.  
 
 DeCastro et al.~\cite{decastro2018counterexample} guide an agent to learn probabilistic models, via a learning-based algorithm, constrained by safety contracts which are in essence traffic rules. However, the major challenges for using learning algorithms are completeness and verification of the solutions. Such systems are essentially a black box, and it is extremely difficult to validate their correctness. Another major problem is what reward or cost function should be used to train the model. One approach can be to have an oracle providing rewards for correct behaviour, but this leads back to developing traditional assertion-based rules using the relevant highway code.
 
@@ -113,10 +120,10 @@ The Responsibility Sensitive Safety (RSS) framework developed by MobilEye~\cite{
 
 All the works discussed earlier are limited to detecting the occurrence of some undesirable events while driving. However, such events are not equal in severity~\cite{sinha}. Myers et al.~\cite{myers} propose a framework to access autonomous driving systems using two types of scoring rules: prescriptive and risk-based. To the best of our understanding, the prescriptive scoring mechanism captures the capability of the AV to follow traffic rules while the risk-based scoring system assesses the behaviour of the AV in rare events where undesirable outcomes are unavoidable, and it is expected of the AV to exhibit behaviour that would minimise the risk. Developing a generic system to score risks in different scenarios is challenging and requires a separate study of its own. Therefore, risk-based assessment is not part of this paper.
 
-\todo[inline]{Conclude with how our work differs and contributes to the existing body of knowledge.}
-\todo[inline, color=green]{Have added lines below}
+% \todo[inline]{Conclude with how our work differs and contributes to the existing body of knowledge.}
+% \todo[inline, color=green]{Have added lines below}
 % GC ADDED THIS - PLEASE REVISE!
-Our approach uses SQL to build the assertions. SQL is highly expressive~\cite{sqllibkin} and can be integrated with powerful geospatial object handling technology (PostGIS). This provides a natural environment to write logical checks that can be performed on static and dynamic objects in a geographical context. 
+We use SQL to build the assertions, which is highly expressive~\cite{sqllibkin} and can be integrated with powerful geospatial object handling technology (PostGIS). This provides a natural environment to write logical checks that can be performed on static and dynamic objects in a geographical context. 
 %
 % Encoding every rule by hand is, however, an extensive and potentially error-prone task.
 
@@ -307,15 +314,15 @@ The four types of assertions are:
     \item Post-condition: A spatio-temporal phenomenon that must exist in the steps following the assertion reference point.
 \end{itemize}
 
-Pre-conditions and post-conditions can be one of two sub-types:
+Pre- and post-conditions can be one of two sub-types:
 \begin{itemize}
-	\item \textit{Temporal}: A time period preceding or following the assertion reference point, within which a specified condition holds. This is the temporal component of the overall spatio-temporal condition. Examples include:
+	\item \textit{Temporal}: A time period preceding or following the assertion reference point, within which a specified condition holds. This is the temporal component of the overall spatio-temporal condition, e.g.:%. Examples include:
 	\begin{itemize}
 		\item \textit{Temporal pre-condition: as a vehicle crosses a highway exit lane boundary (reference point) an assertion checking that the vehicle's indicators have been set continuously in a preceding period (e.g.\ 5s) (i.e.\ checking for unduly late or intermittent indications).}
 		\item\textit{Temporal post-condition: a highway exit assertion may check that if a vehicle starts indicating to leave at the exit lane, then it does enter the exit lane within a given time period (i.e.\ checking for unnecessarily early indications).}
 	\end{itemize}
 	
-	\item \textit{Physical}: A physical (e.g.\ spatial or state) condition that must be satisfied at a specified time(s) before or after the assertion reference point. This is the physical component of the overall spatio-temporal condition. Examples include:
+	\item \textit{Physical}: A physical (e.g.\ spatial or state) condition that must be satisfied at a specified time(s) before or after the assertion reference point. This is the physical component of the overall spatio-temporal condition, e.g.:%. Examples include:
 	\begin{itemize}
 		\item \textit{Physical pre-condition}: a check that, as it passes the exit lane boundary, a vehicle's indicators were set at the last highway exit sign before the exit (i.e.\ checking for omitted indications).
 		\item \textit{Physical post-condition}: a check that if a vehicle is indicating to leave in the approach to an exit lane, then it does in fact leave the lane (i.e.\ this is a check for false or spurious indications).
@@ -407,7 +414,7 @@ The basic approach involves simply converting the natural language text into a l
     	\item Write the assertion logic as closely as possible to the language of the assertion hypothesis, keeping the same high-level terms (These can then be elaborated and evaluated as stored procedures in the database management system, as discussed in Section \ref{generic_sim_system}) 
     \end{itemize}
    
-    \item \emph{Verify assertion logic correctness by manual design review.} 
+    \item \emph{Verify assertion logic by manual design review.} %correctness	
     \begin{itemize}
     	\item As previously mentioned, pragmatically this is the only method available. But if the assertion logic is directly comparable to the  natural language of the assertion hypothesis, this step should be reasonably self-evident.
     \end{itemize}
@@ -476,9 +483,7 @@ While the UKHC rule clause seems straightforward, the natural language actually 
 
 %deriving formulae for distances covered by the AV as a function of the relative position and velocity of the other actors in the scenario (VBP and OV) in each segment of the manoeuvre. The model divides the whole overtaking manoeuvre into three distinct phases
 
-In the case of this Rule 162 example, it was necessary to develop a complete model of the overtaking manoeuvre in order to produce an expression for the \emph{Safe Distance Ahead} (SDA), which calculates how far away the Oncoming Vehicle needs to be from the AV for an overtaking manoeuvre to be conducted without risk of collision. The analysis decomposed the overtaking manoeuvre into several stages: Pulling Out (into the oncoming lane), Passing the VBP, and Cutting In (to the original running lane). A formula was developed for the overall distance required to complete the manoeuvre without violating safety constraints (such as impingement upon vehicle thinking or braking distance (see Figure~\ref{fig:assertion_database_annotated}) or clearance distances around the VBP). 
-
-A diagram of the full analysis model, and the derivation of the formula for Safe Distance Ahead, is provided in Appendix A. 
+In the case of this Rule 162 example, it was necessary to develop a complete model of the overtaking manoeuvre in order to produce an expression for the \emph{Safe Distance Ahead} (SDA), which calculates how far away the Oncoming Vehicle needs to be from the AV for an overtaking manoeuvre to be conducted without risk of collision. The analysis decomposed the overtaking manoeuvre into several stages: Pulling Out (into the oncoming lane), Passing the VBP, and Cutting In (to the original running lane). A formula was developed for the overall distance required to complete the manoeuvre without violating safety constraints (such as impingement upon vehicle thinking or braking distance (see Figure~\ref{fig:assertion_database_annotated}) or clearance distances around the VBP). A diagram of the full analysis model, and the derivation of the formula for Safe Distance Ahead, is provided in Appendix A. 
 
 %For the purposes of describing the general approach we describe the analysis of one of the way points as a typical example. 
 
@@ -539,10 +544,14 @@ Further insight to the driving situation can be derived when combining actor sta
 
 \subsection{Modes of Use of the Assertion-checking Subsystem} \label{Assertions_at_Sim_Time} \label{assertions_at_run_time}
 
-Assertion-checking databases can be used as a test oracle (see Sections \ref{generic_architecture}) in a variety of ways, both during simulation and in runtime monitoring:
-\begin{itemize}
-	
-	\item \underline{\textbf{Modes of use during simulation:}}
+Assertion-checking databases can be used as a test oracle (see Section~\ref{generic_architecture}) in a variety of ways, both during simulation and in runtime monitoring:
+
+% GC removed 2nd level bullet list
+% \begin{itemize}
+	% \item \underline{\textbf{Modes of use during simulation:}}
+
+\underline{\textbf{Modes of use during simulation:}}
+
 	
 	\begin{itemize}
 		\item \emph{Simulation Control(Halting)}: Assertions can be checked as the simulation runs, and a simulation could be halted after a major safety violation if there is little value in continuing with a simulation beyond that point.
@@ -558,7 +567,8 @@ Assertion-checking databases can be used as a test oracle (see Sections \ref{gen
 
 	The simulation experiments with assertions presented in Section \ref{Experimental_scenario} were all run retrospectively, as they were a simple demonstration of concept rather than full implementation of the above modes of use. In the ongoing development of the simulation pipeline at Bristol Robotics Laboratory, we are focusing on the retrospective mode of use initially, as this represents the least complex software development option, and will then proceed to enabling dynamic checking during simulation time once this basic mode of operation has been demonstrated.\\ 
 
-	\item \underline{\textbf{Modes of use during runtime monitoring:}}
+	% \item \underline{\textbf{Modes of use during runtime monitoring:}}
+\underline{\textbf{Modes of use during runtime monitoring:}}
 	
 	\begin{itemize}
 		\item \emph{Warnings and Alarms}: Assertion checks can be used to raise warnings or alarms to human vehicle operators, to draw their attention or request them to take control over the vehicle if safety violations occur. 
@@ -572,7 +582,7 @@ Assertion-checking databases can be used as a test oracle (see Sections \ref{gen
 		\item \emph{Accident investigation or insurance risk assessment}: Assertion-checking subsystems can be used to annotate the internal data logs of an AV to help identify potential causes of an accident in any post-incident investigation (similar to flight data recorders in aircraft), or to measure the occurrence rate of UKHC driving rule infractions for insurance risk adjustment purposes. However, there are ethical concerns associated with such applications, as discussed in ~\cite{EthicalBlackBox}.
 		
 	\end{itemize}
-\end{itemize}
+% \end{itemize}
 
 
 \section{Experimental Case Studies} \label{Experimental_scenario}
@@ -615,7 +625,7 @@ As discussed in Section \ref{geospatial_database}, lane polygons are required fo
 %
 Figure~\ref{fig:assertion_database_annotated} shows an example of the lanelet shape object overlaid onto a road network. The blue boxes represent the dynamic actors, which in our case are the vehicles involved in the overtaking scenario. 
 %
-All of the above world map information was pre-loaded statically into the database, for use by the SQL query engine running the assertions queries, as discussed in Section \ref{generic_sim_system} and shown in Figure~\ref{fig:SimulatorArchitecture}.
+All of the above world map information was pre-loaded statically into the database, for use by the SQL query engine running the assertions queries, see Section \ref{generic_sim_system} and 	Figure~\ref{fig:SimulatorArchitecture}.
 
 \subsubsection{Overtaking Profiles} \label{overtaking_profiles}
 The intent of the Safe Distance Ahead assertion we developed was to assess whether sufficient distance ahead of the simulated AV was available at the initial decision point of the manoeuvre for it to complete an overtaking manoeuvre safely. However, in practice, sufficiency of the distance ahead is dependent in part on the driving profile that the AV controller has selected to perform (see Section \ref{model_based_analysis}). But, if the safety validation exercise is to be performed as an independent 'black-box' measurement of AV behaviour (as is often the case in many practical development projects), the internal plans of the AV may be unavailable to the system testers, and we conducted our experiment in such a manner as to reflect such a situation.
@@ -630,7 +640,7 @@ The simulator used for the case study was a minimal version of the generic simul
 
 The paths followed by each simulated vehicle (AV, VBP, OV - see Figure~\ref{fig:assertion_database_annotated}) were preset to follow a series of way-points. Using fixed vehicle paths facilitates evaluation of the assertion, as it made the test repeatable\footnote{Test repeatability is needed to ensure trust in the simulated assertion results and also to ensure software bugs are found and fixed efficiently. Repeatability relies on deterministic simulation code and hardware. If the \emph{simulation variance} is within tolerance then verification coverage results are stable and if an assertion fails the test can be re-run to provide the same output as described in~\cite{chance2021}.} and allowed us to see how different characteristic parameters affected the assertion checking (see Section~\ref{sim_results} for details). 
 
-CARLA generates dynamic state information about the simulation actors (vehicles), which is made available via an API, and Python scripts were written to transfer data from the simulator into the PostgreSQL database on a step-by-step basis.
+CARLA generates dynamic state information about the simulation actors, which is made available via an API, and Python scripts were written to transfer data from the simulator into the PostgreSQL database on a step-by-step basis.
 
 \subsubsection{Simulation runs}
 
@@ -639,8 +649,8 @@ Three simulation runs were executed to generate simulation data traces for asses
 \subsubsection{Simulation Assertion Checking Results} \label{sim_results}
 In this section we discuss the outcomes of the simulation safety validation analysis, and the implications on the methodology of developing and using assertions.
 
-The three simulation runs described previously produced simulation data logs that were subjected to assertion checking to ensure that a safe distance ahead existed as the AV began to cross the road centre line into the oncoming lane at the start of the overtake manoeuvre. However, there are several factors conditioning the test results that need to be taken into account.
-
+The three simulation runs described previously produced simulation data logs that were subjected to assertion checking to ensure that a safe distance ahead existed as the AV began to cross the road centre line into the oncoming lane at the start of the overtake manoeuvre. However, there are several factors conditioning the test results that need to be taken into account. 
+%
 Comparison of the three variations of test against the simulated scenarios (safe, near miss and collision) produces nine distinct tests. 
 
 The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehicle approximated to a medium level of urgency, in terms of the pull-out and cut-in clearance distances achieved (about 2s time to collision at the simulated speeds of the vehicles). This meant that for a set of tests having a range of urgency levels centred on the medium urgency case, one should get a sliding scale of test case passes and failures as the test case variants are applied to decreasing initial separation distances between AV and OV in the three simulation logs. The results of the tests are shown in Table \ref{Overtaking_Profiles}, which shows the required separation distances at the start of each manoeuvre (determined by the modelling analysis formula described in Section \ref{model_based_analysis}), the Distance Ahead that was achieved in each simulation run, and thence the pass/fail assertion results of comparing the two distances in each case.
@@ -688,7 +698,7 @@ During the different stages of the overtake, non of the vehicles should be prese
 %
 To satisfy this requirement, six assertions are needed to be checked at the different stages of the overtake.
 %
-The subscript DS will be used to refer to a vehicles danger space.
+The DS subscript refers to the vehicle danger space.
 
 The first four assertions are applicable through out the three stages of the overtake, these are:
 
@@ -708,10 +718,9 @@ There are two key SPIs applicable for the last stage of the overtake (cutting in
 
 \subsubsection{Video analysis}
 %
-Usually well trained machine learning models are used with stereo vision and information from other sensors, like LIDAR, odometers etc, to estimate accurately the position, orientation and velocities of the AV and surrounding static and dynamic objects.
+% Usually well trained machine learning models are used with stereo vision and information from other sensors, like LIDAR, odometers etc, to estimate accurately the position, orientation and velocities of the AV and surrounding static and dynamic objects. However, due to the absence of a fully functioning AV, w
+We used the following approach to approximate the processing of the real-time data stream for the runtime case study. 
 %
-However, due to the absence of a fully functioning AV, we used the following approach to approximate the processing of the real-time data stream for the runtime case study:
-
 First, a pre-trained object classifier, YOLOv3~\cite{Yolo}, was used to provide locations of vehicles in each frame and how much area each vehicle occupies of the frame. 
 %
 The separation distances between the AV and the other vehicles are the SPIs at the various stages of the overtaking manoeuvre. 
@@ -721,8 +730,8 @@ using Equation~\ref{s_equation}:
 \begin{equation}\label{s_equation}
     s = \frac{c\times W}{w}
 \end{equation}
-where $c$ is a constant capturing the focal length of the camera and is found empirically, $W$ is the actual width of a vehicle in meters, and $w$ is the width of the box detected by YOLOv3 in pixels.
-
+where $c$ is a constant capturing the focal length of the camera and is found empirically, $W$ is the actual width of a vehicle in meters, and $w$ is the width of the box detected by YOLOv3 in pixels. 
+%
 Second, the lateral distance $d$ of the AV from the middle white line is estimated using Equation~\ref{d_equation}: 
 %
 \begin{equation}\label{d_equation}
