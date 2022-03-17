@@ -131,9 +131,9 @@ We use SQL to build the assertions, which is highly expressive~\cite{sqllibkin} 
 
 \section{System Architecture for Assertion-based Monitoring} \label{generic_architecture}
 
-The evaluation of assertions requires an environment to generate vehicle data, and apply the assertions to interpret the driving situation. This section presents the generic components and software architecture we have deployed to support assertion-based monitoring either in simulation or during operation.
+The evaluation of assertions requires an environment to capture or generate vehicle data, and apply the assertions to interpret the driving situation. This section presents the generic components and software architecture we have deployed to support assertion-based monitoring either in simulation or during operation.
 
-\subsection{Simulation Environment} \label{generic_sim_system}
+\subsection{Assertion Monitoring Testbench} \label{generic_sim_system}
 
 \begin{figure}
     \centering
@@ -231,8 +231,8 @@ Real applications will involve the use of large data sets, so the performance of
 % The assertions are stored in the database server as a set of SQL queries or procedural functions to be invoked by the query engine. 
 % whenever required.
 
-The use of PostGIS introduces an extensive library of data types and method functions suited to measurement of basic physical (geometric) relationships. For the overtaking scenario in this paper, functions measuring distance between geometric objects (the bounding-box shapes of vehicles on the road), and partial or total containment of the vehicle within road lane geometries, are of particular use to assess vehicle positions during the overtaking manoeuvre.
-
+The use of PostGIS introduces an extensive library of data types and method functions suited to measurement of basic physical (geometric) relationships. For the overtaking scenario in this paper, functions measuring distance between geometric objects (the bounding-box shapes of vehicles on the road), and partial or total containment of the vehicle within road lane geometries, are of particular use to assess vehicle positions during the overtaking manoeuvre. 
+%
 PostGIS functionality can also be used to generate more complex geometric dynamic data derived from the basic state of the vehicle or other agents. An example of this is shown in Figure~\ref{fig:assertion_database_annotated}, in which two polygons for \textit{thinking distance} (inset, green hashed area) and \textit{braking distance} (red hashed area), which are parameters defined in the UKHC (Rule 126), can be generated as a function of the basic forward velocity data of the vehicle. Figure~\ref{fig:assertion_database_annotated} shows a projection of these derived geometries onto the associated street map. 
 %
 Thus, new abstractions can be developed by deriving new data sets from the original (captured) data. These can be manipulated effectively as a new variable (SQL attribute) appended to the original data set, and referenced by queries in the same way.
@@ -243,7 +243,7 @@ Thus, new abstractions can be developed by deriving new data sets from the origi
 
 This is an essential principle of our methodology. Procedures and queries can be developed to generate abstractions directly related to the concepts expressed in the rules of the UKHC. 
 % The methodology for identifying assertions and key abstractions is described in Section~\ref{Use_of_assertions}. 
-Where such concepts are used in multiple rules, the corresponding abstractions form a library of common queries or operations on data, which can be incorporated into the PostgreSQL DBMS. % as a set of stored procedures within the general database schema.
+Where such concepts are used in multiple rules, the corresponding abstractions form a library of common queries or operations, which can be incorporated into the DBMS. % as a set of stored procedures within the general database schema.
 %
 % GC shortened this section
 % Figure~\ref{fig:dbms_deployment} shows how the procedure library is included in the overall deployment and its dependencies to other elements of the system. This library will be developed incrementally as each assertion is produced. We anticipate that eventually the library of procedures may be packaged and made available as a PostgreSQL extension. \todo{KIE: .tex para could be removed to shorten paper.} Data and derived abstractions can be combined within queries for assertion checking and coverage collection. For example, an assertion to determine whether the braking zone of the AV has intersected another road user, such as a vehicle travelling in the opposite direction, can be formulated as PostgreSQL query:
@@ -273,11 +273,18 @@ Where such concepts are used in multiple rules, the corresponding abstractions f
     \label{fig:assertion_database_annotated}
 \end{figure}
 
-To illustrate the functionality of the PostgreSQL DBMS server, Figure~\ref{fig:assertion_database_annotated} shows the operating situation associated with the overtaking scenario described in Section~\ref{Experimental_scenario}, and gives an example of a derived variable called \emph{Safe Distance Ahead} (SDA), whose name is derived from terminology in Rule 162 of the UKHC. The figure shows an urban scene depicting a section of road network divided into \emph{lanelets} denoting legal division between driving lanes and any buildings in the area. In this example the AV is on the left of the figure overtaking a parked vehicle requiring a lane change. The distance to the oncoming vehicle is termed the Distance Ahead. The inset shows annotation denoting the braking and thinking distances of the AV which can be treated as geographical object entities in the database and hence easily used for assertion checking. 
+To illustrate the functionality of the PostgreSQL DBMS server, Figure~\ref{fig:assertion_database_annotated} shows the operating situation associated with the overtaking scenario described in Section~\ref{Experimental_scenario}, and gives an example of a derived variable called \emph{Safe Distance Ahead} (SDA), whose name is derived from terminology in %Rule 162 of %GC can't see it in that rule
+the UKHC. The figure shows an urban scene depicting a section of road network divided into \emph{lanelets} denoting legal division between driving lanes and any buildings in the area. In this example the AV is on the left of the figure overtaking a parked vehicle requiring a lane change. The distance to the oncoming vehicle is termed the Distance Ahead. 
+%
+%GC repeated above:
+% The inset shows annotation denoting the braking and thinking distances of the AV which can be treated as geographical object entities in the database and hence easily used for assertion checking. 
 
-The assertion performs a check (as defined in UKHC Rule 162) that a safe distance ahead exists between an AV and the nearest vehicle in an oncoming lane, labelled the `Oncoming Vehicle' (OV) as the AV starts to overtake the `Vehicle Being Passed' (VBP). The start time of the overtake is defined as the time that the AV first begins to enter the adjacent lane (Overtaking Lane) of the road, at which point it must commit to the manoeuvre or else abort and return to driving in the initial lane (the Running Lane).
+The assertion monitor performs a check (as defined in UKHC Rule 162) that a safe distance ahead exists between the AV and the nearest vehicle in an oncoming lane, labelled the `Oncoming Vehicle' (OV) as the AV starts to overtake the `Vehicle Being Passed' (VBP). The start time of the overtake is defined as the time that the AV first begins to enter the adjacent lane (Overtaking Lane) of the road, at which point it must commit to the manoeuvre or else abort and return to driving in the initial lane (the Running Lane).
 
-In the case of assertions related to overtaking, it is necessary to determine whether the overtaking vehicle wholly or partly occupies a given road lane, since overtaking manoeuvres require it to move at least partially into an adjacent lane and back. Therefore, it is necessary for the database to include lane geometries (polygons) in order to allow checking of vehicle occupancy of lanes by testing for the overlap between vehicle and lane objects. Figure~\ref{fig:assertion_database_annotated} shows the lane polygons projected onto the map section (an extract from the map used for our initial assertion checking experiments described in Section~\ref{Experimental_scenario}). The start of an overtaking manoeuvre is identified as the first time step in which the vehicle overlaps the overtaking lane (and stops being wholly contained within the running lane), and the overtake manoeuvre ends when the vehicle is entirely within the running lane once more after having passed the VBP. Lane geometry objects (shape or bounding box polygons) are therefore an essential element of the assertions related to overtaking.
+In the case of assertions related to overtaking, it is necessary to determine whether the overtaking vehicle wholly or partly occupies a given road lane, since overtaking manoeuvres require it to move at least partially into an adjacent lane and back. Therefore, it is necessary for the database to include lane geometries (polygons), as shown in Figure~\ref{fig:assertion_database_annotated}, in order to allow checking of vehicle occupancy of lanes by testing for the overlap between vehicle and lane objects. 
+%Figure~\ref{fig:assertion_database_annotated} shows the lane polygons projected onto the map section (an extract from the map used for our initial assertion checking experiments described in Section~\ref{Experimental_scenario}). 
+% The start of an overtaking manoeuvre is identified as the first time step in which the vehicle overlaps the overtaking lane (and stops being wholly contained within the running lane), and 
+The overtake manoeuvre ends when the vehicle is entirely within the running lane once more after having passed the VBP. Lane geometry objects (shape or bounding box polygons) are therefore an essential element of the assertions related to overtaking. 
 
 
 
@@ -318,8 +325,8 @@ Pre- and post-conditions can be one of two sub-types:
 \begin{itemize}
 	\item \textit{Temporal}: A time period preceding or following the assertion reference point, within which a specified condition holds. This is the temporal component of the overall spatio-temporal condition, e.g.:%. Examples include:
 	\begin{itemize}
-		\item \textit{Temporal pre-condition: as a vehicle crosses a highway exit lane boundary (reference point) an assertion checking that the vehicle's indicators have been set continuously in a preceding period (e.g.\ 5s) (i.e.\ checking for unduly late or intermittent indications).}
-		\item\textit{Temporal post-condition: a highway exit assertion may check that if a vehicle starts indicating to leave at the exit lane, then it does enter the exit lane within a given time period (i.e.\ checking for unnecessarily early indications).}
+		\item \textit{Temporal pre-condition}: as a vehicle crosses a highway exit lane boundary (reference point) checking that the vehicle's indicators have been set continuously in a preceding period (e.g.\ 5s) (i.e.\ checking for unduly late or intermittent indications).
+		\item\textit{Temporal post-condition}: a highway exit assertion may check that if a vehicle starts indicating to leave at the exit lane, then it does enter the exit lane within a given time period (i.e.\ checking for unnecessarily early indications).
 	\end{itemize}
 	
 	\item \textit{Physical}: A physical (e.g.\ spatial or state) condition that must be satisfied at a specified time(s) before or after the assertion reference point. This is the physical component of the overall spatio-temporal condition, e.g.:%. Examples include:
@@ -330,13 +337,16 @@ Pre- and post-conditions can be one of two sub-types:
 \end{itemize}
 
 % this following paragraph has not yet been revised, but should be updated to reflect the changes in the previous few paragraphs - TBD by Chris
-\subsection{The importance of selecting relevant assertions} \label{assertion_triggers}
-Identifying which assertions are relevant in a given situation is important to manage the performance of assertion checking and to ensure the output is meaningful. For example, assertions checking highway driving behaviour are not applicable in urban or rural road environments, and may cause confusion if applied in inappropriate contexts. 
+\subsection{Assertion Selection} \label{assertion_triggers}
+Identifying which assertions are relevant in a given situation is important to manage the performance of assertion checking and to ensure the output is meaningful. For example, assertions for highway driving are not applicable in urban or rural road environments.%, and may cause confusion if applied in inappropriate contexts. 
 Similarly, different assertions checking for mutually exclusive conditions will be guaranteed to generate errors unless the inappropriate assertions are filtered out. For example, checking that an AV is braking smoothly will inherently fail in a situation where it is required to accelerate. If assertions of this kind are not selected correctly, they will generate nuisance failure results. 
 
-Filtering assertions can also improve real-time performance of the simulator when they are being applied in a more time-critical mode of operation - for example  simulation control (see Section \ref{Assertions_at_Sim_Time}). If the assertion type can be embedded in its script (for example, in its header), then the Assertion Checking process in the Testbench (see Figure~\ref{fig:SimulatorArchitecture}) can be set to check only assertions of a given type.
+Filtering assertions can also improve %real-time 
+oracle throughput %performance of the simulator 
+when they are applied in a time-critical mode of operation, e.g. during simulation (see Section \ref{Assertions_at_Sim_Time}). If the assertion type can be embedded in its script (for example, in its header), then the assertion checking process in the testbench (see Figure~\ref{fig:SimulatorArchitecture}) can be set to check only assertions of a given type.
 
-Discrimination or pre-selection of assertions can also be achieved by specifying `trigger conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant.
+Discrimination %or pre-selection
+of assertions can also be achieved by specifying `trigger conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant.
 \footnote{This is similar to typical practice in computer hardware verification \cite{tao2009}, where an assertion may take the form ``under $<$environment conditions$>$ if $<$trigger$>$ then $<$expectation$>$", where \textit{$<$environment conditions$>$} may be ``we are not in RESET mode" and \textit{$<$trigger$>$} may be ``we receive a request" and \textit{$<$expectation$>$}  may be ``an acknowledge signal is driven high sometime in the X next cycles".} 
 
 %Category codes for these types have been embedded in the header information of each assertion source code file. This allows the %simulator
@@ -345,26 +355,34 @@ Discrimination or pre-selection of assertions can also be achieved by specifying
 %assertion checking is required, then the %simulator
 %system can opt to apply only the invariant and execution conditions, %leaving the pre- and post-condition assertions (which may have greater %processing overheads) to be applied retrospectively after the data log %has been fully captured. %simulation run has been completed.
 
-\subsection{Deriving machine-oriented logical assertions from human-oriented Highway Code rules}
-Developing assertions from the UKHC - a natural language developed for human readers - requires that it be interpreted in a consistent manner; we present two approaches to constructing logical assertions from the text. 
+% \subsection{Deriving machine-oriented logical assertions from human-oriented Highway Code rules}
+\subsection{Human-Readable Driving Rules}
+\label{interp_nat_lang_UKHC_rules}% logical assertions from driving rules}
+% ***************
+% GC TODO need to check this label is still relevent where ref'd
 
-\subsubsection{Interpretation of Natural Language UKHC Rules} \label{interp_nat_lang_UKHC_rules}
+% \subsubsection{Interpretation of Natural Language UKHC Rules} 
+The UKHC comprises several hundred rules and guidelines, applicable to different categories of road user 
+% (including those on foot - pedestrians, cyclists, horse riders - as well as the usual cars, vans, or trucks and buses) 
+(e.g. pedestrians, cyclists, cars, trucks and buses) 
+and covering a number of different aspects of road use. 
+% (including general driving advice, instructions for maintenance and repair of vehicles, and instructions for management of situations such as emergencies). 
+The UKHC rules are written entirely for human readers, and seek to offer guidance in common sense terms that any reader should understand clearly. For example, two rules of central interest to this paper relate to overtaking manoeuvres:
 
-The UKHC comprises several hundred rules and guidelines, applicable to different categories of road user (including those on foot - pedestrians, cyclists, horse riders - as well as the usual cars, vans, or trucks and buses) and covering a number of different aspects of road use (including general driving advice, instructions for maintenance and repair of vehicles, and instructions for management of situations such as emergencies). The UKHC rules are written entirely for human readers, and seek to offer guidance in common sense terms that any reader should understand clearly. For example, two rules of central interest to this paper relate to overtaking manoeuvres:
-
-\begin{quote}
-    \underline{Rule 162}
-    
+% \begin{quote}
+\vspace{2mm}
+\noindent\underline{Rule 162}    
     \textbf{Before overtaking} you should make sure
     \begin{itemize}
         \item the road is sufficiently clear ahead
         \item road users are not beginning to overtake you
         \item there is a suitable gap in front of the road user you plan to overtake.
     \end{itemize}
-	\vspace{8mm}	% This vspace pushes the Rule 163 title onto the next page alongside the rule text - looks neater. Modify or delete as needed if the text gets reformatted.
-    \underline{Rule 163}
+	
+	% \vspace{8mm}	% This vspace pushes the Rule 163 title onto the next page alongside the rule text - looks neater. Modify or delete as needed if the text gets reformatted.
     
-    \textbf{Overtake only} when it is safe and legal to do so. You should
+\noindent\underline{Rule 163}
+    \textbf{Overtake only} when it is safe and legal to do so. You should:
     \begin{itemize}
         \item not get too close to the vehicle you intend to overtake
         \item use your mirrors, signal when it is safe to do so, take a quick sideways glance if necessary into the blind spot area and then start to move out
@@ -372,31 +390,39 @@ The UKHC comprises several hundred rules and guidelines, applicable to different
         \item \emph{move quickly past the vehicle} you are overtaking, once you have started to overtake. \emph{Allow plenty of room. Move back to the left as soon as you can but do not cut in}
         \item take extra care at night and in poor visibility when it is harder to judge speed and distance
         \item give way to oncoming vehicles before passing parked vehicles or other obstructions on your side of the road
-        \item only overtake on the left if the vehicle in front is signalling to turn right, and there is room to do so
+        \item only overtake on the left if the vehicle in front is signalling to turn right and there is room to do so
         \item stay in your lane if traffic is moving slowly in queues. If the queue on your right is moving more slowly than you are, you may pass on the left
         \item give motorcyclists, cyclists and horse riders at least as much room as you would when overtaking a car (see Rules 211 to 215).
     \end{itemize}
-\end{quote}
+% \end{quote}
 
-This example illustrates several characteristics found frequently in UKHC rules:
-\begin{enumerate}
-    \item Rules are often expressed in a second-person tense, offering advice directly to the reader. Converting them into assertions that are in effect performed (measured) from an external third-person perspective requires changes that may transform the logic of the rule to some extent.
-    
-    \item The logical sense of the safety property expression (i.e. whether the rule expresses a pass or a fail condition) varies depending on the concept being expressed. Since the general guidance for direct conversion of rules is to keep as close as possible to the top level natural language, the logical sense of the assertions will follow suit. This contrasts with typical practice for their use in conventional computer programming, where the standard practice is to encode an assertion such that a pass condition permits a program to continue running normally, and a fail causes an exception to be triggered.
-    
-    \item Being written at a natural human-readable level of abstraction, the rules and guidelines rely greatly on the reader having sufficient background knowledge and capability to resolve their generalized constraints to the point where actions can be selected that satisfy them.
-    
-    This abstraction also interferes with the ability to validate the assertions by any means other than manual design review; formalization of the assertions may require all the hidden complexity to be reintroduced.
-    
-    \item Many clauses of UKHC rules offer advice to drivers about their internal decision making, often in the form of constraints. The third bullet-item of Rule 163 is a typical example. These clauses cannot be measured externally without some form of communication by the driving agent (for example, an AV) of the results of its decision-making processes. To date we have not attempted to establish assertions of this kind, as there are no standards or conventions by which an AV might explain and communicate its actions. However, we note that this is an interesting direction of future work (see Section \ref{discussion}). 
+
+This example illustrates several characteristics found frequently in UKHC rules: %
+\begin{enumerate}[i, labelindent=0pt]
+\item Rules are often expressed in a second-person tense, offering advice directly to the reader. Converting them into assertions that are in effect performed (measured) from an external third-person perspective requires changes that may transform the logic of the rule to some extent. 
+\item The logical sense of the safety property expression (i.e. whether the rule expresses a pass or a fail condition) varies depending on the concept being expressed. Since the general guidance for direct conversion of rules is to keep as close as possible to the top level natural language, the logical sense of the assertions will follow suit. This contrasts with typical practice for their use in conventional computer programming, where the standard practice is to encode an assertion such that a pass condition permits a program to continue running normally, and a fail causes an exception to be triggered.
+\item Being written at a natural human-readable level of abstraction, the rules and guidelines rely greatly on the reader having sufficient background knowledge and capability to resolve their generalized constraints to the point where actions can be selected that satisfy them. This abstraction also interferes with the ability to validate the assertions by any means other than manual design review; formalization of the assertions may require all the hidden complexity to be reintroduced. 
+\item Many clauses of UKHC rules offer advice to drivers about their internal decision making, often in the form of constraints. The third bullet-item of Rule 163 is a typical example. These clauses cannot be measured externally without some form of communication by the driving agent (for example, an AV) of the results of its decision-making processes. To date we have not attempted to establish assertions of this kind, as there are no standards or conventions by which an AV might explain and communicate its actions. However, we note that this is an interesting direction of future work (see Section \ref{discussion}). 
 \end{enumerate}
 
-Two methods have emerged for developing assertions from the UKHC: direct translation into logic, and the use of modelling. These are discussed in the next subsections.
 
-\subsubsection{Method 1: Direct translation into logic} \label{direct_translation}
+
+
+\subsection{Deriving Assertions}
+Deriving assertions from the human-readable UKHC %, a natural language developed for human readers, 
+requires that it be interpreted in a consistent manner. 
+We present two approaches %to constructing logical assertions from the text. 
+% Two methods have emerged 
+for developing assertions from the UKHC: direct translation into logic, and the use of modelling.
+% These are discussed in the next subsections.
+
+\vspace{2mm}
+\noindent\underline{\textbf{Method 1}: Direct translation into logic}
+% \subsubsection{Method 1: Direct translation into logic} 
+\label{direct_translation}
 
 The basic approach involves simply converting the natural language text into a logical predicate. We developed a procedure containing the following steps: 
-\begin{enumerate}
+\begin{enumerate}[i, labelindent=0pt]
     \item \emph{Identify and extract a given UKHC rule clause.} 
     \begin{itemize}
     	\item A separate assertion will be required for every distinct subject-verb-object clause in the text; a given UKHC rule could easily require on the order of 5-10 separate assertions to be fully covered;
@@ -461,13 +487,16 @@ Key concepts of the assertion (for example, boundary lines of overhead gantry si
 We anticipate that typically assertion queries will make use of PostGIS relational operators and functions for object geometries, whereas the library functions will typically use PostGIS geometry constructors to set up the geometric objects for the assertions as variables derived from the captured simulation data (as discussed in Section \ref{generic_sim_system}). A hierarchical organization of queries and procedural functions (from Assertions to CAV DBMS library functions to PostGIS functions to captured simulation data) emerges from this approach.\\
 \end{itemize}
 
-\subsubsection{Method 2: Model-based Analysis} \label{model_based_analysis}
+\vspace{2mm}
+\noindent\underline{\textbf{Method 2}: Model-based Analysis}
+% \subsubsection{Method 2: Model-based Analysis} 
+\label{model_based_analysis}
 
 While many UKHC rules can be translated directly into logical conditions or constraints expressible as simple Boolean predicates, some describe more complex situations that may require more explicit modelling to identify the assertion hypothesis and logical expression. We require no particular constraints on the modelling methodology used, except that it needs to produce a well formed logical expression deriving the essential parameter of the assertion hypothesis from the captured data trace of the simulation.
 
 As a worked example, we present an assertion we developed from Rule 162, which we applied experimentally as discussed later in Section \ref{Experimental_scenario}.
 The first two steps of this method are the same as for Method 1: identify the UKHC clause and the associated assertion hypothesis:
-\begin{itemize}
+\begin{itemize}%[labelindent=0pt]
 	\item \emph{UKHC rule clause:}
 		\begin{quote}
 			\textit{Before overtaking you should make sure the road is sufficiently clear ahead.}
@@ -498,7 +527,7 @@ In the case of this Rule 162 example, it was necessary to develop a complete mod
 %The overtaking manoeuvre analysis in Appendix A derives expressions for distance covered by each vehicle in the time periods between each waypoint, and hence a formula for the Safe Distance Ahead at time $t_0$ can be constructed by summing all the distances covered by the AV and the OV
 
 The analysis identifies several key characteristic parameters that characterise the overtaking manoeuvre. These include:
-\begin{itemize}
+\begin{itemize}[labelindent=0pt]
     \item \emph{Stopping distance} (SD) is defined as the sum of the `thinking distance' and `braking distance' of the vehicle (assuming it has a human driver) as defined in UKHC Rule 126 and illustrated in Figure~\ref{fig:assertion_database_annotated}.
     % 
     A table of the typical stopping distances for travelling speeds ($v$) between 20 mph - 70 mph is provided with Rule 126 in the UKHC.
@@ -554,7 +583,7 @@ Assertion-checking databases can be used as a test oracle (see Section~\ref{gene
 
 	
 	\begin{itemize}
-		\item \emph{Simulation Control(Halting)}: Assertions can be checked as the simulation runs, and a simulation could be halted after a major safety violation if there is little value in continuing with a simulation beyond that point.
+		\item \emph{Simulation Control (Halting)}: Assertions can be checked as the simulation runs, and a simulation could be halted after a major safety violation if there is little value in continuing with a simulation beyond that point.
 		
 		\item \emph{Operator Warnings}: As above, assertions can be checked as the simulation runs, but instead of halting the operator can be warned of the occurrence, allowing them to exercise their judgement on whether to continue.
 		
