@@ -676,7 +676,7 @@ Figure~\ref{fig:assertion_database_annotated}. For the sake of simplicity we ran
 %     \label{fig:lanelets}
 % \end{figure} 
 
-As discussed in Section \ref{geospatial_database}, lane polygons are required for efficient measurement of vehicle lateral movement within, and partial occupancy of, road lanes; in this simulator case study we used a lane partitioning concept termed \textit{lanelets}~\cite{lanelets2014}, which allows exactly this level of description of the scene. We used an open-source software conversion package~\cite{lanelets_to_openDrive} to generate the lanelet data from the openDrive~\cite{opendrive} model, dividing the roads into individual lanes and lanelets. This data was imported into the PostgreSQL database as a table of lane segment polygon objects ($lanelets.lanelet\_shape$) covering the whole road layout used for the study. Additionally, information about lane boundaries and orientations, required to identify road orientation and running lane directions, was appended to this data. 
+As discussed in Section \ref{geospatial_database}, lane polygons are required for efficient measurement of vehicle lateral movement within, and partial occupancy of, road lanes; in this simulator case study we used a lane partitioning concept termed \textit{lanelets}~\cite{lanelets2014}, which allows exactly this level of description of the scene. We used an open-source software conversion package~\cite{lanelets_to_openDrive} to generate the lanelet data from the openDrive~\cite{opendrive} model, dividing the roads into individual lanes and lanelets. This data was imported into the PostgreSQL database as a table of lane segment polygon objects ($lanelets.lanelet\_shape$ in \ref{fig:erd}) covering the whole road layout used for the study. Additionally, information about lane boundaries and orientations, required to identify road orientation and running lane directions, was appended to this data. 
 %
 Figure~\ref{fig:assertion_database_annotated} shows an example of the lanelet shape object overlaid onto a road network. The blue boxes represent the dynamic actors, which in our case are the vehicles involved in the overtaking scenario. 
 %
@@ -709,7 +709,7 @@ The three simulation runs described previously produced simulation data logs tha
 %
 Comparison of the three variations of test against the simulated scenarios (safe, near miss and collision) produces nine distinct tests. 
 
-The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehicle approximated to a medium level of urgency, in terms of the pull-out and cut-in clearance distances achieved (about 2s time to collision at the simulated speeds of the vehicles). This meant that for a set of tests having a range of urgency levels centred on the medium urgency case, one should get a sliding scale of test case passes and failures as the test case variants are applied to decreasing initial separation distances between AV and OV in the three simulation logs. The results of the tests are shown in Table \ref{Overtaking_Profiles}, which shows the required separation distances at the start of each manoeuvre (determined by the modelling analysis formula described in Section \ref{model_based_analysis}), the Distance Ahead that was achieved in each simulation run, and thence the pass/fail assertion results of comparing the two distances in each case.
+The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehicle approximated to a medium level of urgency, in terms of the pull-out and cut-in clearance distances achieved (about 2s time to collision at the simulated speeds of the vehicles). This meant that for a set of tests having a range of urgency levels centred on the medium urgency case, one should get a sliding scale of test case passes and failures as the test case variants are applied to decreasing initial separation distances between AV and OV in the three simulation logs. The results of the tests are provided in Table \ref{Overtaking_Profiles}, which shows the required separation distances at the start of each manoeuvre (determined by the modelling analysis formula described in Section \ref{model_based_analysis}), the Distance Ahead that was achieved in each simulation run, and thence the pass/fail assertion results of comparing the two distances in each case.
 
 \begin{table}[h]
 \centering
@@ -760,17 +760,21 @@ The first four assertions are applicable through out the three stages of the ove
 
 \noindent \textbf{i)} the VBP should not be in the AV danger space at anytime during the overtake, 
 
-\noindent \textbf{ii)} the OV should not be in the AV$_{DS}$, 
+\noindent \textbf{ii)} the OV should not be in the AV$_{DS}$, %shouldn't this be DS$_{AV}$ ? 
 
 \noindent \textbf{iii)} the AV should not be in the OV$_{DS}$, 
+%shouldn't this be DS$_{OV}$ ?
 
 \noindent \textbf{iv)} there should be no intersection between the AV$_{DS}$ and OV$_{DS}$.
+% shouldn't the parameter and the vehicle identity be swapped over, as in the comments above?
 
 There are two key SPIs applicable for the last stage of the overtake (cutting in):
 
 \noindent \textbf{v)} the AV should not enter the VBP$_{DS}$ and 
+% shouldn't the parameter and the vehicle identity be swapped over, as in the comments above?
 
 \noindent \textbf{vi)} there should be no intersection between the AV$_{DS}$ and the VBP$_{DS}$. 
+% shouldn't the parameter and the vehicle identity be swapped over, as in the comments above?
 
 \subsubsection{Video analysis}
 %
@@ -798,7 +802,8 @@ where $w_{L (real)}$ is the real lane width measured in meters, $w_{L (pixels)}$
 
 \subsubsection{Runtime Validation Results}
 Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as non of the vehicles were present in another vehicles danger space and there was no overlap in any of the danger spaces. 
-When passing the VBP the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the VBP$_{DS}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.
+When passing the VBP the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the VBP$_{DS}$, % shouldn't the parameter and the vehicle identity be swapped over, as in the comments above?
+ which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.
 
 \begin{table}
 \centering
@@ -825,6 +830,8 @@ No AV$_{DS}$ $\cap$ VBP$_{DS}$  & N/A & N/A & FAIL\\
 \end{tabular}
 \caption{Pass/Fail danger space assertion checks results.} \label{Overtaking_DS_table}
 \end{table}
+% shouldn't the parameter and the vehicle identities be swapped over, as in previous comments ?
+
 
 \section{Discussion} \label{discussion}
 
