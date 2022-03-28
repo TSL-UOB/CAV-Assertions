@@ -676,7 +676,7 @@ Figure~\ref{fig:assertion_database_annotated}. For the sake of simplicity we ran
 %     \label{fig:lanelets}
 % \end{figure} 
 
-As discussed in Section \ref{geospatial_database}, lane polygons are required for efficient measurement of vehicle lateral movement within, and partial occupancy of, road lanes; in this simulator case study we used a lane partitioning concept termed \textit{lanelets}~\cite{lanelets2014}, which allows exactly this level of description of the scene. We used an open-source software conversion package~\cite{lanelets_to_openDrive} to generate the lanelet data from the openDrive~\cite{opendrive} model, dividing the roads into individual lanes and lanelets. This data was imported into the PostgreSQL database as a table of lane segment polygon objects ($lanelets.lanelet\_shape$) covering the whole road layout used for the study. Additionally, information about lane boundaries and orientations, required to identify road orientation and running lane directions, was appended to this data. 
+As discussed in Section \ref{geospatial_database}, lane polygons are required for efficient measurement of vehicle lateral movement within, and partial occupancy of, road lanes; in this simulator case study we used a lane partitioning concept termed \textit{lanelets}~\cite{lanelets2014}, which allows exactly this level of description of the scene. We used an open-source software conversion package~\cite{lanelets_to_openDrive} to generate the lanelet data from the openDrive~\cite{opendrive} model, dividing the roads into individual lanes and lanelets. This data was imported into the PostgreSQL database as a table of lane segment polygon objects ($lanelets.lanelet\_shape$ in \ref{fig:erd}) covering the whole road layout used for the study. Additionally, information about lane boundaries and orientations, required to identify road orientation and running lane directions, was appended to this data. 
 %
 Figure~\ref{fig:assertion_database_annotated} shows an example of the lanelet shape object overlaid onto a road network. The blue boxes represent the dynamic actors, which in our case are the vehicles involved in the overtaking scenario. 
 %
@@ -709,7 +709,7 @@ The three simulation runs described previously produced simulation data logs tha
 %
 Comparison of the three variations of test against the simulated scenarios (safe, near miss and collision) produces nine distinct tests. 
 
-The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehicle approximated to a medium level of urgency, in terms of the pull-out and cut-in clearance distances achieved (about 2s time to collision at the simulated speeds of the vehicles). This meant that for a set of tests having a range of urgency levels centred on the medium urgency case, one should get a sliding scale of test case passes and failures as the test case variants are applied to decreasing initial separation distances between AV and OV in the three simulation logs. The results of the tests are shown in Table \ref{Overtaking_Profiles}, which shows the required separation distances at the start of each manoeuvre (determined by the modelling analysis formula described in Section \ref{model_based_analysis}), the Distance Ahead that was achieved in each simulation run, and thence the pass/fail assertion results of comparing the two distances in each case.
+The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehicle approximated to a medium level of urgency, in terms of the pull-out and cut-in clearance distances achieved (about 2s time to collision at the simulated speeds of the vehicles). This meant that for a set of tests having a range of urgency levels centred on the medium urgency case, one should get a sliding scale of test case passes and failures as the test case variants are applied to decreasing initial separation distances between AV and OV in the three simulation logs. The results of the tests are provided in Table \ref{Overtaking_Profiles}, which shows the required separation distances at the start of each manoeuvre (determined by the modelling analysis formula described in Section \ref{model_based_analysis}), the Distance Ahead that was achieved in each simulation run, and thence the pass/fail assertion results of comparing the two distances in each case.
 
 \begin{table}[h]
 \centering
@@ -760,17 +760,19 @@ The first four assertions are applicable through out the three stages of the ove
 
 \noindent \textbf{i)} the VBP should not be in the AV danger space at anytime during the overtake, 
 
-\noindent \textbf{ii)} the OV should not be in the AV$_{DS}$, 
+\noindent \textbf{ii)} the OV should not be in the DS$_{AV}$, 
 
-\noindent \textbf{iii)} the AV should not be in the OV$_{DS}$, 
+\noindent \textbf{iii)} the AV should not be in the DS$_{OV}$, 
 
-\noindent \textbf{iv)} there should be no intersection between the AV$_{DS}$ and OV$_{DS}$.
+\noindent \textbf{iv)} there should be no intersection between the DS$_{AV}$ and DS$_{OV}$.
+
 
 There are two key SPIs applicable for the last stage of the overtake (cutting in):
 
-\noindent \textbf{v)} the AV should not enter the VBP$_{DS}$ and 
+\noindent \textbf{v)} the AV should not enter the DS$_{VBP}$ and 
 
-\noindent \textbf{vi)} there should be no intersection between the AV$_{DS}$ and the VBP$_{DS}$. 
+\noindent \textbf{vi)} there should be no intersection between the DS$_{AV}$ and the DS$_{VBP}$. 
+
 
 \subsubsection{Video analysis}
 %
@@ -798,7 +800,7 @@ where $w_{L (real)}$ is the real lane width measured in meters, $w_{L (pixels)}$
 
 \subsubsection{Runtime Validation Results}
 Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as non of the vehicles were present in another vehicles danger space and there was no overlap in any of the danger spaces. 
-When passing the VBP the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the VBP$_{DS}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.
+When passing the VBP the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the DS$_{VBP}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.
 
 \begin{table}
 \centering
@@ -808,17 +810,17 @@ When passing the VBP the assertion checks indicate that the overtake should have
 \multirow{3}{*}{\textbf{}} & \multicolumn{3}{c}{\textbf{Overtaking manoeuvre stages}}\\
 \textbf{Assertion} & \textbf{Pulling out} & \textbf{Passing VBP} & \textbf{Cutting in} & \\
 &  &  &  & \\
-VBP not in AV$_{DS}$ & PASS & PASS & FAIL\\
+VBP not in DS$_{AV}$ & PASS & PASS & FAIL\\
 %
-OV not in AV$_{DS}$ & PASS & FAIL & FAIL\\
+OV not in DS$_{AV}$ & PASS & FAIL & FAIL\\
 %
-AV not in OV$_{DS}$  & PASS & FAIL & FAIL\\
+AV not in DS$_{OV}$  & PASS & FAIL & FAIL\\
 %
-No AV$_{DS}$ $\cap$ OV$_{DS}$  & PASS & FAIL & FAIL\\
+No DS$_{AV}$ $\cap$ DS$_{OV}$  & PASS & FAIL & FAIL\\
 %
-AV not in VBP$_{DS}$  & N/A & N/A & PASS\\
+AV not in DS$_{VBP}$  & N/A & N/A & PASS\\
 %
-No AV$_{DS}$ $\cap$ VBP$_{DS}$  & N/A & N/A & FAIL\\
+No DS$_{AV}$ $\cap$ DS$_{VBP}$  & N/A & N/A & FAIL\\
 %
 \\
 \hline
@@ -826,12 +828,14 @@ No AV$_{DS}$ $\cap$ VBP$_{DS}$  & N/A & N/A & FAIL\\
 \caption{Pass/Fail danger space assertion checks results.} \label{Overtaking_DS_table}
 \end{table}
 
+
+
 \section{Discussion} \label{discussion}
 
 \subsection{Assertion Checking to measure Performance}
-While we have applied the assertion checking methodology to measure the safety properties of vehicles in simulation and at runtime, the methodology can be extended to other important system engineering aspects as well. This may include performance based metrics such as smooth driving (minimal jerk), accuracy of control (such as parking or stopping precisely at a bus stop), and decisive behaviour at junctions or roundabouts, sometimes termed \emph{liveness}~\cite{kim2014mpc}. In particular, the mission performance of a vehicle, for example, can be measured in journey time or efficiency of movement through traffic, which may affect not only passenger expectations but also the commercial viability of such an autonomous system. 
+While we have applied the assertion checking methodology to measure the safety properties of vehicles in simulation and at runtime, the methodology can also be extended to validate other important system properties. This may include performance based metrics such as smooth driving (minimal jerk), accuracy of control (such as parking or stopping precisely, e.g. at a bus stop), and decisive behaviour at junctions or roundabouts, sometimes termed \emph{liveness}~\cite{kim2014mpc}. In particular, the mission performance of a vehicle, for example, can be measured in journey time or efficiency of movement through traffic, which may affect not only passenger expectations but also the commercial viability of such an autonomous system. 
 
-Performance (achievement of task goals) and safety (avoidance of task hazards) are distinct behavioural properties of a system; achievement of one does not entail achievement of the other. A task controller must achieve satisfactory compliance with both properties if a dependable system is to be developed. In some scenarios, such as during overtaking, their may exist a competition within the controller to satisfy both the achievement of goals and the avoidance of hazards. 
+Performance (achievement of task goals) and safety (avoidance of task hazards) are distinct behavioural properties of a system; achievement of one does not necessarily entail the other. A task controller must achieve satisfactory compliance with both properties if a dependable system is to be developed. In some scenarios, such as during overtaking, their may exist a competition within the controller to satisfy both the achievement of goals and the avoidance of hazards. 
 
 For example, an autonomous taxi may need to perform a minimum number of fare-paying journeys in a day in order to remain commercially viable. Performance assertions can measure whether suitable opportunities for manoeuvres such as overtaking were taken efficiently, without incurring delays or driving sub-optimally for the given road network i.e. using all available space. However, it must still drive safely as it conducts each journey, so in situations that may induce journey delays, such as high traffic congestion, optimum performance and safety may not be mutually achievable. Assertions can measure how the AV trades off these two properties in the execution of its task(s).
 
@@ -861,10 +865,12 @@ Condition & \textbf{Overtake} & \\
 \label{performance_metric_table}
 \end{table}
 
-An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e. taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. 
+An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. 
+%In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. 
+Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e. taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. 
 %
 % We define $\delta$ as the ratio of `achieved distance ahead' to the `SDA required by profile' from Table~\ref{Overtaking_Profiles}. 
-%
+
 The size of this \emph{opportunity window} will be dependent on a myriad of different contextual and preferential conditions such as the driving style, vehicle capability, passenger comfort, etc. 
 
 We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotated}, considering performance as well as safety, using the required SDA and opportunity window to define three specific cases:
@@ -882,7 +888,7 @@ Here, $d_{OV}$ is the distance to the Oncoming Vehicle, SDA is the required Safe
 %
 In each of these cases the AV could decide to overtake or hold back and the performance outcomes for each of these are shown in Table~\ref{performance_metric_table}. 
 %
-For case 1, the distance to the Oncoming Vehicle is less than SDA, so to not overtake is the only safe action and indeed to overtake in this condition would result in the SDA safety assertion failure. Safe driving behaviour whilst making timely use of the overtaking opportunities presented to the vehicle will see the vehicle progress through a road network most efficiently. This sentiment is captured in case 2, where the vehicle is taking opportunities to overtake whilst maintaining a safe distance to the oncoming vehicle. To not overtake in case 2 would not take advantage of opportunities to progress through traffic and will incur journey time penalties. In case 3, the distance to the Oncoming Vehicle is greater than $SDA$ plus the window of opportunity, where the vehicle has unhindered opportunity, i.e. no currently oncoming traffic. In this case not overtaking, although completely safe, will incur significant and unnecessary delay to the journey and can be considered lower performance. Overtaking in case 3 would be the expected behaviour of the AV. % and as such could be assigned a neutral or small positive performance score.
+For case 1, the distance to the Oncoming Vehicle is less than SDA, so the only safe action is not to overtake and indeed to attempt to do so in this condition would result in failure of the SDA safety assertion. Safe driving behaviour whilst making timely use of the overtaking opportunities presented to the vehicle will see the vehicle progress through a road network most efficiently. This sentiment is captured in case 2, where the vehicle is taking opportunities to overtake whilst maintaining a safe distance to the oncoming vehicle. Deciding not to overtake in case 2 would not take advantage of opportunities to progress through traffic and will incur journey time penalties. In case 3, the distance to the Oncoming Vehicle is greater than $SDA$ plus the window of opportunity, where the vehicle has unhindered opportunity, i.e. no currently oncoming traffic. In this case not overtaking (although completely safe) will incur significant and unnecessary delay to the journey and can be considered lower performance. Overtaking in case 3 would be the expected behaviour of the AV. % and as such could be assigned a neutral or small positive performance score.
 %
 % There are three conditions in Table~\ref{performance_metric_table} describing the distance to the Oncoming Vehicle with respect to required SDA and the opportunity window. 
 
@@ -938,9 +944,10 @@ An excerpt from Rule 146 of the UKHC states \begin{quote} \textit{Try to anticip
 % % Each of the bullet-items listed above would probably require at least one distinct test case (often more than one). But several items
 % Several bullet-items listed above ask the road-user to consider particular situations explicitly, advising that increased attention or effort be put into the perception of particular conditions, features of, or objects in the environment (e.g. blind summits, pedestrians, unmarked junctions). If we want to validate the correctness of an AV's behaviour in respect of these rules we must have the capability to observe the decisions made by the AV or its control system as they are made. 
 
-This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. The complexity and opacity of internal functional representations in many AI technologies, combined with the non-deterministic nature of complex operational situations in real world environments means that they may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. This requires some form of communication protocol or interface from the decision-making centres of the system to the outside world, so that the decisions can be observed and recorded for later analysis. This is a significant motivation behind the use of an assertion-based oracle subsystem as a runtime analysis facility, discussed in Section \ref{assertions_at_run_time}.
+This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. In many AI technologies the complexity and opacity of internal representations of perceptions, decisions, etc., combined with the non-deterministic nature of complex operational situations in real world environments means that they may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. This requires some form of communication protocol or interface from the decision-making centres of the system to the outside world, so that the decisions can be observed and recorded for later analysis. This is a significant motivation behind the use of an assertion-based oracle subsystem as a runtime analysis facility, discussed in Section \ref{assertions_at_run_time}.
 
-At present, we are not in a position to perform assertion checking for this kind of safety property by means of an independent assertion-based oracle. There is no externally objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
+At present, we are not in a position to perform assertion checking for this kind of safety property as an independent validation exercise %by means of an independent assertion-based oracle
+. There is no externally objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
 
 In the absence of any such explanation capabilities or facilities, it is still possible to achieve some degree of validation by performing checks derived from the text of the rule, which attempt to challenge the hypothesis expressed or implied by the UKHC rule or rule clause (\emph{e.g. falsification testing}) of the safety property. For example, in the testing phase of an AV, to exercise the last bullet item of Rule 146 above one could construct a test case, perhaps similar in nature to those defined in \cite{EuroNCAP}, where simulated `children agents' (that model the physical appearance of children as well as some aspects of their behaviour) step out into a road in front of the AV agent, having appeared either to be looking away from an AV agent, towards it, or some mix of the two focuses of attention. Such a test suite could then test the capability of the AV control system to evaluate the potential behaviour of children to determine what driving action can be taken successfully and safely. This can test the `end-to-end' situated behaviour of the vehicle and thereby evaluate the cumulative effect of decision making, but as evidence to support a safety case this is less effective than explicit confirmation (by recording) of the AV's decision process that would come from Explainable AI.
 
