@@ -1,0 +1,12 @@
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+document/ieee_trans/asr_ieeetrans.pdf
+document/arxiv/asr_arxiv.pdf
