@@ -38,7 +38,9 @@ These properties relate to the observable driving behaviour of road vehicles. Th
 may be expected or legally required to achieve on public roads. 
 %
 An oracle is defined as a process or mechanism to check the output of a test~\cite{howden1978theoretical}
-and, in the case of AV safety validation, this test is the process to determine compliance with the 
+and, in the case of AV safety validation, this test 
+%is the process to determine 
+determines compliance with the 
 % ``rules of the road'' or the 
 legal driving codes for human drivers.
 %
@@ -140,21 +142,25 @@ We use SQL to build the assertions, which is highly expressive~\cite{sqllibkin} 
 
 The evaluation of assertions requires an environment to capture or generate vehicle data, and apply the assertions to interpret the driving situation. This section presents the generic components and software architecture we have deployed to support assertion-based monitoring either in simulation or during operation.
 
-\subsection{Assertion Monitoring Testbench} \label{generic_sim_system}
+\subsection{Assertion Monitoring Architecture} \label{generic_sim_system}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.98\linewidth]{\pathToOtherFiles/figures/SimulatorAssertionsCondensed.jpg}
-    \caption{Testbench for interpreting and monitoring assertions.}
+    \caption{Process for interpreting and monitoring assertions.}
     \label{fig:SimulatorArchitecture}
 \end{figure}
 
 
 
 % GC added this as condensetion of section III **************
+<<<<<<< HEAD
 Figure~\ref{fig:SimulatorArchitecture} shows the testbench architecture that was used to formalise and monitor assertions and interpret the driving situation. The testbench is used by starting with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) that converts human-readable rules into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
+=======
+Figure~\ref{fig:SimulatorArchitecture} shows the process developed to formalise and monitor assertions and interpret the driving situation. The process starts with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) where human-readable rules are converted into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
+>>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 %
-Automated assertion checking happens within the DBMS, where \emph{SQL Assertions} are stored which have been written to logically express the formalisations of the UKHC in the SQL language. At each time step the \emph{Assertion Checking} process executes a query engine that evaluates the relevant assertions encoded with the assertion logic against the stored records and generates a pass or a fail verdict as an \emph{Output}.
+Automated assertion checks are executed within the DBMS, where \emph{SQL Assertions} are stored which express the formalisations of the UKHC in SQL. At each time step the \emph{Assertion Checking} process invokes a query engine that evaluates the relevant assertions against the stored records and generates a pass or a fail verdict as an \emph{Output}.
 
 
 
@@ -217,7 +223,7 @@ The technical challenge then becomes how to compare the data captured against th
 % KIE taken out as this is expressed also in the next para:
 % A database system, such as PostgreSQL, can record, access and perform assertion checks upon this state information quickly and reliably and is especially useful considering libraries that make use of geographical shape objects, e.g.\ PostGIS. 
 %
-Thus, we have implemented Assertion Checking as a PostgreSQL database with a PostGIS geospatial information system extension, which provides an extensive library of SQL-native spatial measurement functions. We chose these particular software products because they are open-source, and PostgreSQL implements powerful, high-performance table searching algorithms.
+Thus, we have implemented Assertion Checking as a PostgreSQL database with a PostGIS geospatial information system extension, which provides a comprehensive library of SQL-native spatial measurement functions. We chose these particular software products because they are open-source, and PostgreSQL implements powerful, high-performance table searching algorithms.
 % - in the order of hundreds of thousands to millions of records searched per second. 
 Real applications will involve the use of large data sets, so the performance of the underlying database engine is an essential factor in practice. % in achieving a practicable system.
 
@@ -231,7 +237,7 @@ Real applications will involve the use of large data sets, so the performance of
 % GC TODO replace references to fig:dbms_deployment
 
 % KIE taken out to shorten paper
-% The database management system (DBMS) receives data from the simulator (or other data source) containing an actor state vector of variables such as position, velocity and yaw angle of the vehicles and other road users (e.g. pedestrians). This data is then entered into a set of tables, and the safety assertions are applied to the data as one or more database queries (written in SQL) acting on the relation.
+% The database management system (DBMS) receives data from the simulator (or other data source) containing an actor state vector of variables such as position, velocity and yaw angle of the vehicles and other road users (e.g.\ pedestrians). This data is then entered into a set of tables, and the safety assertions are applied to the data as one or more database queries (written in SQL) acting on the relation.
 
 % Figure~\ref{fig:dbms_deployment} is a UML-style deployment diagram of the Data Capture and Assertion Checking functions using a PostgreSQL DBMS server. In fact, the server hosts both elements; the Data Capture function is implemented as a set of records that can be updated externally, e.g.\ by the Simulator or Experiment Instantiation functions; the Assertions Checking function is performed by the DBMS query engine by execution of SQL queries encoded with the assertion logic. 
 %, potentially as a stored procedure, that will typically run all relevant assertions sequentially at each time step. 
@@ -287,7 +293,6 @@ In this example the AV is on the left of the figure overtaking a parked vehicle 
 The figure shows an urban scene depicting a section of road network divided into \emph{lanelets} denoting legal division between driving lanes and any buildings in the area. 
 %
 Following one of the clauses in Rule 162 in UKHC we develop an assertion to determine whether the distance ahead is sufficient for a safe overtake manoeuvre (this assertion is called \emph{Safe Distance Ahead} (SDA)). 
-
 %
 %GC repeated above:
 % The inset shows annotation denoting the braking and thinking distances of the AV which can be treated as geographical object entities in the database and hence easily used for assertion checking. 
@@ -320,7 +325,7 @@ In this section we first identify the types of assertions that may exist. We the
 \end{figure}
 
 
-\subsection{Types of Assertions} \label{assertion_categories}
+\subsection{Types of Assertions} \label{assertion_categories}\todo{Mention this classification/these types as contribution?}
 
 The assertions to encode UKHC rules tend to fall into one of four principal types. Except for invariants, assertions are defined with respect to some \emph{assertion reference point} - a particular step of a captured data trace, defined by some reference condition which holds at a specified time step. The assertion is then defined as some spatio-temporal condition relative to the reference point, as shown in Figure~\ref{fig:categories_of_assertions}.
 
@@ -334,33 +339,36 @@ The four types of assertions are:
     \item Post-condition: A spatio-temporal phenomenon that must exist in the steps following the assertion reference point.
 \end{itemize}
 
-Pre- and post-conditions can be one of two sub-types:
+Pre- and post-conditions can be of one of two sub-types:
 \begin{itemize}
 	\item \textit{Temporal}: A time period preceding or following the assertion reference point, within which a specified condition holds. This is the temporal component of the overall spatio-temporal condition, e.g.:%. Examples include:
 	\begin{itemize}
-		\item \textit{Temporal pre-condition}: as a vehicle crosses a highway exit lane boundary (reference point) checking that the vehicle's indicators have been set continuously in a preceding period (e.g.\ 5s) (i.e.\ checking for unduly late or intermittent indications).
-		\item\textit{Temporal post-condition}: a highway exit assertion may check that if a vehicle starts indicating to leave at the exit lane, then it does enter the exit lane within a given time period (i.e.\ checking for unnecessarily early indications).
+		\item \textit{Temporal pre-condition}: as a vehicle crosses a highway exit lane boundary (reference point) checking that the vehicle's indicators have been set continuously in a preceding period (e.g.\ 5s) (i.e.\ checking to detect unduly late or intermittent indications).
+		\item\textit{Temporal post-condition}: a highway exit assertion may check that if a vehicle starts indicating to leave at the exit lane, then it does enter the exit lane within a given time period (i.e.\ checking to detect unnecessarily early indications).
 	\end{itemize}
 	
 	\item \textit{Physical}: A physical (e.g.\ spatial or state) condition that must be satisfied at a specified time(s) before or after the assertion reference point. This is the physical component of the overall spatio-temporal condition, e.g.:%. Examples include:
 	\begin{itemize}
-		\item \textit{Physical pre-condition}: a check that, as it passes the exit lane boundary, a vehicle's indicators were set at the last highway exit sign before the exit (i.e.\ checking for omitted indications).
-		\item \textit{Physical post-condition}: a check that if a vehicle is indicating to leave in the approach to an exit lane, then it does in fact leave the lane (i.e.\ this is a check for false or spurious indications).
+		\item \textit{Physical pre-condition}: a check that, as a vehicle passes the exit lane boundary, its indicators were set at the last highway exit sign before the exit (i.e.\ checking to detect omitted indications).
+		\item \textit{Physical post-condition}: a check that if a vehicle is indicating to leave in the approach to an exit lane, then it does in fact leave the lane (i.e.\ checking to detect false or spurious indications).
 	\end{itemize} 
 \end{itemize}
 
 % this following paragraph has not yet been revised, but should be updated to reflect the changes in the previous few paragraphs - TBD by Chris
 \subsection{Assertion Selection} \label{assertion_triggers}
-Identifying which assertions are relevant in a given situation is important to manage the performance of assertion checking and to ensure the output is meaningful. For example, assertions for highway driving are not applicable in urban or rural road environments. %, and may cause confusion if applied in inappropriate contexts. 
-Similarly, different assertions checking for mutually exclusive conditions will be guaranteed to generate errors unless the inappropriate assertions are filtered out. For example, checking that an AV is braking smoothly will inherently fail in a situation where it is required to accelerate. If assertions of this kind are not selected correctly, they will generate nuisance failure results. 
+Identifying which assertions are relevant in a given situation is important to manage the performance of assertion checking, which is  %performance of the simulator 
+particularly critical for runtime monitoring, and to ensure the output is meaningful. For example, assertions specifically for highway driving are not applicable in urban or rural road environments. %, and may cause confusion if applied in inappropriate contexts. 
+Similarly, different assertions checking for mutually exclusive conditions will be guaranteed to generate errors unless the inappropriate assertions are filtered out. For example, checking that an AV is braking smoothly will inherently fail in a situation where it is required to accelerate.\todo{Would the breaking not be a trigger, i.e.\ if breaking then smoothly?} If assertions of this kind are not selected correctly, they will generate nuisance failure results. 
 
-Filtering assertions can also improve %real-time 
-oracle throughput %performance of the simulator 
-when they are applied in a time-critical mode of operation, e.g. during simulation (see Section \ref{Assertions_at_Sim_Time}). If the assertion type can be embedded in its script (for example, in its header), then the assertion checking process in the testbench (see Figure~\ref{fig:SimulatorArchitecture}) can be set to check only assertions of a given type.
+% KIE: already covered above.
+%Filtering assertions can improve %real-time 
+%oracle throughput, which is  %performance of the simulator 
+%particularly critical for runtime monitoring. 
 
 Discrimination %or pre-selection
-of assertions can also be achieved by specifying `trigger conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant.
-\footnote{This is similar to typical practice in computer hardware verification \cite{tao2009}, where an assertion may take the form ``under $<$environment conditions$>$ if $<$trigger$>$ then $<$expectation$>$", where \textit{$<$environment conditions$>$} may be ``we are not in RESET mode" and \textit{$<$trigger$>$} may be ``we receive a request" and \textit{$<$expectation$>$}  may be ``an acknowledge signal is driven high sometime in the X next cycles".} 
+of assertions can be achieved by specifying 'environment conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant, e.g.\ highway versus urban or rural environments.\footnote{This is similar to typical practice in computer hardware design verification~\cite{tao2009}, where an assertion may take the form ``under $<$environment conditions$>$ if $<$trigger$>$ then $<$expectation$>$", where \textit{$<$environment conditions$>$} may be ``we are not in RESET mode" and \textit{$<$trigger$>$} may be ``we receive a request" and \textit{$<$expectation$>$}  may be ``an acknowledge signal is driven high in the next X clock cycles".} 
+In addition, encoding the assertion type will enable the assertion checking process (see Figure~\ref{fig:SimulatorArchitecture}) to check only assertions of a given type.
+%
 
 %Category codes for these types have been embedded in the header information of each assertion source code file. This allows the %simulator
 %test-bench system to select automatically which types of assertions to run, depending on the mode of operation of the Assertion Checking subsystem %during a simulation run 
@@ -377,7 +385,7 @@ of assertions can also be achieved by specifying `trigger conditions' based on t
 % \subsubsection{Interpretation of Natural Language UKHC Rules} 
 The UKHC comprises several hundred rules and guidelines, applicable to different categories of road user 
 % (including those on foot - pedestrians, cyclists, horse riders - as well as the usual cars, vans, or trucks and buses) 
-(e.g. pedestrians, cyclists, cars, trucks and buses) 
+(e.g.\ pedestrians, cyclists, cars, trucks and buses) 
 and covering a number of different aspects of road use. 
 % (including general driving advice, instructions for maintenance and repair of vehicles, and instructions for management of situations such as emergencies). 
 The UKHC rules are written entirely for human readers, and seek to offer guidance in common sense terms that any reader should understand clearly. For example, two rules of central interest to this paper relate to overtaking manoeuvres:
@@ -440,7 +448,7 @@ This approach involves converting the natural language text into a logical predi
     % \item \emph{Identify and extract a given UKHC rule clause.} 
 \noindent $i$) \emph{Identify and extract a given UKHC rule clause.} 
     \begin{itemize}
-    	\item A separate assertion will be required for every distinct subject-verb-object clause in the text; a given UKHC rule could easily require on the order of 5-10 separate assertions to be fully covered;
+    	\item A separate assertion will be required for every distinct subject-verb-object clause in the text; a given UKHC rule could easily require in the order of 5-10 separate assertions to be fully covered;
     	\item the clause must define a \emph{testable} requirement - some UKHC rules are (at least at present) not testable. [We discuss this issue further in Section \ref{discussion}.]
     \end{itemize} 
     % \item \emph{Write a natural language hypothesis that captures the safety property of the rule.} 
@@ -465,7 +473,7 @@ This approach involves converting the natural language text into a logical predi
     
 % \end{enumerate}
 
-As an example of the direct translation method, consider the following clause from UKHC Rule 258. The procedure could be applied as follows:
+As an example of the direct translation method, consider the following clause from UKHC Rule 258. The procedure could be applied as follows:\todo{Out of context and therefore rather hard to appreciate.}
 
 % \begin{itemize}
     % \item \emph{UKHC rule clause:}
@@ -538,7 +546,7 @@ The first two steps of this method are the same as for Method 1: identify the UK
 % \end{itemize}
 
 
-While the UKHC rule clause seems straightforward, the natural language actually encapsulates a complex judgement that a driver must make at the moment they begin an overtake manoeuvre. The driver must judge whether the distance between their vehicle and any oncoming vehicle in the adjacent road lane is sufficient to allow the manoeuvre to be completed safely. This is contingent on the (relative) speeds of the driver's vehicle (the AV), VBP and OV, line-of-sight distances to limits of view or obscuring obstacles such as bends in the road, blind summits, or road-side buildings, as well as the style of manoeuvre that the driver intends to perform - an `aggressive' overtake manoeuvre can probably be completed in less distance than a `relaxed' one~\cite{decastro2018counterexample, tkachenko2018line}.\footnote{The internal plans and intentions of an AV may not be available to the external validation system, so the definition of the assertions may need to make default assumptions about its intentions, or make a `worst case' test that checks against the most conservative case that can be assumed. For example, using the case of Overtaking, the assertion could assume that the AV was making a `relaxed' overtake manoeuvre, in which case an assertion might register a safety violation for anything less than large separation distances between the AV and oncoming vehicle at the start of the manoeuvre, even though the manoeuvre could probably be completed safely if a more urgent profile were performed.} There is a complex relationship between all the elements of this assertion that is quantitative in nature and hence an algebraic formula must be developed that expresses the assertion hypothesis. Such expressions must be developed by modelling the situation.
+While the UKHC rule clause seems straightforward, the natural language actually encapsulates a complex judgement that a driver must make at the moment they begin an overtake manoeuvre. The driver must judge whether the distance between their vehicle and any oncoming vehicle in the adjacent road lane is sufficient to allow the manoeuvre to be completed safely. This is contingent on the (relative) speeds of the driver's vehicle (the AV), VBP and OV, line-of-sight distances to limits of view or obscuring obstacles such as bends in the road, blind summits, or road-side buildings, as well as the style of manoeuvre that the driver intends to perform - an `aggressive' overtake manoeuvre can probably be completed in less distance than a `relaxed' one~\cite{decastro2018counterexample, tkachenko2018line}.\footnote{The internal plans and intentions of an AV may not be available to the external validation system, so the definition of the assertions may need to make default assumptions about its intentions, or make a `worst case' test that checks against the most conservative case that can be assumed. For example, using the case of overtaking, the assertion could assume that the AV was making a `relaxed' overtake manoeuvre, in which case an assertion might register a safety violation for anything less than large separation distances between the AV and oncoming vehicle at the start of the manoeuvre, even though the manoeuvre could probably be completed safely if a more urgent profile were performed.} There is a complex relationship between all the elements of this assertion that is quantitative in nature and hence an algebraic formula must be developed that expresses the assertion hypothesis. Such expressions must be developed by modelling the situation.
 
 %deriving formulae for distances covered by the AV as a function of the relative position and velocity of the other actors in the scenario (VBP and OV) in each segment of the manoeuvre. The model divides the whole overtaking manoeuvre into three distinct phases
 
@@ -560,9 +568,10 @@ The analysis identifies several key parameters that characterise the overtaking 
 \begin{itemize}
     \item \emph{Stopping distance} (SD) is defined as the sum of the `thinking distance' and `braking distance' of the vehicle (assuming it has a human driver). % as defined in UKHC Rule 126 and illustrated in Figure~\ref{fig:assertion_database_annotated}.
     % 
-    A table of the typical stopping distances for travelling speeds ($v$) between 20 mph - 70 mph is provided with Rule 126 in the UKHC.
+    A table of the typical stopping distances for travelling speeds ($v$) between 20~mph - 70~mph is provided with Rule 126 in the UKHC.
     %
-    Equation~\ref{DS_equation_rule126} is a regression formula derived from this table to estimate the stopping distance ($m$) given the vehicle speed ($mph$). %\footnote{Refer to \url{https://www.gov.uk/guidance/the-highway-code/general-rules-techniques-and-advice-for-all-drivers-and-riders-103-to-158}} 
+    Equation~\ref{DS_equation_rule126} is a regression formula derived from this table to estimate the stopping distance ($m$)\todo{``in metres'' as in the runtime monitoring section?} given the vehicle speed ($mph$).\todo{``in $m$'' to distinguish $m$ from $v$?} 
+%\footnote{Refer to\url{https://www.gov.uk/guidance/the-highway-code/general-rules-techniques-and-advice-for-all-drivers-and-riders-103-to-158}} 
     The coefficients are: $a=0.300$, $b=0.058$, $c=-0.011$ and $d=0.015$.
     
 \begin{equation} 
@@ -570,7 +579,7 @@ The analysis identifies several key parameters that characterise the overtaking 
 \text{SD} = \underbrace{av }_{\substack{\text{Thinking} \\ \text{Distance}}} + \underbrace{b + cv + dv^2}_{\substack{\text{Braking} \\ \text{Distance}}}
 \end{equation}
 
-    \item \emph{Danger Space} (DS) is an area projected forward in the direction of travel with a length equal to the stopping distance and a width equal to that of the vehicle. The overall formula for SDA incorporates the DS of the OV.
+    \item \emph{Danger Space} (DS) is an area projected forward in the direction of travel with a length equal to the stopping distance and a width equal to that of the vehicle. The overall formula for SDA incorporates the DS of the OV.\todo{adjust DS def in appendix to include width}
     %
     SD varies with vehicle speed, making the DS a function of speed, therefore intuitively as the speed increases the DS ahead of the vehicle will project further forward.
     
@@ -583,17 +592,19 @@ The analysis identifies several key parameters that characterise the overtaking 
     \item \emph{Cut-in Angle} ($\theta$) is the steering angle taken during the cut-in move.
 \end{itemize}
 
-Taken as an ensemble, the last four parameters in the above list define a \emph{driving profile} for the manoeuvre, which characterise a level of urgency or aggression associated with the manoeuvre. An `aggressive' profile might be taken as one which has a low pull-out clearance, high pull-out angle, low cut-in clearance and high cut-in angle, indicating a `sharp and close' manoeuvre taken by the AV around the VBP. A more `relaxed' driving profile may have larger clearances and lower steering angles. Various profiles of manoeuvre with different characteristic values are assessed in the experimental work discussed later. It should be noted that other UKHC rules place (at least qualitative) restrictions on these parameters to ensure safe driving behaviour (see the fourth bullet-point of Rule 163.% in Section \ref{interp_nat_lang_UKHC_rules}, and also Section \ref{sim_case_study}). 
+Taken as an ensemble, the last four parameters in the above list define a \emph{driving profile} for the manoeuvre, which characterises a level of urgency or aggression associated with the manoeuvre. An `aggressive' profile might be taken as one which has a low pull-out clearance, high pull-out angle, low cut-in clearance and high cut-in angle, indicating a `sharp and close' manoeuvre taken by the AV around the VBP. A more `relaxed' driving profile may have larger clearances and lower steering angles. Various profiles of manoeuvre with different characteristic values are assessed in the experimental work discussed later. It should be noted that other UKHC rules place (at least qualitative) restrictions on these parameters to ensure safe driving behaviour (see the fourth bullet-point of Rule 163.% in Section \ref{interp_nat_lang_UKHC_rules}, and also Section \ref{sim_case_study}). 
 
 % GC this is confusing...
-As with the problem of direct translation of the UKHC rules, the approach aimed to develop a model using the concepts of the natural language of the rule rather than by other parameters, for example time-to-collision, which has been found in human factors studies to be the most significant parameter characterising overtaking manoeuvres \cite{lenard2018, Chen2015}. Hence the model developed for the Safe Distance Ahead measurement differs to many that have been developed for analysis of overtaking manoeuvres, which aim to capture the decision making of the driver rather than the characteristics of the legal code of behaviour that is essentially an independent observer's perspective on the scenario.
+As with the problem of direct translation of the UKHC rules, the approach aimed to develop a model using the concepts of the natural language of the rule rather than by other parameters, for example time-to-collision, which has been found in human factors studies to be the most significant parameter characterising overtaking manoeuvres \cite{lenard2018, Chen2015}. Hence the model developed for the Safe Distance Ahead measurement differs to\todo{differs from?} many that have been developed for analysis of overtaking manoeuvres, which aim to capture the decision making of the driver rather than the characteristics of the legal code of behaviour that is essentially an independent observer's perspective on the scenario.
 
-\subsubsection{Geospatial Database for Assertion Checking}
-Analysis of the overtaking manoeuvre problem fits neatly into the geospatial database framework for assertion checking. The vehicles can be represented as shape objects using the PostGIS system extension which allows for logical tests and measurement metrics to be efficiently calculated between shapes. An Entity Relation Diagram (ERD), Figure~\ref{fig:erd}, shows the variables within the database and the relationships between them \footnote{See \url{https://en.wikipedia.org/wiki/Entity-relationship\_model} for an explanation of \textit{crow's foot} notation.}. 
+\subsection{Geospatial Database for Assertion Checking}\todo{elevated heading one up}
+Analysis of the overtaking manoeuvre problem fits neatly into the geospatial database framework for assertion checking. The vehicles can be represented as shape objects using the PostGIS system extension which allows for logical tests and measurement metrics to be efficiently calculated between shapes. An Entity Relation Diagram (ERD), Figure~\ref{fig:erd}, shows the variables within the database and the relationships between them\footnote{See \url{https://en.wikipedia.org/wiki/Entity-relationship\_model} for an explanation of \textit{crow's foot} notation.}. 
 
-For each log file there exists an environment table containing map information, which in this case is based on the openDrive\footnote{\url{https://www.asam.net/standards/detail/opendrive/}} and lanelet formats. From the lanelet data we derive a table containing useful entries such as lane width and orientation for the environment. Data captured from the simulation (or real-time monitor), contains a state vector for the actors in $data\_capture.actor\_state$ which contains position and orientation information. From this captured data table we can calculate dynamic state information, that is information changing over time (e.g. velocity, acceleration) or with vehicle speed (e.g. braking distance). 
+For each log file there exists an environment table containing map information, which in this case is based on the openDrive\footnote{\url{https://www.asam.net/standards/detail/opendrive/}} and lanelet formats. From the lanelet data we derive a table containing useful entries such as lane width and orientation for the environment. Data captured from the simulation (or real-time monitor), contains a state vector for the actors in $data\_capture.actor\_state$ which contains position and orientation information. From this captured data table we can calculate dynamic state information, that is information changing over time (e.g.\ velocity, acceleration) or with vehicle speed (e.g.\ braking distance). 
 
-Further insight to the driving situation can be derived when combining actor state information with information about the environment. For example, driving lane orientation ($lanelets.lane\_orientation$) can be used to calculate the vehicle heading angle relative to the driving lane, to infer the cut-in or pull-out angles ($state\_dynamics.pull\_out\_angle$) required for the Safe Distance Ahead calculation. The final $assertions$ table is where the Safe Distance Ahead output can be written and stored as a Boolean pass/fail result.
+Further insight to the driving situation can be derived when combining actor state information with information about the environment. For example, driving lane orientation ($lanelets.lane\_orientation$) can be used to calculate the vehicle heading angle relative to the driving lane, to infer the cut-in or pull-out angles ($state\_dynamics.pull\_out\_angle$) required for the Safe Distance Ahead calculation. The final $assertions$ table is where the Safe Distance Ahead output can be written and stored as a Boolean pass/fail result.\todo{The SDA is a number, the result of the check is a Bool. Please clarify.}
+% KIE: There is a jump here from SDA to the assertion that checks the SDA - both are different and we've not yet introduced the _assertion_, but instead we've focused on the formula (as in the Appendix).
+
 
 \begin{figure}
     \centering
@@ -619,15 +630,17 @@ in a variety of ways, both during simulation and in runtime monitoring:
 		\item \emph{Simulation Control (Halting)}: Assertions can be checked as the simulation runs, and a simulation could be halted after a major safety violation if there is little value in continuing with a simulation beyond that point.
 		
 		\item \emph{Operator Warnings}: As above, assertions can be checked as the simulation runs, but instead of halting the operator can be warned of the occurrence, allowing them to exercise their judgement on whether to continue.
+		%
+		We anticipate that this may be the best policy for minor safety violations or events such as collisions which may lead to secondary effects like non-deterministic behaviour in the simulator~\cite{chance2021}, where the log file data might be degraded or unrepeatable following the event. 
+%
+%The simulation may need to be halted, but pragmatically we believe this decision is probably best left for test engineers to decide. However, the use of assertions to provide operator warnings could be a beneficial mode of use.
 		
-		We anticipate that this may be the best policy for minor safety violations or events such as collisions which may lead to secondary effects like non-deterministic behaviour in the simulator \cite{chance2021}, where the log file data might be degraded or unrepeatable following the event. The simulation may need to be halted, but pragmatically we believe this decision is probably best left for test engineers to decide. However, the use of assertions to provide operator warnings could be a beneficial mode of use.
+		\item \emph{Simulation Log Annotation}:\todo{for near misses also?} for negligible safety assertions failures, or for non-safety checks such as service performance monitoring, assertions could be checked as the simulation runs. But, instead of halting or providing warnings, assertion failures could simply result in annotations being added to the simulation log data, indicating that an assertion failed at a given time step but otherwise having no other externally observable effect. The log can then be analysed retrospectively after the simulation run has finished.
 		
-		\item \emph{Simulation Log Annotation}: for negligible safety assertions failures, or for non-safety checks such as service performance monitoring, assertions could be checked as the simulation runs. But, instead of halting or providing warnings, assertion failures could simply result in annotations being added to the simulation log data, indicating that an assertion failed at a given time step but otherwise having no other externally observable effect. The log can then be analysed retrospectively after the simulation run has finished.
-		
-		\item \emph{Retrospective analysis}: Instead of checking assertions as the simulation runs, the captured data can be recorded and passed to the assertion checking database after simulation has finished, to analyse an AV's performance retrospectively. To date this is the mode in which we have been using the assertion-checking facility.
+		\item \emph{Retrospective analysis}: Instead of checking assertions as the simulation runs, the captured data can be recorded and passed to the assertion checking database after simulation has finished, to analyse an AV's performance retrospectively. %To date this is the mode in which we have been using the assertion-checking facility.
 	\end{itemize}
 
-	The simulation experiments with assertions presented in Section \ref{Experimental_scenario} were all run retrospectively, as they were a simple demonstration of concept rather than full implementation of the above modes of use. %In the ongoing development of the simulation pipeline at Bristol Robotics Laboratory, we are focusing on the retrospective mode of use initially, as this represents the least complex software development option, and will then proceed to enabling dynamic checking during simulation time once this basic mode of operation has been demonstrated.\\ 
+	The simulation experiments with assertions presented in Section~\ref{Experimental_scenario} were all run retrospectively, as they serve as demonstration of concept rather than full implementation of all the above modes of use. %In the ongoing development of the simulation pipeline at Bristol Robotics Laboratory, we are focusing on the retrospective mode of use initially, as this represents the least complex software development option, and will then proceed to enabling dynamic checking during simulation time once this basic mode of operation has been demonstrated.\\ 
 
 	% \item \underline{\textbf{Modes of use during runtime monitoring:}}
 
@@ -637,7 +650,7 @@ in a variety of ways, both during simulation and in runtime monitoring:
 	\begin{itemize}
 		\item \emph{Warnings and Alarms}: Assertion checks can be used to raise warnings or alarms to human vehicle operators, to draw their attention or request them to take control over the vehicle if safety violations occur. Additionally these warnings can be used to indirectly assess the performance of subsystems during operation to provide development feedback in future versions of the system.
 		
-		\item \emph{Triggering safety functions}: Detection of assertion violations can be used to initiate automated pre-planned risk mitigation plans as a safety function, where such occurrences present an immediate and sufficiently high risk that such a reaction is warranted ~\cite{RuntimeReview}. Having a ground truth reference to judge on monitored data at runtime can be challenging. Assertion failures can provide a reliable verdict to execute appropriate risk mitigation plans.
+		\item \emph{Triggering safety functions}: Detection of assertion violations can be used to initiate automated pre-planned risk mitigation plans as a safety function, where such occurrences present an immediate and sufficiently high risk that such a reaction is warranted~\cite{RuntimeReview}. Having a ground truth reference to judge on monitored data at runtime can be challenging. Assertion failures can provide a reliable verdict to execute appropriate risk mitigation plans.
 		
 		\item \emph{Self-adaptation}: using assertion checking during runtime can be combined with measurements of key and safety performance indicators (KPIs, SPIs)~\cite{Koopman2020} or other scoring functions to help the AV %(or autonomous systems more generally) 
 		to actively learn and reliably adapt their behaviour during operation~\cite{Kang2020}.
@@ -649,15 +662,24 @@ in a variety of ways, both during simulation and in runtime monitoring:
 
 
 \section{Experimental Case Studies} \label{Experimental_scenario}
-As an aid to developing the methods and techniques described previously, we present worked examples of assertions and measurements applied both to simulation data and real-time video footage. The experiments were early stages of work in developing the methodology, and were not developed by all the methods described in this paper, nor possess all the features described herein, but they did guide the development of the methodology and we believe that they do prove the general concept and utility of the approach. The use of methods such as modelling, and the need for features such as the use of standard procedures/library functions, all emerged as direct consequences of these experiments.
 
-We chose two case studies inspired from a challenging overtaking scenario; the first aims at demonstrating the use of assertions in simulation testing, and the second shows how assertions can be used as SPIs to assess the safety performance of an AV or other road user at runtime.
+We developed early worked examples of assertions and measurements, and applied these to both simulation data and real-time video footage.
+%
+%The experiments were early stages of work in developing the methodology, and were not developed by all the methods described in this paper, nor possess all the features described herein, but they did guide the development of the methodology and we believe that they do prove the general concept and utility of the approach.
+%
+%
+While these examples initially served as an aid to shaping the methods and techniques described previously, we use them here to illustrate the general concept and utility of the proposed approach.
+%
+The use of methods such as modelling, and the need for features such as the use of standard procedures/library functions, all emerged as direct consequences of developing these examples.
+
+In the following we present two example case studies inspired from an overtaking scenario; the first aims at demonstrating the use of assertions in simulation testing, and the second shows how assertions can be used as SPIs to assess the safety performance of an AV or other road user at runtime.
 
 \subsection{Experimental Scenario} % (from the NHTSA/CARLA Challenge)}
 \label{carla_challenge}
-To demonstrate the functionality of the assertion based safety validation process, we chose to consider an overtaking scenario similar to Scenario 6 of the driving situations in the NHTSA\footnote{\url{https://www.nhtsa.gov/}} pre-crash typology~\cite{nhtsa_precrash} that were published in the CARLA Challenge\footnote{\url{https://carlachallenge.org/}} The corresponding UKHC rules \cite{highwayCode} that apply to this scenario are Rules 162-169. Specifically, the scenario involves overtaking on a single-lane road where the test vehicle must perform a lane change to avoid a parked or broken down vehicle. 
+
+To demonstrate the functionality of the assertion based safety validation process, we consider an overtaking scenario similar to Scenario 6 of the driving situations in the NHTSA\footnote{\url{https://www.nhtsa.gov/}} pre-crash typology~\cite{nhtsa_precrash} that were published in the CARLA Challenge.\footnote{\url{https://carlachallenge.org/}} The corresponding UKHC rules~\cite{highwayCode} that apply to this scenario are Rules 162-169. Specifically, the scenario involves overtaking on a single-lane road where the test vehicle must perform a lane change to avoid a parked or broken down vehicle. 
 % , Figure~\ref{fig:carla_challenge_NHTSA_task6_LHS}. 
-The vehicle must leave sufficient gap to the vehicle it is overtaking and also not endanger any vehicles that are oncoming.
+The vehicle must leave a sufficient gap to the vehicle it is overtaking and also not endanger any vehicles that are oncoming.
 
 % \begin{figure}
 %     \centering
@@ -668,19 +690,22 @@ The vehicle must leave sufficient gap to the vehicle it is overtaking and also n
 
 %This scenario is challenging for the autonomous vehicle as there are competing goals firstly to ensure safety and avoid accidents but also to make reasonable progress along the road network given the conditions, i.e. maintain \textit{liveness}. There is also significant challenge in validating vehicle safety in such a scenario, whether in the real world or in a simulation. For the overtaking scenario several parameters need to be monitored in order to check each assertion. 
 
-In the simulation and the real-time video analysis experiments, we chose to assess clauses in two different UKHC overtaking rules. The simulation study developed an assertion for the first bullet-item of Rule 162 (as discussed in Section \ref{interp_nat_lang_UKHC_rules} 
+In the simulation and the real-time video analysis experiments, we chose to assess clauses in two different UKHC overtaking rules. The simulation study developed an assertion for the first bullet-item of Rule 162 (as discussed in Section~\ref{interp_nat_lang_UKHC_rules}). 
 % and also in Section \ref{model_based_analysis}
-), developing an assertion check to determine whether a Safe Distance Ahead existed for an AV performing an overtake manoeuvre on a single-lane road, as it began to cross the road centre line at the start of the manoeuvre. The real-time safety validation study developed video analysis measurements that would support assertion checks against the fourth bullet-item of Rule 163 %
-(see the italicised clause in Section \ref{interp_nat_lang_UKHC_rules}), 
+The assertion checks whether a Safe Distance Ahead exists for an AV performing an overtake manoeuvre.
+%
+The real-time safety validation study developed video analysis measurements that would support assertion checks against the fourth bullet-item of Rule 163 
+(see the italicised clause in Section \ref{interp_nat_lang_UKHC_rules}).
 % ; the relevant clause is italicised in that section for ease of identification) %
-while the measurements were not developed fully into assertions in SQL code, the study does capture the information essential to the assertion hypothesis for that UKHC clause (the Cut-in Clearance distance as discussed in Section \ref{model_based_analysis}), and would be generated as a derived variable in the database using a standard procedure function as discussed previously.
+While the measurements were not developed fully into assertions in SQL code, the study does capture the information essential to the assertion hypothesis for that UKHC clause (the Cut-in Clearance distance as discussed in Section~\ref{model_based_analysis}), which can be generated as a derived variable in the database using a standard procedure function as discussed previously.
 
 \subsection{Simulation case study}  \label{sim_case_study}
-In the simulation case study we developed an assertion check for Safe Distance Ahead at the start of overtaking, using the expression for SDA discussed earlier in Section \ref{model_based_analysis}. We ran the simulation using a real road map segment (of a road in Bristol, UK, part of an AV test route being considered for the ROBOPILOT project\footnote{See URL: \url{http://www.bristol.ac.uk/tsl}}).
+We developed an assertion check for Safe Distance Ahead at the start of overtaking on a single-lane road, just as the vehicle begins to cross the road centre line. The assertion uses the expression for SDA discussed earlier in Section~\ref{model_based_analysis}. 
 
 \subsubsection{Environment model}
-The map segment used for the simulation case study is shown in 
-Figure~\ref{fig:assertion_database_annotated}. For the sake of simplicity we ran the simulation on one of the straight sections of road, which avoided having to take considerations such as obscuring objects or limited lines of sight into account. The road layout model was developed using the Road Runner software package, from an OpenDrive environmental model developed from Open Street Map (OSM) data obtainable freely from UK government sources (Ordnance Survey).\footnote{\url{https://os.openstreetmap.org/}} 
+The simulation used the map segment shown in Figure~\ref{fig:assertion_database_annotated}, which depicts a road in Bristol, UK, that is part of an AV test route being considered for the ROBOPILOT project.\footnote{\url{https://www.robopilot.co.uk/}} 
+%
+For the sake of simplicity the simulation was executed on one of the straight sections of road, which avoided having to take considerations such as obscuring objects or limited lines of sight into account. The road layout model was developed using the Road Runner software package, from an OpenDrive environmental model developed from Open Street Map (OSM) data obtainable freely from UK government sources (Ordnance Survey).\footnote{\url{https://os.openstreetmap.org/}} 
 
 % \begin{figure}[htp]
 %     \centering
@@ -689,40 +714,68 @@ Figure~\ref{fig:assertion_database_annotated}. For the sake of simplicity we ran
 %     \label{fig:lanelets}
 % \end{figure} 
 
-As discussed in Section \ref{geospatial_database}, lane polygons are required for efficient measurement of vehicle lateral movement within, and partial occupancy of, road lanes; in this simulator case study we used a lane partitioning concept termed \textit{lanelets}~\cite{lanelets2014}, which allows exactly this level of description of the scene. We used an open-source software conversion package~\cite{lanelets_to_openDrive} to generate the lanelet data from the openDrive~\cite{opendrive} model, dividing the roads into individual lanes and lanelets. This data was imported into the PostgreSQL database as a table of lane segment polygon objects ($lanelets.lanelet\_shape$) covering the whole road layout used for the study. Additionally, information about lane boundaries and orientations, required to identify road orientation and running lane directions, was appended to this data. 
+
+% As discussed in Section \ref{geospatial_database}, lane polygons are required for efficient measurement of vehicle lateral movement within, and partial occupancy of, road lanes; in this simulator case study we used a lane partitioning concept termed \textit{lanelets}~\cite{lanelets2014}, which allows exactly this level of description of the scene. We used an open-source software conversion package~\cite{lanelets_to_openDrive} to generate the lanelet data from the openDrive~\cite{opendrive} model, dividing the roads into individual lanes and lanelets. This data was imported into the PostgreSQL database as a table of lane segment polygon objects ($lanelets.lanelet\_shape$) covering the whole road layout used for the study. Additionally, information about lane boundaries and orientations, required to identify road orientation and running lane directions, was appended to this data. 
+
+As discussed in Section~\ref{geospatial_database}, lane polygons are required for efficient measurement of vehicle lateral movement within, and partial occupancy of, road lanes. The \textit{lanelets}~\cite{lanelets2014} lane partitioning concept allows exactly this level of description of the scene. 
+%
+We used an open-source software conversion package~\cite{lanelets_to_openDrive} to generate the lanelet data from the OpenDrive~\cite{opendrive} model, dividing the roads into individual lanes and lanelets. This data was imported into the PostgreSQL database as a table of lane segment polygon objects ($lanelets.lanelet\_shape$ in \ref{fig:erd}) covering the whole road layout used for the study. Additionally, information about lane boundaries and orientations, required to identify road orientation and running lane directions, was appended to this data. 
 %
 Figure~\ref{fig:assertion_database_annotated} shows an example of the lanelet shape object overlaid onto a road network. The blue boxes represent the dynamic actors, which in our case are the vehicles involved in the overtaking scenario. 
 %
-All of the above world map information was pre-loaded statically into the database, for use by the SQL query engine running the assertions queries.%, see Section \ref{generic_sim_system} and Figure~\ref{fig:SimulatorArchitecture}.
+All of the above world map information was pre-loaded statically into the database, for use by the SQL query engine running the assertion checks.
+%, see Section \ref{generic_sim_system} and Figure~\ref{fig:SimulatorArchitecture}.
 
-\subsubsection{Overtaking Profiles} \label{overtaking_profiles}
+\subsubsection{Overtaking profiles} \label{overtaking_profiles}
 The intent of the Safe Distance Ahead assertion we developed was to assess whether sufficient distance ahead of the simulated AV was available at the initial decision point of the manoeuvre for it to complete an overtaking manoeuvre safely. However, in practice, sufficiency of the distance ahead is dependent in part on the driving profile that the AV controller has selected to perform (see Section \ref{model_based_analysis}). But, if the safety validation exercise is to be performed as an independent `black-box' measurement of AV behaviour (as is often the case in many practical development projects), the internal plans of the AV may be unavailable to the system testers, and we conducted our experiment in such a manner as to reflect such a situation.
 
 %\footnote{Furthermore, it is always possible for the AV to change its profile in mid-manoeuvre, thereby shortening the remaining distance required, which can be applied as an emergency action if the risk of the situation should increase for any reason. So, the assessment whether there is a safe distance ahead in any given situation at the start of an overtake manoeuvre is dependent in part on the internal plans of the AV at the time, and must be made without full knowledge of exactly how the manoeuvre will play out after the Safe Distance Ahead assessment has been made.} 
 
-The simulated AV in the experiment was programmed to follow a preset trajectory, which was not used to influence the choice of parameters in the Safe Distance Ahead assertion expression. We developed three different variations of the SDA assertion, each calculating the safe distance ahead using the formula developed from the modelling analysis %(see Section \ref{model_based_analysis}), 
-but which assumed three different driving profiles corresponding to three different levels of urgency of overtake manoeuvre (called `relaxed', `hurried' and `aggressive'). The levels of urgency were based loosely on similar concepts developed in other Human Factors research~\cite{Chen2015,wang2019analysis}, which had equated level or degree of urgency with \emph{Time To Collision} (TTC). These sources identified that a TTC of approximately two seconds corresponds approximately to a medium degree of urgency, which we have labelled `hurried'. These three variants of the SDA assertion were then applied to the simulation data produced by the preset AV controller to see whether which SDA situation that occurred in each simulation run was acceptable for which driving profile.
+Although the simulated AV in the experiment was programmed to follow a preset trajectory, this information  was not used to influence the choice of parameters in the Safe Distance Ahead assertion expression. We developed three different variations of the SDA assertion, each calculating the safe distance ahead using the formula developed from the modelling analysis %(see Section \ref{model_based_analysis}), 
+but which assumed three different driving profiles corresponding to three different levels of urgency of overtake manoeuvre (called `relaxed', `hurried' and `aggressive').\todo{Why not low/medium/high urgency?} The levels of urgency were based loosely on similar concepts developed in other Human Factors research~\cite{Chen2015,wang2019analysis}, which had equated the level or degree of urgency with \emph{Time To Collision} (TTC). These sources identified that a TTC of approximately two seconds corresponds approximately to a medium degree of urgency, which we have labelled `hurried'. These three variants of the SDA assertion were then applied to the simulation data produced by the preset AV controller to determine which of the driving profiles would trigger the SDA assertion.\todo{more technical detail needed here}
 
-\subsubsection{Simulator system details}
+\subsubsection{Simulator system}
 
-The simulator used for the case study was a minimal version of the generic simulator testbench architecture described in Section \ref{generic_sim_system}. The system used the CARLA simulation software \cite{CarlaSimulator}, an open-source autonomous driving simulation environment. Dynamic state data generated by the simulator was passed to a PostgreSQL database as shown in Figure~\ref{fig:SimulatorArchitecture}, with the SQL assertion script being applied in retrospective analysis mode as discussed in Section \ref{Assertions_at_Sim_Time}.
+The setup used for the case study followed the assertion monitoring architecture described in Section~\ref{generic_sim_system}. 
+%
+The system used the CARLA simulation software~\cite{CarlaSimulator}, an open-source autonomous driving simulation environment. Dynamic state data generated by CARLA for the simulated actors was passed to a PostgreSQL database as shown in Figure~\ref{fig:SimulatorArchitecture}, with the SQL assertion check being applied in retrospective analysis mode as discussed in Section~\ref{Assertions_at_Sim_Time}.
 
-The paths followed by each simulated vehicle (AV, VBP, OV - see Figure~\ref{fig:assertion_database_annotated}) were preset to follow a series of way-points. Using fixed vehicle paths facilitates evaluation of the assertion, as it made the test repeatable\footnote{Test repeatability is needed to ensure trust in the simulated assertion results and also to ensure software bugs are found and fixed efficiently. Repeatability relies on deterministic simulation code and hardware. If the \emph{simulation variance} is within tolerance then verification coverage results are stable and if an assertion fails the test can be re-run to provide the same output as described in~\cite{chance2021}.} and allowed us to see how different characteristic parameters affected the assertion checking (see Section~\ref{sim_results} for details). 
+%CARLA generates dynamic state information about the simulation actors, which is made available via an API from where it is transferred into the PostgreSQL database.
+%and Python scripts were written to transfer data from the simulator into the PostgreSQL database on a step-by-step basis.
 
-CARLA generates dynamic state information about the simulation actors, which is made available via an API, and Python scripts were written to transfer data from the simulator into the PostgreSQL database on a step-by-step basis.
+\todo[inline]{The next section should clearly identify the parameters to be varied and those kept constant during simulation, i.e. fixed trajectories for all vehicles, but three driving profiles to be varied and three starting positions of OV resulting in three different Req. DA values.}
 
-\subsubsection{Simulation runs}
 
-Three simulation runs were executed to generate simulation data traces for assessment by assertion checking. In each case, the trajectory of the AV remained unchanged, overtaking the stationary VBP and cutting back into the running lane with the same pull-out and cut-in clearance distances each time. The OV trajectory simply moved along the oncoming lane at constant speed, but the starting position of the Oncoming Vehicle was varied so as to generate three different scenarios of i) a safe overtake manoeuvre, ii) a near miss and iii) a dangerous overtake manoeuvre resulting in a collision. The simulation data was logged and transferred into the assertion database as three distinct subsets of samples within the main captured data tables. These were then analysed retrospectively after the end of the simulation run, using assertions designed to assess whether (and how well) the AV performed overtake manoeuvres of differing profiles (as discussed in Section \ref{model_based_analysis}). These results are discussed below.
+\subsubsection{Simulation experiments}\todo{revise and tidy up this section}
 
-\subsubsection{Simulation Assertion Checking Results} \label{sim_results}
-In this section we discuss the outcomes of the simulation safety validation analysis, and the implications on the methodology of developing and using assertions.
+Parameters to be taken into account .... to include path of vehicles, driving profiles and OV starting positions.
 
-The three simulation runs described previously produced simulation data logs that were subjected to assertion checking to ensure that a safe distance ahead existed as the AV began to cross the road centre line into the oncoming lane at the start of the overtake manoeuvre. However, there are several factors conditioning the test results that need to be taken into account. 
+The paths for each simulated vehicle (AV, VBP, OV - see Figure~\ref{fig:assertion_database_annotated}) were preset to follow a series of way-points. Using fixed vehicle paths facilitates evaluation of the assertion, as it makes the test repeatable within a deterministic simulation environment~\cite{chance2021}. In addition, this setup allowed us to perform assertion checking for the three different driving profiles over the fixed paths. % (see Section~\ref{sim_results} for details). 
+
+Three simulation runs were executed for each driving profile to generate simulation data traces. 
+%
+In each case, the trajectory of the AV remained unchanged, overtaking the stationary VBP and cutting back into the running lane with the same pull-out and cut-in clearance distances each time. The OV simply moved along the oncoming lane at constant speed, but the starting position of the OV was varied so as to generate three different scenarios of i) a safe overtake manoeuvre, ii) a near miss and iii) a dangerous overtake manoeuvre resulting in a collision.\todo{more technical data required, i.e.\ what is safe, a near miss, ...?} 
+
+
+
+The three simulation runs described previously produced simulation data logs that were subjected to assertion checking to ensure that a Safe Distance Ahead existed as the AV began to cross the road centre line into the oncoming lane at the start of the overtake manoeuvre. However, there are several factors conditioning the test results that need to be taken into account. 
 %
 Comparison of the three variations of test against the simulated scenarios (safe, near miss and collision) produces nine distinct tests. 
 
-The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehicle approximated to a medium level of urgency, in terms of the pull-out and cut-in clearance distances achieved (about 2s time to collision at the simulated speeds of the vehicles). This meant that for a set of tests having a range of urgency levels centred on the medium urgency case, one should get a sliding scale of test case passes and failures as the test case variants are applied to decreasing initial separation distances between AV and OV in the three simulation logs. The results of the tests are shown in Table \ref{Overtaking_Profiles}, which shows the required separation distances at the start of each manoeuvre (determined by the modelling analysis formula described in Section \ref{model_based_analysis}), the Distance Ahead that was achieved in each simulation run, and thence the pass/fail assertion results of comparing the two distances in each case.
+% <<<<<<< HEAD
+% The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehicle approximated to a medium level of urgency, in terms of the pull-out and cut-in clearance distances achieved (about 2s time to collision at the simulated speeds of the vehicles). This meant that for a set of tests having a range of urgency levels centred on the medium urgency case, one should get a sliding scale of test case passes and failures as the test case variants are applied to decreasing initial separation distances between AV and OV in the three simulation logs. The results of the tests are shown in Table \ref{Overtaking_Profiles}, which shows the required separation distances at the start of each manoeuvre (determined by the modelling analysis formula described in Section \ref{model_based_analysis}), the Distance Ahead that was achieved in each simulation run, and thence the pass/fail assertion results of comparing the two distances in each case.
+% =======
+The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehicle approximated to a medium level of urgency, in terms of the pull-out and cut-in clearance distances achieved (about 2s time to collision at the simulated speeds of the vehicles). This meant that for a set of tests having a range of urgency levels centred on the medium urgency case, one should get a sliding scale of test case passes and failures as the test case variants are applied to decreasing initial separation distances between AV and OV in the three simulation logs. 
+
+
+% KIE: No need to describe the process again.
+%The simulation data was logged and transferred into the assertion database as three distinct subsets of samples within the main captured data tables. These were then analysed retrospectively after the end of the simulation run, using assertions designed to assess whether (and how well) the AV performed overtake manoeuvres of differing profiles (as discussed in Section \ref{model_based_analysis}). These results are discussed below.
+
+\subsubsection{Simulation-based assertion checking results} \label{sim_results}
+%In this section we discuss the outcomes of the simulation-based safety validation analysis, and the implications on the methodology of developing and using assertions.
+
+The results of all tests are provided in Table~\ref{Overtaking_Profiles}, which shows the required separation distances at the start of each manoeuvre (determined by the modelling analysis formula described in Section~\ref{model_based_analysis}), the Distance Ahead that was achieved in each simulation run, and hence the pass/fail assertion results of comparing the two distances in each case.
+% >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 
 \begin{table}[h]
 \centering
@@ -730,7 +783,7 @@ The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehic
 \hline
 \\
 \multirow{3}{*}{\textbf{Scenario}} & \textbf{Achieved} & \multicolumn{3}{c}{
-\textbf{Distance Ahead required by profile (m)}}\\ %GC edit for arxiv
+\textbf{Required Distance Ahead by profile (m)}}\\ %GC edit for arxiv
 % \textbf{Distance Ahead required (m)}}\\
 & \textbf{Distance} & `Relaxed' & `Hurried' & `Aggressive' \\
 & \textbf{Ahead (m)} & 101.39 & 63.73 & 40.02 \\
@@ -747,45 +800,49 @@ Collision & 35.63 & FAIL & FAIL & FAIL\\
 \caption{Pass/Fail Assertion results.} \label{Overtaking_Profiles}
 \end{table}
 
-The table shows that it would have been inadvisable to perform a `relaxed' overtake in any of the three scenarios presented, as this would have resulted in a near miss or a collision. If a `hurried' overtake is attempted (which actually corresponds to the behaviour of the AV in the scenarios), this policy was acceptable for the `Safe' scenario, but inadvisable for the `Near Miss' and `Collision' scenarios (as their descriptive names imply). And if the AV had been programmed to overtake aggressively in these scenarios, then only in the case of the Collision scenario circumstances would the Distance Ahead have been short enough for the manoeuvre to be inadvisable; in the other two cases the overtake could have been achieved successfully (although aggressive overtaking may result in other safety assertions being violated).
+The table shows that it would have been inadvisable to perform a `relaxed' overtake in any of the three scenarios presented, as this would have resulted in a near miss or a collision. If a `hurried' overtake is attempted (which actually corresponds to the behaviour of the AV in the scenarios), this policy was acceptable for the `Safe' scenario, but inadvisable for the `Near Miss' and `Collision' scenarios (as their descriptive names imply). Finally, if the AV had been programmed to overtake aggressively in these scenarios, then only in the case of the Collision scenario circumstances would the Distance Ahead have been short enough for the manoeuvre to be inadvisable; in the other two cases the overtake could have been achieved successfully (although aggressive overtaking may result in other safety assertions being violated).
 
-\subsection{Runtime case study}
-In the runtime case study we developed an assertion monitoring for checking safe stopping distance during the overtake. 
+\subsection{Runtime monitoring case study}
+In the runtime case study we developed an assertion monitor for checking safe stopping distance during the overtake. 
 %
-To demonstrate the use of assertions at runtime monitoring of an AV, in the absence of a fully functioning AV controller, we used manual video analysis in combination with a pre-trained object classifier to extract data from a dashboard video camera of a dangerous overtaking vehicle.\footnote{Link to video used in analysis: \url{https://youtu.be/Gzi4X7WZkRI}.} 
+To demonstrate the use of assertions at runtime, in the absence of a roadworthy AV controller, we used manual video analysis in combination with a pre-trained object classifier to extract data from a dashboard video camera of a dangerously overtaking vehicle.\footnote{Link to video used in analysis: \url{https://youtu.be/Gzi4X7WZkRI}.} \todo[inline]{indicate start-stop timing in video, from min:sec to min:sec}
+\todo[inline]{Say what the video shows, i.e.\ what should the outcome from the assertion checks be?}
 %
 The aim of the assertions applied to runtime data was to assess whether the AV risks colliding with any of the other vehicles involved in the scenario during the overtake and in turn take an informative decision on aborting or continuing the overtake. 
 %
 Such situations are very likely to happen if road layouts are more complex, vehicles change speed or if for any other reason the SDA calculation at the start of the manoeuvre gives misleading estimates. 
 
-\subsubsection{Danger Space (DS) Assessment}
+\subsubsection{Danger Space (DS) assessment}
 \label{DS_assessment}
 
-The overtake manoeuvre can be split into three distinct stages as was described in the modelling analysis (Section \ref{model_based_analysis}): pulling out, passing VBP and cutting in.
+The overtake manoeuvre can be split into three distinct stages as was described in the modelling analysis (Section \ref{model_based_analysis}): pulling out, passing the VBP and cutting in.
 %
-During the different stages of the overtake, non of the vehicles should be present in the DS of another vehicle nor should the DS of one of the vehicles overlap with the DS of another. 
+During the different stages of the overtake, none of the vehicles should be present in the DS of another vehicle nor should the DS of one of the vehicles overlap with the DS of another. 
 %
 To satisfy this requirement, six assertions are needed to be checked at the different stages of the overtake.
 %
-The DS subscript refers to the vehicle danger space.
+The DS subscript refers to the respective vehicle.
 
-The first four assertions are applicable through out the three stages of the overtake, these are:
+The first four assertions are applicable throughout the three stages of the overtake, these are:
 
-\noindent \textbf{i)} the VBP should not be in the AV danger space at anytime during the overtake, 
+\noindent \textbf{i)} the VBP should not be in the DS$_{AV}$ at any time during the overtake, 
 
 \noindent \textbf{ii)} the OV should not be in the AV$_{DS}$, 
 
 \noindent \textbf{iii)} the AV should not be in the OV$_{DS}$, 
 
-\noindent \textbf{iv)} there should be no intersection between the AV$_{DS}$ and OV$_{DS}$.
+% <<<<<<< HEAD
+% \noindent \textbf{iv)} there should be no intersection between the AV$_{DS}$ and OV$_{DS}$.
 
+% =======
+% >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 There are two key SPIs applicable for the last stage of the overtake (cutting in):
 
-\noindent \textbf{v)} the AV should not enter the VBP$_{DS}$ and 
+\noindent \textbf{iv)} the AV should not enter the VBP$_{DS}$ and 
 
-\noindent \textbf{vi)} there should be no intersection between the AV$_{DS}$ and the VBP$_{DS}$. 
+\noindent \textbf{v)} there should be no intersection between the AV$_{DS}$ and the VBP$_{DS}$. 
 
-\subsubsection{Video analysis}
+\subsubsection{Video processing}
 %
 % Usually well trained machine learning models are used with stereo vision and information from other sensors, like LIDAR, odometers etc, to estimate accurately the position, orientation and velocities of the AV and surrounding static and dynamic objects. However, due to the absence of a fully functioning AV, w
 We used the following approach to approximate the processing of the real-time data stream for the runtime case study. 
@@ -807,11 +864,21 @@ Second, the lateral distance $d$ of the AV from the middle white line is estimat
     d = \frac{w_{L (real)}}{w_{L (pixels)}} \times d_{pixels}
 \end{equation}
 %
-where $w_{L (real)}$ is the real lane width measured in meters, $w_{L (pixels)}$ is the lane width measured in pixels and $d_{pixels}$ is the lateral distance of the AV from the middle white line in pixels. $d_{pixels}$ is determined by simply finding where the middle white line is compared to the middle of the frame. The VBP and OV are assumed to have a fixed lateral distance from the white line separating lanes. Third, the pull out $\beta$ and cut in $\theta$ angles of the AV are calculated using the change in lateral distance and change in the longitudinal distance measured. Fourth, as we were not able to measure vehicle speed directly from the video, we based the DS calculation on the worst case scenario; that is all vehicles were traveling at the speed limit of the road. The speed limit of the single carriage way in the video was found to be the national speed limit. According to Rule 124 in the UKHC the national speed limit for cars (AV and OV) is 60mph, and 50mph for goods vehicles (VBP). Using the above steps the real time video was converted to a 2D driving scenario, where the danger space assertions listed in section~\ref{DS_assessment} can be checked.
+where $w_{L (real)}$ is the real lane width measured in meters, $w_{L (pixels)}$ is the lane width measured in pixels and $d_{pixels}$ is the lateral distance of the AV from the middle white line in pixels. $d_{pixels}$ is determined by simply finding where the middle white line is when compared to the middle of the frame. The VBP and OV are assumed to have a fixed lateral distance from the white line separating lanes. 
+%
+Third, the pull out $\beta$ and cut in $\theta$ angles of the AV are calculated using the change in lateral distance and change in the longitudinal distance measured. Fourth, as these is no vehicle speed associated with the video, we based the DS calculation on the worst case scenario; that is all vehicles were traveling at the speed limit of the road. 
+%
+According to Rule 124 in the UKHC the national speed limit of the single carriage way in the video for cars (AV and OV) is 60mph, and 50mph for goods vehicles (VBP). Using the above steps the real time video was converted to a 2D driving scenario, where the Danger Space assertions listed in section~\ref{DS_assessment} can be checked.
 
-\subsubsection{Runtime Validation Results}
-Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as non of the vehicles were present in another vehicles danger space and there was no overlap in any of the danger spaces. 
-When passing the VBP the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the VBP$_{DS}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.
+% <<<<<<< HEAD
+% \subsubsection{Runtime Validation Results}
+% Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as non of the vehicles were present in another vehicles danger space and there was no overlap in any of the danger spaces. 
+% When passing the VBP the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the VBP$_{DS}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.
+% =======
+\subsubsection{Runtime validation results}
+Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in Section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as none of the vehicles were present in another vehicle's danger space and there was no overlap in any of the danger spaces. 
+When passing the VBP the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during the passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally, at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the DS$_{VBP}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.\todo{unclear}
+% >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 
 \begin{table}
 \centering
@@ -839,12 +906,23 @@ No AV$_{DS}$ $\cap$ VBP$_{DS}$  & N/A & N/A & FAIL\\
 \caption{Pass/Fail danger space assertion checks results.} \label{Overtaking_DS_table}
 \end{table}
 
+% <<<<<<< HEAD
+% \section{Discussion} \label{discussion}
+
+% \subsection{Assertion Checking to measure Performance}
+% While we have applied the assertion checking methodology to measure the safety properties of vehicles in simulation and at runtime, the methodology can be extended to other important system engineering aspects as well. This may include performance based metrics such as smooth driving (minimal jerk), accuracy of control (such as parking or stopping precisely at a bus stop), and decisive behaviour at junctions or roundabouts, sometimes termed \emph{liveness}~\cite{kim2014mpc}. In particular, the mission performance of a vehicle, for example, can be measured in journey time or efficiency of movement through traffic, which may affect not only passenger expectations but also the commercial viability of such an autonomous system. 
+
+% Performance (achievement of task goals) and safety (avoidance of task hazards) are distinct behavioural properties of a system; achievement of one does not entail achievement of the other. A task controller must achieve satisfactory compliance with both properties if a dependable system is to be developed. In some scenarios, such as during overtaking, their may exist a competition within the controller to satisfy both the achievement of goals and the avoidance of hazards. 
+% =======
+\todo[inline]{In table:, ``No DS...'' should be intersection between the DSs is empty. Strictly speaking, the DSs should be defined as sets earlier on.}
+
 \section{Discussion} \label{discussion}
 
 \subsection{Assertion Checking to measure Performance}
-While we have applied the assertion checking methodology to measure the safety properties of vehicles in simulation and at runtime, the methodology can be extended to other important system engineering aspects as well. This may include performance based metrics such as smooth driving (minimal jerk), accuracy of control (such as parking or stopping precisely at a bus stop), and decisive behaviour at junctions or roundabouts, sometimes termed \emph{liveness}~\cite{kim2014mpc}. In particular, the mission performance of a vehicle, for example, can be measured in journey time or efficiency of movement through traffic, which may affect not only passenger expectations but also the commercial viability of such an autonomous system. 
+While we have applied the assertion checking methodology to measure the safety properties of vehicles in simulation and at runtime, the methodology can also be extended to validate other important system properties. This may include performance based metrics such as smooth driving (minimal jerk), accuracy of control (such as parking or stopping precisely, e.g.\ at a bus stop), and decisive behaviour at junctions or roundabouts, sometimes termed \emph{liveness}~\cite{kim2014mpc}. In particular, the mission performance of a vehicle, for example, can be measured in journey time or efficiency of movement through traffic, which may affect not only passenger expectations but also the commercial viability of such an autonomous system. 
 
-Performance (achievement of task goals) and safety (avoidance of task hazards) are distinct behavioural properties of a system; achievement of one does not entail achievement of the other. A task controller must achieve satisfactory compliance with both properties if a dependable system is to be developed. In some scenarios, such as during overtaking, their may exist a competition within the controller to satisfy both the achievement of goals and the avoidance of hazards. 
+Performance (achievement of task goals) and safety (avoidance of task hazards) are distinct behavioural properties of a system; achievement of one does not necessarily entail the other. A task controller must achieve satisfactory compliance with both properties if a dependable system is to be developed. In some scenarios, such as during overtaking, there may exist a competition within the controller to satisfy both the achievement of goals and the avoidance of hazards. 
+% >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 
 For example, an autonomous taxi may need to perform a minimum number of fare-paying journeys in a day in order to remain commercially viable. Performance assertions can measure whether suitable opportunities for manoeuvres such as overtaking were taken efficiently, without incurring delays or driving sub-optimally for the given road network i.e. using all available space. However, it must still drive safely as it conducts each journey, so in situations that may induce journey delays, such as high traffic congestion, optimum performance and safety may not be mutually achievable. Assertions can measure how the AV trades off these two properties in the execution of its task(s).
 
@@ -870,11 +948,17 @@ Condition & \textbf{Overtake} & \\
 & significant delay & behaviour\\
 \hline
 \end{tabular}
-\caption{Performance classifications for deciding to overtake based on the distance ahead to the Oncoming Vehicle.}
+\caption{Performance classifications for deciding to overtake based on the Distance Ahead to the Oncoming Vehicle.}
 \label{performance_metric_table}
 \end{table}
 
-An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e. taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. 
+% <<<<<<< HEAD
+% An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e. taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. 
+% =======
+An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. 
+%In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. 
+Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e.\ taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. \todo{clarify delta, which is measured in seconds and corresponds to TTC}
+% >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 %
 % We define $\delta$ as the ratio of `achieved distance ahead' to the `SDA required by profile' from Table~\ref{Overtaking_Profiles}. 
 %
@@ -891,11 +975,15 @@ We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotat
     \item Case 3: $d_{OV} > SDA + \delta$
 \end{itemize}
 %
-Here, $d_{OV}$ is the distance to the Oncoming Vehicle, SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
+Here, $d_{OV}$ is the distance to the Oncoming Vehicle,\todo{is this the Distance Ahead in Fig.\ 2?} SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
 %
 In each of these cases the AV could decide to overtake or hold back and the performance outcomes for each of these are shown in Table~\ref{performance_metric_table}. 
 %
-For case 1, the distance to the Oncoming Vehicle is less than SDA, so to not overtake is the only safe action and indeed to overtake in this condition would result in the SDA safety assertion failure. Safe driving behaviour whilst making timely use of the overtaking opportunities presented to the vehicle will see the vehicle progress through a road network most efficiently. This sentiment is captured in case 2, where the vehicle is taking opportunities to overtake whilst maintaining a safe distance to the oncoming vehicle. To not overtake in case 2 would not take advantage of opportunities to progress through traffic and will incur journey time penalties. In case 3, the distance to the Oncoming Vehicle is greater than $SDA$ plus the window of opportunity, where the vehicle has unhindered opportunity, i.e. no currently oncoming traffic. In this case not overtaking, although completely safe, will incur significant and unnecessary delay to the journey and can be considered lower performance. Overtaking in case 3 would be the expected behaviour of the AV. % and as such could be assigned a neutral or small positive performance score.
+% <<<<<<< HEAD
+% For case 1, the distance to the Oncoming Vehicle is less than SDA, so to not overtake is the only safe action and indeed to overtake in this condition would result in the SDA safety assertion failure. Safe driving behaviour whilst making timely use of the overtaking opportunities presented to the vehicle will see the vehicle progress through a road network most efficiently. This sentiment is captured in case 2, where the vehicle is taking opportunities to overtake whilst maintaining a safe distance to the oncoming vehicle. To not overtake in case 2 would not take advantage of opportunities to progress through traffic and will incur journey time penalties. In case 3, the distance to the Oncoming Vehicle is greater than $SDA$ plus the window of opportunity, where the vehicle has unhindered opportunity, i.e. no currently oncoming traffic. In this case not overtaking, although completely safe, will incur significant and unnecessary delay to the journey and can be considered lower performance. Overtaking in case 3 would be the expected behaviour of the AV. % and as such could be assigned a neutral or small positive performance score.
+% =======
+For Case 1, the distance to the OV is less than SDA, so the only safe action is not to overtake and indeed to attempt to do so in this condition would result in failure of the SDA safety assertion. Safe driving behaviour whilst making timely use of the overtaking opportunities presented to the vehicle will see the vehicle progress through a road network most efficiently. This sentiment is captured in Case 2, where the vehicle is taking opportunities to overtake whilst maintaining a safe distance to the OV. Deciding not to overtake in Case 2 would not take advantage of opportunities to progress through traffic and will incur journey time penalties. In Case 3, the distance to the OV is greater than $SDA$ plus the window of opportunity, where the vehicle has unhindered opportunity, i.e.\ no currently oncoming traffic. In this case not overtaking (although completely safe) will incur significant and unnecessary delay to the journey and can be considered lower performance. Overtaking in Case 3 would be the expected behaviour. % of the AV. % and as such could be assigned a neutral or small positive performance score.
+% >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 %
 % There are three conditions in Table~\ref{performance_metric_table} describing the distance to the Oncoming Vehicle with respect to required SDA and the opportunity window. 
 
@@ -906,9 +994,13 @@ For case 1, the distance to the Oncoming Vehicle is less than SDA, so to not ove
     \label{fig:performance_results}
 \end{figure}
 
-The previous simulation results from the perspective of performance are shown in Figure~\ref{fig:performance_results}. Here $\delta$ is set to be equivalent to TTC=$2.5s$ \cite{Robbins2018,Chen2015,wang2019analysis} for the purposes of illustrating this concept. The required SDA is shown as a function of the actual distance ahead for the three overtaking profiles. Test cases that fail the safety assertion are shown as cross markers, all being within \emph{Zone A} which is an area where the SDA assertion will be violated. At the edge of this area, defining unsafe driving behaviour, is a \emph{safety boundary} (dashed line) being the edge of Zone A. Beyond the safety boundary exists the opportunity window that extends to the limit of the \emph{performance boundary} (solid line), and covers \emph{Zone B} and \emph{Zone C}. Zone B represents a conceptual \emph{safety margin} or \emph{buffer} between optimal performance and the safety boundary, and in reality this may be the limit of a near-miss condition, e.g. TTC=$0.5s$. Reward should be given for an adaptive controller that makes use of Zone C but does not enter Zone B, i.e. executes optimal overtaking given opportunity $\delta$ but does not cause a near-miss event. \emph{Zone D} can be considered safer than the other zones, i.e. the vehicle is giving lots of distance to the Oncoming Vehicle, but may be unnecessarily incurring delays and hence considered lower performance. An improvement could be made by moving from Zone D to Zone C without violating any safety property. 
+% <<<<<<< HEAD
+% The previous simulation results from the perspective of performance are shown in Figure~\ref{fig:performance_results}. Here $\delta$ is set to be equivalent to TTC=$2.5s$ \cite{Robbins2018,Chen2015,wang2019analysis} for the purposes of illustrating this concept. The required SDA is shown as a function of the actual distance ahead for the three overtaking profiles. Test cases that fail the safety assertion are shown as cross markers, all being within \emph{Zone A} which is an area where the SDA assertion will be violated. At the edge of this area, defining unsafe driving behaviour, is a \emph{safety boundary} (dashed line) being the edge of Zone A. Beyond the safety boundary exists the opportunity window that extends to the limit of the \emph{performance boundary} (solid line), and covers \emph{Zone B} and \emph{Zone C}. Zone B represents a conceptual \emph{safety margin} or \emph{buffer} between optimal performance and the safety boundary, and in reality this may be the limit of a near-miss condition, e.g. TTC=$0.5s$. Reward should be given for an adaptive controller that makes use of Zone C but does not enter Zone B, i.e. executes optimal overtaking given opportunity $\delta$ but does not cause a near-miss event. \emph{Zone D} can be considered safer than the other zones, i.e. the vehicle is giving lots of distance to the Oncoming Vehicle, but may be unnecessarily incurring delays and hence considered lower performance. An improvement could be made by moving from Zone D to Zone C without violating any safety property. 
+% =======
+The previous simulation results from the perspective of performance are shown in Figure~\ref{fig:performance_results}. Here $\delta$ is set to be equivalent to TTC=$2.5s$ \cite{Robbins2018,Chen2015,wang2019analysis} for the purposes of illustrating this concept. The required SDA is shown as a function of the actual distance ahead for the three overtaking profiles. Test cases that fail the safety assertion are shown as cross markers, all being within \emph{Zone A} which is an area where the SDA assertion will be violated. At the edge of this area, defining unsafe driving behaviour, is a \emph{safety boundary} (dashed line) being the edge of Zone A. Beyond the safety boundary exists the opportunity window that extends to the limit of the \emph{performance boundary} (dotted line), and covers \emph{Zone B} and \emph{Zone C}. Zone B represents a conceptual \emph{safety margin} or \emph{buffer} between optimal performance and the safety boundary, and in reality this may be the limit of a near-miss condition, e.g.\ TTC=$0.5s$. Reward should be given for an adaptive controller that makes use of Zone C but does not enter Zone B, i.e. executes optimal overtaking given opportunity $\delta$ but does not cause a near-miss event. \emph{Zone D} can be considered safer than the other zones, i.e. the vehicle is giving lots of distance to the Oncoming Vehicle, but may be unnecessarily incurring delays and hence considered lower performance. An improvement could be made by moving from Zone D to Zone C without violating any safety property. 
+% >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 
-There is therefore a trade-off between safety and performance for optimal driving behaviour, where performance is improved by moving towards Zone B (but not passing the safety boundary), and safety is improved by moving towards Zone D (see large arrows in Figure~\ref{fig:performance_results}). While we have observed this conceptual trade-off between safety and performance in our analysis, we also see evidence of this in the UKHC rules themselves. An example of this is exemplified in the 4th bullet point in Rule 163 (see Section~\ref{interp_nat_lang_UKHC_rules}) where the overtaking rule states ``Move quickly past the vehicle" and ``Move back to the left as soon as you can...", which clearly suggests that performance will play a part in correct driving behaviour. There is also evidence of this trade-off between performance and safety, while the AV should complete the overtake maneuver ``as soon as you can" (higher performance) but ``do not cut in" (higher safety) we see these competing demands resolve in optimal driving behaviour analogous to that described by Zone C in Figure~\ref{fig:performance_results}. This analysis considers only the overtaking scenario and in reality there will be many competing demands on the decision making process of a real controller. 
+There is therefore a trade-off between safety and performance for optimal driving behaviour, where performance is improved by moving towards Zone B (but not passing the safety boundary), and safety is improved by moving towards Zone D (see large arrows in Figure~\ref{fig:performance_results}). While we have observed this conceptual trade-off between safety and performance in our analysis, we also see evidence of this in the UKHC rules themselves. An example of this is the 4th bullet point in Rule 163 (see Section~\ref{interp_nat_lang_UKHC_rules}) where the overtaking rule states ``Move quickly past the vehicle'' and ``Move back to the left as soon as you can...'', which clearly suggests that performance will play a part in safe driving behaviour. There is also evidence of this trade-off between performance and safety, while the AV should complete the overtake maneuver ``as soon as you can'' (higher performance) but ``do not cut in'' (higher safety) we see these competing demands resolve in optimal driving behaviour analogous to that described by Zone C in Figure~\ref{fig:performance_results}. This analysis considers only the overtaking scenario and in reality there will be many competing demands on the decision making process of a controller. 
 
 
 
@@ -926,7 +1018,7 @@ The initial work presented in this paper has raised a number of consequent issue
 potentially hazardous situations, and to actively perceive, deliberate, and take special or particular action to avoid harmful events. 
 % 
 % GC think we should just focus on one or two of these points
-An excerpt from Rule 146 of the UKHC states \begin{quote} \textit{Try to anticipate what pedestrians and cyclists might do. If pedestrians, particularly children, are looking the other way, they may step out into the road without seeing you.} \end{quote} which specifically asks to perceive and anticipate future developments of the situation. If we want to validate the correctness of an AV's behaviour in respect of these rules we must have the capability to observe the decisions made by the AV or its control system as they are made. 
+An excerpt from Rule 146 of the UKHC states \begin{quote} \textit{Try to anticipate what pedestrians and cyclists might do. If pedestrians, particularly children, are looking the other way, they may step out into the road without seeing you.} \end{quote} which specifically asks to perceive and anticipate future developments of the situation. To validate the correctness of an AV's behaviour in respect of these rules we must have the capability to inspect the observations and decisions made by the AV or its control system.
 
 
 
@@ -949,23 +1041,40 @@ An excerpt from Rule 146 of the UKHC states \begin{quote} \textit{Try to anticip
 %     }
 % \end{quote}
 % % Each of the bullet-items listed above would probably require at least one distinct test case (often more than one). But several items
-% Several bullet-items listed above ask the road-user to consider particular situations explicitly, advising that increased attention or effort be put into the perception of particular conditions, features of, or objects in the environment (e.g. blind summits, pedestrians, unmarked junctions). If we want to validate the correctness of an AV's behaviour in respect of these rules we must have the capability to observe the decisions made by the AV or its control system as they are made. 
+% Several bullet-items listed above ask the road-user to consider particular situations explicitly, advising that increased attention or effort be put into the perception of particular conditions, features of, or objects in the environment (e.g.\ blind summits, pedestrians, unmarked junctions). If we want to validate the correctness of an AV's behaviour in respect of these rules we must have the capability to observe the decisions made by the AV or its control system as they are made. 
 
-This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. The complexity and opacity of internal functional representations in many AI technologies, combined with the non-deterministic nature of complex operational situations in real world environments means that they may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. This requires some form of communication protocol or interface from the decision-making centres of the system to the outside world, so that the decisions can be observed and recorded for later analysis. This is a significant motivation behind the use of an assertion-based oracle subsystem as a runtime analysis facility, discussed in Section \ref{assertions_at_run_time}.
+% <<<<<<< HEAD
+% This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. The complexity and opacity of internal functional representations in many AI technologies, combined with the non-deterministic nature of complex operational situations in real world environments means that they may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. This requires some form of communication protocol or interface from the decision-making centres of the system to the outside world, so that the decisions can be observed and recorded for later analysis. This is a significant motivation behind the use of an assertion-based oracle subsystem as a runtime analysis facility, discussed in Section \ref{assertions_at_run_time}.
 
-At present, we are not in a position to perform assertion checking for this kind of safety property by means of an independent assertion-based oracle. There is no externally objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
+% At present, we are not in a position to perform assertion checking for this kind of safety property by means of an independent assertion-based oracle. There is no externally objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
+% =======
+This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. In many AI technologies the complexity and opacity of internal representations of perceptions, decisions, etc., combined with the non-deterministic nature of complex operational situations in real world environments means that they may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. 
+%This requires some form of communication protocol or interface from the perception and decision-making centres of the system to the outside world, so that the decisions can be observed and recorded for later analysis. 
+%
+This opens up a significant opportunity for the use of assertion-based runtime monitoring as discussed in Section~\ref{assertions_at_run_time}.
 
-In the absence of any such explanation capabilities or facilities, it is still possible to achieve some degree of validation by performing checks derived from the text of the rule, which attempt to challenge the hypothesis expressed or implied by the UKHC rule or rule clause (\emph{e.g. falsification testing}) of the safety property. For example, in the testing phase of an AV, to exercise the last bullet item of Rule 146 above one could construct a test case, perhaps similar in nature to those defined in \cite{EuroNCAP}, where simulated `children agents' (that model the physical appearance of children as well as some aspects of their behaviour) step out into a road in front of the AV agent, having appeared either to be looking away from an AV agent, towards it, or some mix of the two focuses of attention. Such a test suite could then test the capability of the AV control system to evaluate the potential behaviour of children to determine what driving action can be taken successfully and safely. This can test the `end-to-end' situated behaviour of the vehicle and thereby evaluate the cumulative effect of decision making, but as evidence to support a safety case this is less effective than explicit confirmation (by recording) of the AV's decision process that would come from Explainable AI.
+\todo[inline]{Please consider taking the following two paras out.}
+At present, however, we are not in a position to perform assertion checking for this kind of safety property as an independent validation exercise.
+%by means of an independent assertion-based oracle
+There is to date no objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
+% >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 
-\section{Conclusion}\label{conclusion}
-The results obtained from both the simulation and the runtime video analysis case studies show the general feasibility and utility of assertion-based safety validation testing, with the assertions being derived from regulatory documentation written in natural language and intended for human drivers rather than written specifically to be usable by computer. The results provide our first indication that human-oriented natural language rules of driving are an effective oracle for assessment of artificial systems.
+In the absence of any such explanation, it is still possible to achieve some degree of validation by performing checks derived from the text of the rule, which attempt to challenge the hypothesis expressed or implied by the UKHC rule or rule clause (\emph{e.g.\ falsification testing}) of the safety property. For example, in the testing phase of an AV, to exercise the last bullet item of Rule 146 above one could construct a test case, perhaps similar in nature to those defined in~\cite{EuroNCAP}, where simulated `children agents' (that model the physical appearance of children as well as some aspects of their behaviour) step out into a road in front of the AV agent, having appeared either to be looking away from an AV agent, towards it, or some mix of the two focuses of attention. Such a test suite could then test the capability of the AV control system to evaluate the potential behaviour of children to determine what driving action can be taken successfully and safely. This can test the `end-to-end' situated behaviour of the vehicle and thereby evaluate the cumulative effect of decision making, but as evidence to support a safety case this is less effective than explicit confirmation (by recording) of the AV's decision process that would come from explainable AI.
 
-The case studies were carried out at an early stage of development so we did not employ every element of the methodology that has emerged. Nevertheless, we believe that enough of the process has been demonstrated to show that the full methodology is viable. We also present the idea of using UKHC-based assertion checking methodology as a method to infer autonomous vehicle performance and have demonstrated this with an overtaking scenario using simulation results. We have demonstrated that a common UKHC assertion-based oracle is equally usable in runtime monitoring as it is in simulation.
+\section{Conclusion}\label{conclusion}\todo[inline]{Revise: cover contributions, ...}
+
+In this paper we have presented a methodology to systematically derive formal logical expressions, encoded as assertions, from the UKHC. We have introduced a process for monitoring assertions that can be used for simulation-based assertion checking and runtime monitoring during operation.\todo[inline]{complete with reference to abstract and first section - contributions}
+
+The results obtained from both the simulation and the runtime video analysis case studies show the general feasibility and utility of assertion-based safety validation, with the assertions being derived from regulatory documentation written in natural language and intended for human drivers rather than written specifically to be usable by computer. The results provide our first indication that human-oriented natural language rules of driving are an effective oracle for assessment of artificial systems.
+
+The case studies were carried out at an early stage of development so we did not employ every element of the methodology that has emerged. Nevertheless, we believe that enough of the process has been demonstrated to show that the full methodology is viable.\todo[inline]{focus on what we did, not what we did not do - state that this illustrates, rather than ``we believe''.}
+%
+We also present the idea of using UKHC-based assertion checking methodology as a method to infer autonomous vehicle performance and have demonstrated this with an overtaking scenario using simulation results. We have demonstrated that a common UKHC assertion-based oracle is equally usable in runtime monitoring as it is in simulation.
 
 
 % GC condensed this section:
 % \subsection{Future Work}\label{future_work}
-We are considering numerous other directions in which to continue this work such as extending the sources of information for safe driving, e.g.\ German driving regulations~\cite{acountability}, and models such as the RSS model \cite{RSS_Shalev_Shwartz2017,RSS2_Koopman2019}. We are also researching the use of the testbench to perform falsification testing \cite{corso2020survey, akazaki2017causality} and \emph{situation coverage testing} \cite{alexander2015} and how other techniques such as \emph{Environmental Survey Hazard Analysis}~\cite{harper2021towards} can be used to support the tool chain framework. We also aim to investigate assertion checking to provide reward function scores as a critic in reinforcement learning for continuous improvement of the AVs balance between safety and liveness during operation.
+We are considering numerous directions in which to continue this work such as extending the sources of information for safe driving, e.g.\ using the German driving regulations~\cite{acountability}, and models such as the RSS model~\cite{RSS_Shalev_Shwartz2017,RSS2_Koopman2019}. We are also researching the use of the testbench to perform falsification testing~\cite{corso2020survey, akazaki2017causality} and \emph{situation coverage testing}~\cite{alexander2015} and how other techniques such as \emph{Environmental Survey Hazard Analysis}~\cite{harper2021towards} can be used. We also aim to investigate assertion checking to provide reward function scores as a critic in reinforcement learning for continuous improvement of the AVs balance between safety and liveness during operation.
 
 
 
@@ -981,4 +1090,5 @@ We are considering numerous other directions in which to continue this work such
 %     \end{itemize}
 
 \section{Acknowledgments}
-This research has in part been funded by the ROBOPILOT and CAPRI projects. Both projects are part-funded by the Centre for Connected and Autonomous Vehicles (CCAV), delivered in partnership with Innovate UK under grant numbers 103703 (CAPRI) and 103288 (ROBOPILOT). This research was also supported in part by the UKRI Trustworthy Autonomous Systems Node in Functionality under grant number EP/V026518/1. Also special thanks to S\'everin Lemaignan.
+\todo[inline]{add CAV Forth grant number}
+This research has in part been funded by the CAV Forth, ROBOPILOT and CAPRI projects. These projects are part-funded by the Centre for Connected and Autonomous Vehicles (CCAV), delivered in partnership with Innovate UK under grant numbers 103703 (CAPRI) and 103288 (ROBOPILOT). This research was also supported in part by the UKRI Trustworthy Autonomous Systems Node in Functionality under grant number EP/V026518/1. Also special thanks to S\'everin Lemaignan.
