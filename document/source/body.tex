@@ -11,7 +11,9 @@ Verification and validation are important to earning trust and gaining confidenc
 %
 
 % GC ADDED THIS
-There has been some recent work to make autonomous vehicles abide by highway traffic laws by formalising the rules in a language that autonomous systems can understand. This is challenging not only because driving rules are often vague and may be conflicting, but also because of the contextual and common sense knowledge required to interpret these rules into appropriate driving actions. 
+We are investigating the use of assertions to validate autonomous vehicle behaviour against driving codes of conduct ("rules of the road"). 
+% There has been some recent work to make autonomous vehicles abide by highway traffic laws by formalising the rules in a language that autonomous systems can understand. 
+This is challenging not only because driving rules are often vague and may be conflicting, but also because of the contextual and common sense knowledge required to interpret these rules into appropriate driving actions. 
 %
 Field testing, often the traditional approach to validating systems in their target environments, is likely to be prohibitively expensive for autonomous systems, if a high degree of coverage or statistical confidence is required. This has led to much interest and research into the use of driving simulators\footnote{Examples include \url{https://www.rfpro.com} and \url{http://carla.org}.} for validation. 
 %
@@ -44,7 +46,7 @@ legal driving codes for human drivers.
 % The class of oracles we are investigating is the ``rules of the road'' legal driving codes for human drivers, which exist in most countries. 
 %
 % In this paper we use the UK Highway Code~\cite{highwayCode} (UKHC), as a working example.
-We use the UK Highway Code~\cite{highwayCode} (UKHC), as exemplar diving conduct and thus can be used to create validation assertions for properties such as safety and mission performance. %liveness.
+We use the UK Highway Code~\cite{highwayCode} (UKHC), as exemplar driving conduct and thus can be used to create validation assertions for properties such as safety and mission performance. %liveness.
 
 % GC HAVE COMMENTED THIS OUT:
 % The UKHC is a long established document, about a century old at time of writing\footnote{\url{https://en.wikipedia.org/wiki/The\_Highway\_Code\#History}}, and has been subject to continual revision and evolution of the set of rules contained therein. We consider the UKHC to be a mature and valid reference source for a safe driving code of practice. Publicly available data\footnote{\url{https://en.wikipedia.org/wiki/Reported\_Road\_Casualties\_Great\_Britain}} indicates that despite a significant increase in road users, UK road deaths have been decreasing monotonically since 1966. While there have been many causal factors contributing this trend (e.g.\ seat belts, airbags etc.), we argue that the advice given in the UKHC must have at least some partial contribution to this trend. \todo[inline]{Leave out? Had any advice given at any particular time been confusing or contradictory, then it may have led to increases in accident rates, or would have been detected and corrected over time by UK motoring institutions such as driving instructors, driving test agencies, etc.} Since much of the content of the UKHC has been largely stable for many years, we argue that this is because the advice given is sound, and hence we conclude that it can be a valid reference for constructing safety validation assertions.\todo[inline]{Why only safety? Liveness is also important. Or not?}
@@ -63,13 +65,14 @@ Although we select the UKHC as the reference of our oracle for pragmatic reasons
 We illustrate the %approach
 assertion-based oracle with two examples of %assertion checking
 lane changing during an overtaking scenario. We adopt the terms scene, scenario and situation from~\cite{Ulbrich2015} throughout this paper. 
-A geospatial information system in an SQL database was used for validation of the assertions and also for performance assessment of both simulation and the operational monitoring system. Note that the same assertions and assertion checkers can be used for either case.
+% A geospatial information system in an SQL database was used for validation of the assertions and also for performance assessment of both simulation and the operational monitoring system. Note that the same assertions and assertion checkers can be used for either case.
 %
 
 
 %\subsection{Safety argument}
 % GC added sentence on UK law commission
-Safety assurance is emerging as a legislative practice and an essential aspect of AV verification and certification, e.g. see recommendations set out in the recent UK Law commission report which specifically mentions evaluation of AV behaviour against the rules of the road~\cite{law_commission_UK}. 
+Evaluation of AV behaviour against codes of driving conduct is emerging as an essential aspect AV verification and certification, as set out in the recent UK Law Commission report~\cite{law_commission_UK}. 
+% Safety assurance is emerging as a legislative practice and an essential aspect of AV verification and certification, e.g. see recommendations set out in the recent UK Law commission report which specifically mentions evaluation of AV behaviour against the rules of the road~\cite{law_commission_UK}. 
 %
 Assertion monitoring may be used as evidence to show functional safety compliance against national regulations or codes of practice, the general safety argument being that if an AV satisfies all the rules that may be legally expected of a human driver, then its behaviour is comparable to that of human drivers and therefore should be acceptable, or at least legal. It should be noted that acceptance may therefore be somewhat context-specific, against the code of practice for each country, and what passes under one legal code may not be acceptable in another. 
 % 
@@ -85,11 +88,15 @@ The need to measure the compliance of an AV's behaviour with legal codes of prac
 
 %\todo[inline, color=green]{Have brought contribution down here, added subsection}
 %\subsection{Contribution}
-This paper makes the following contributions. We present a novel technique for deriving, systematically formalising and encoding assertions from the UKHC and applying them in two modes: (i) within a Geospatial Information System (GIS) database linked to a vehicle simulator, and (ii) within a real-time monitoring system during vehicle operation.
+This paper makes the following contributions. 
+%
+We develop and present a taxonomy of assertions that covers the externally observable behaviours of vehicles (although in principle this is applicable to measurements of any system). 
+%
+We present a novel technique for deriving, systematically formalising and encoding assertions from the UKHC and applying them in two modes: (i) within a Geospatial Information System (GIS) database linked to a vehicle simulator, and (ii) within a real-time monitoring system during vehicle operation.
 %
 In the first mode of use, we encode the UKHC assertions as SQL queries and run them within a PostgreSQL database with a PostGIS extension.\footnote{Refer to \url{https://www.postgresql.org/} and \url{http://postgis.net}.} In this mode, the assertions can make use of any data stream available, passed into the database records.
 %
-In the second mode of use, the principal requirement is that data about the AV, other road users and the adjacent environment wrt.\ the test vehicle is sufficient to evaluate the assertions during operation. The same PostgreSQL-based database as used in the simulator can therefore be installed as embedded software, but is receiving its data directly from vehicle sensors instead of a simulator. This data stream need not be of a high fidelity, but rather should have ``just enough'' detail~\cite{Koopman2018} to allow the assertions to be evaluated with good confidence.
+In the second mode of use, the principal requirement is that data about the AV, other road users and the adjacent environment with respect to the test vehicle is sufficient to evaluate the assertions during operation. The same PostgreSQL-based database as used in the simulator can therefore be installed as embedded software, but is receiving its data directly from vehicle sensors instead of a simulator. This data stream need not be of a high fidelity, but rather should have ``just enough'' detail~\cite{Koopman2018} to allow the assertions to be evaluated with good confidence.
 
 
 
@@ -112,7 +119,7 @@ In the following, related work is reviewed in Section~\ref{Related_work}. Sectio
 
 Challenges exist to formalise human-defined traffic rules that can then be used as the ground truth for an oracle to verify the correctness of a vehicle's behaviour. 
 %
-Prakken et al.~\cite{lawabidingstudy} discusses some of these issues and argue in favour of the need for formalisation of traffic rules. Rizaldi et al.~\cite{acountability} use the formalisation as a means to resolve accountability issues in an event of an accident. To the best of our knowledge, most work~\cite{acountability, esterle, rizaldi, alves} advocates the use of Higher-Order Logic (HOL) to codify a wide range of traffic rules into a formal language. The authors of~\cite{acountability, esterle, rizaldi, alves} use Linear Temporal Logics (LTL) to construct a set of equations for various manoeuvres to ensure road safety. To construct these equations, a formal model of each lane and lane marking is required. The authors of~\cite{rizaldi} used \textit{lanelets}~\cite{lanelets2014} to build these lane models. While many works use the German or Vienna convention~\cite{vienna} on road traffic, in~\cite{alves} a road junction rule from the UKHC is used to demonstrate their methodology. Some researchers~\cite{sqlhuang, sqlgueffaz} have used temporal logic queries to formulate the HOL, using a variety of query languages like SQL, OQL, RQL, etc.  
+Prakken et al.~\cite{lawabidingstudy} discusses some of these issues and argue in favour of the need for formalisation of traffic rules. Rizaldi et al.~\cite{acountability} use the formalisation as a means to resolve accountability issues in an event of an accident. To the best of our knowledge, most work~\cite{acountability, esterle, rizaldi, alves} advocates the use of Higher-Order Logic (HOL) to codify a wide range of traffic rules into a formal language. The authors of~\cite{acountability, esterle, rizaldi, alves} use Linear Temporal Logics (LTL) to construct a set of equations for various manoeuvres to ensure road safety. To construct these equations, a formal model of each lane and lane marking is required. The authors of~\cite{rizaldi} used \textit{lanelets}~\cite{lanelets2014} to build these lane models. While many works use the German or Vienna convention~\cite{vienna} on road traffic, in~\cite{alves} a road junction rule from the UKHC is used to demonstrate their methodology. Some researchers~\cite{sqlhuang, sqlgueffaz} have used temporal logic queries to formulate the HOL, using a variety of query languages like SQL and RQL. 
 
 DeCastro et al.~\cite{decastro2018counterexample} guide an agent to learn probabilistic models, via a learning-based algorithm, constrained by safety contracts which are in essence traffic rules. However, the major challenges for using learning algorithms are completeness and verification of the solutions. Such systems are essentially a black box, and it is extremely difficult to validate their correctness. Another major problem is what reward or cost function should be used to train the model. One approach can be to have an oracle providing rewards for correct behaviour, but this leads back to developing traditional assertion-based rules using the relevant highway code.
 
@@ -145,7 +152,7 @@ The evaluation of assertions requires an environment to capture or generate vehi
 
 
 % GC added this as condensetion of section III **************
-Figure~\ref{fig:SimulatorArchitecture} shows the testbench architecture that was used to formalise and monitor assertions and interpret the diving situation. The testbench is used by starting with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) that converts human-readable rules into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
+Figure~\ref{fig:SimulatorArchitecture} shows the testbench architecture that was used to formalise and monitor assertions and interpret the driving situation. The testbench is used by starting with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) that converts human-readable rules into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
 %
 Automated assertion checking happens within the DBMS, where \emph{SQL Assertions} are stored which have been written to logically express the formalisations of the UKHC in the SQL language. At each time step the \emph{Assertion Checking} process executes a query engine that evaluates the relevant assertions encoded with the assertion logic against the stored records and generates a pass or a fail verdict as an \emph{Output}.
 
@@ -273,8 +280,14 @@ Where such concepts are used in multiple rules, the corresponding abstractions f
     \label{fig:assertion_database_annotated}
 \end{figure}
 
-To illustrate the functionality of the PostgreSQL DBMS server, Figure~\ref{fig:assertion_database_annotated} shows the operating situation associated with the overtaking scenario described in Section~\ref{Experimental_scenario}, and gives an example of a derived variable called \emph{Safe Distance Ahead} (SDA), whose name is derived from terminology in %Rule 162 of %GC can't see it in that rule
-the UKHC. The figure shows an urban scene depicting a section of road network divided into \emph{lanelets} denoting legal division between driving lanes and any buildings in the area. In this example the AV is on the left of the figure overtaking a parked vehicle requiring a lane change. The distance to the oncoming vehicle is termed the Distance Ahead. 
+To illustrate the functionality of the PostgreSQL DBMS server, Figure~\ref{fig:assertion_database_annotated} shows the operating situation associated with the overtaking scenario described in Section~\ref{Experimental_scenario}. 
+%
+In this example the AV is on the left of the figure overtaking a parked vehicle requiring a lane change. The distance to the oncoming vehicle is termed the \emph{Distance Ahead}. 
+%
+The figure shows an urban scene depicting a section of road network divided into \emph{lanelets} denoting legal division between driving lanes and any buildings in the area. 
+%
+Following one of the clauses in Rule 162 in UKHC we develop an assertion to determine whether the distance ahead is sufficient for a safe overtake manoeuvre (this assertion is called \emph{Safe Distance Ahead} (SDA)). 
+
 %
 %GC repeated above:
 % The inset shows annotation denoting the braking and thinking distances of the AV which can be treated as geographical object entities in the database and hence easily used for assertion checking. 
