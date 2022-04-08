@@ -112,7 +112,7 @@ In the following, related work is reviewed in Section~\ref{Related_work}. Sectio
 
 \section{Related Work}
 \label{Related_work}
-\todo[inline, color=green]{Have removed first paragraph, less relevant}
+% \todo[inline, color=green]{Have removed first paragraph, less relevant}
 % GC COMMENTED THIS OUT
 % Over the past few years, several researchers have investigated the classification and analysis of autonomous driving safety. However, most early works focus on autonomous driving robots in an industrial environment. Park et al.~\cite{safespace} uses braking distance to calculate so-called risk distance, and then plan a safe trajectory to avoid obstacles. While the resulting method has a good performance in a rule-free environment, it is highly unlikely that this method alone would be sufficient to accommodate any human-defined safety rules in its path planning algorithm.\todo[inline]{But that is to inform the vehicle, not for external assessment, or?} In~\cite{prioritylanguage} Bourbakis developed a priority language to formalise human-defined traffic rules in a machine-understandable fashion. Their priority language, called KYKLOFORIA, can be used by autonomous robots to navigate dynamic environments by defining a navigation corridor for every robot in the environment and then generate a navigation strategy using the language. While the language appears very promising for navigation tasks in a free dynamic environment, it is unclear how to use it in a constrained setting of the road traffic to verify the correctness of the vehicle's manoeuvre.\todo[inline]{So, both of these are for the robots to use to improve their behaviour, not for external assessment - yes?}
 
@@ -154,11 +154,11 @@ The evaluation of assertions requires an environment to capture or generate vehi
 
 
 % GC added this as condensetion of section III **************
-<<<<<<< HEAD
-Figure~\ref{fig:SimulatorArchitecture} shows the testbench architecture that was used to formalise and monitor assertions and interpret the driving situation. The testbench is used by starting with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) that converts human-readable rules into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
-=======
+% <<<<<<< HEAD
+% Figure~\ref{fig:SimulatorArchitecture} shows the testbench architecture that was used to formalise and monitor assertions and interpret the driving situation. The testbench is used by starting with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) that converts human-readable rules into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
+% =======
 Figure~\ref{fig:SimulatorArchitecture} shows the process developed to formalise and monitor assertions and interpret the driving situation. The process starts with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) where human-readable rules are converted into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
->>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
+% >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 %
 Automated assertion checks are executed within the DBMS, where \emph{SQL Assertions} are stored which express the formalisations of the UKHC in SQL. At each time step the \emph{Assertion Checking} process invokes a query engine that evaluates the relevant assertions against the stored records and generates a pass or a fail verdict as an \emph{Output}.
 
@@ -288,7 +288,7 @@ Where such concepts are used in multiple rules, the corresponding abstractions f
 
 To illustrate the functionality of the PostgreSQL DBMS server, Figure~\ref{fig:assertion_database_annotated} shows the operating situation associated with the overtaking scenario described in Section~\ref{Experimental_scenario}. 
 %
-In this example the AV is on the left of the figure overtaking a parked vehicle requiring a lane change. The distance to the oncoming vehicle is termed the \emph{Distance Ahead}. 
+In this example the AV is on the left of the figure overtaking a parked vehicle requiring a lane change. The distance to the oncoming vehicle is termed the \emph{Distance Ahead} (DA). 
 %
 The figure shows an urban scene depicting a section of road network divided into \emph{lanelets} denoting legal division between driving lanes and any buildings in the area. 
 %
@@ -305,15 +305,6 @@ In the case of assertions related to overtaking, it is necessary to determine wh
 The overtake manoeuvre ends when the vehicle is entirely within the running lane once more after having passed the VBP. Lane geometry objects (shape or bounding box polygons) are therefore an essential element of the assertions related to overtaking. 
 
 
-
-
-
-
-
-
-
-
-
 \section{Assertion Development and Application}\label{Use_of_assertions}
 In this section we first identify the types of assertions that may exist. We then discuss how to develop assertions from the natural language statements of the UKHC. We also present how to use assertions, both in simulation and during operation.
 
@@ -325,7 +316,8 @@ In this section we first identify the types of assertions that may exist. We the
 \end{figure}
 
 
-\subsection{Types of Assertions} \label{assertion_categories}\todo{Mention this classification/these types as contribution?}
+\subsection{Types of Assertions} \label{assertion_categories}
+% \todo{Mention this classification/these types as contribution?}
 
 The assertions to encode UKHC rules tend to fall into one of four principal types. Except for invariants, assertions are defined with respect to some \emph{assertion reference point} - a particular step of a captured data trace, defined by some reference condition which holds at a specified time step. The assertion is then defined as some spatio-temporal condition relative to the reference point, as shown in Figure~\ref{fig:categories_of_assertions}.
 
@@ -366,7 +358,7 @@ Similarly, different assertions checking for mutually exclusive conditions will 
 %particularly critical for runtime monitoring. 
 
 Discrimination %or pre-selection
-of assertions can be achieved by specifying 'environment conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant, e.g.\ highway versus urban or rural environments.\footnote{This is similar to typical practice in computer hardware design verification~\cite{tao2009}, where an assertion may take the form ``under $<$environment conditions$>$ if $<$trigger$>$ then $<$expectation$>$", where \textit{$<$environment conditions$>$} may be ``we are not in RESET mode" and \textit{$<$trigger$>$} may be ``we receive a request" and \textit{$<$expectation$>$}  may be ``an acknowledge signal is driven high in the next X clock cycles".} 
+of assertions can be achieved by specifying `environment conditions' based on the type of \textit{Operating Design Domain (ODD)} in which the assertion is relevant, e.g.\ highway versus urban or rural environments.\footnote{This is similar to typical practice in computer hardware design verification~\cite{tao2009}, where an assertion may take the form ``under $<$environment conditions$>$ if $<$trigger$>$ then $<$expectation$>$", where \textit{$<$environment conditions$>$} may be ``we are not in RESET mode" and \textit{$<$trigger$>$} may be ``we receive a request" and \textit{$<$expectation$>$}  may be ``an acknowledge signal is driven high in the next X clock cycles".} 
 In addition, encoding the assertion type will enable the assertion checking process (see Figure~\ref{fig:SimulatorArchitecture}) to check only assertions of a given type.
 %
 
@@ -570,7 +562,10 @@ The analysis identifies several key parameters that characterise the overtaking 
     % 
     A table of the typical stopping distances for travelling speeds ($v$) between 20~mph - 70~mph is provided with Rule 126 in the UKHC.
     %
-    Equation~\ref{DS_equation_rule126} is a regression formula derived from this table to estimate the stopping distance ($m$)\todo{``in metres'' as in the runtime monitoring section?} given the vehicle speed ($mph$).\todo{``in $m$'' to distinguish $m$ from $v$?} 
+    Equation~\ref{DS_equation_rule126} is a regression formula derived from this table to estimate the stopping distance (in metres) 
+    % \todo{``in metres'' as in the runtime monitoring section?}
+     given the vehicle speed (in mph).
+    % \todo{``in $m$'' to distinguish $m$ from $v$?} 
 %\footnote{Refer to\url{https://www.gov.uk/guidance/the-highway-code/general-rules-techniques-and-advice-for-all-drivers-and-riders-103-to-158}} 
     The coefficients are: $a=0.300$, $b=0.058$, $c=-0.011$ and $d=0.015$.
     
@@ -595,9 +590,14 @@ The analysis identifies several key parameters that characterise the overtaking 
 Taken as an ensemble, the last four parameters in the above list define a \emph{driving profile} for the manoeuvre, which characterises a level of urgency or aggression associated with the manoeuvre. An `aggressive' profile might be taken as one which has a low pull-out clearance, high pull-out angle, low cut-in clearance and high cut-in angle, indicating a `sharp and close' manoeuvre taken by the AV around the VBP. A more `relaxed' driving profile may have larger clearances and lower steering angles. Various profiles of manoeuvre with different characteristic values are assessed in the experimental work discussed later. It should be noted that other UKHC rules place (at least qualitative) restrictions on these parameters to ensure safe driving behaviour (see the fourth bullet-point of Rule 163.% in Section \ref{interp_nat_lang_UKHC_rules}, and also Section \ref{sim_case_study}). 
 
 % GC this is confusing...
-As with the problem of direct translation of the UKHC rules, the approach aimed to develop a model using the concepts of the natural language of the rule rather than by other parameters, for example time-to-collision, which has been found in human factors studies to be the most significant parameter characterising overtaking manoeuvres \cite{lenard2018, Chen2015}. Hence the model developed for the Safe Distance Ahead measurement differs to\todo{differs from?} many that have been developed for analysis of overtaking manoeuvres, which aim to capture the decision making of the driver rather than the characteristics of the legal code of behaviour that is essentially an independent observer's perspective on the scenario.
+As with the problem of direct translation of the UKHC rules, the approach aimed to develop a model using the concepts of the natural language of the rule rather than by other parameters, for example time-to-collision, which has been found in human factors studies to be the most significant parameter characterising overtaking manoeuvres \cite{lenard2018, Chen2015}. Hence the model developed for the Safe Distance Ahead measurement differs from %
+% to\todo{differs from?} 
+many that have been developed for analysis of overtaking manoeuvres, which aim to capture the decision making of the driver rather than the characteristics of the legal code of behaviour that is essentially an independent observer's perspective on the scenario.
 
-\subsection{Geospatial Database for Assertion Checking}\todo{elevated heading one up}
+\subsection{Geospatial Database for Assertion Checking}
+\todo{elevated heading one up}
+\todo{this is the same title as section B!}
+
 Analysis of the overtaking manoeuvre problem fits neatly into the geospatial database framework for assertion checking. The vehicles can be represented as shape objects using the PostGIS system extension which allows for logical tests and measurement metrics to be efficiently calculated between shapes. An Entity Relation Diagram (ERD), Figure~\ref{fig:erd}, shows the variables within the database and the relationships between them\footnote{See \url{https://en.wikipedia.org/wiki/Entity-relationship\_model} for an explanation of \textit{crow's foot} notation.}. 
 
 For each log file there exists an environment table containing map information, which in this case is based on the openDrive\footnote{\url{https://www.asam.net/standards/detail/opendrive/}} and lanelet formats. From the lanelet data we derive a table containing useful entries such as lane width and orientation for the environment. Data captured from the simulation (or real-time monitor), contains a state vector for the actors in $data\_capture.actor\_state$ which contains position and orientation information. From this captured data table we can calculate dynamic state information, that is information changing over time (e.g.\ velocity, acceleration) or with vehicle speed (e.g.\ braking distance). 
@@ -629,7 +629,9 @@ in a variety of ways, both during simulation and in runtime monitoring:
 	\begin{itemize}
 		\item \emph{Simulation Control (Halting)}: Assertions can be checked as the simulation runs, and a simulation could be halted after a major safety violation if there is little value in continuing with a simulation beyond that point.
 		
-		\item \emph{Operator Warnings}: As above, assertions can be checked as the simulation runs, but instead of halting the operator can be warned of the occurrence, allowing them to exercise their judgement on whether to continue.
+		\item \emph{Operator Warnings}: %As above, assertions can be checked as the simulation runs, but instead of halting the operator can be warned of the occurrence, allowing them to exercise their judgement on whether to continue.
+		%
+		As above, assertions can be checked as the simulation runs but, instead of halting, the operator can be warned of the occurrence. Thus the operator can exercise their judgment on whether to continue or not. 
 		%
 		We anticipate that this may be the best policy for minor safety violations or events such as collisions which may lead to secondary effects like non-deterministic behaviour in the simulator~\cite{chance2021}, where the log file data might be degraded or unrepeatable following the event. 
 %
@@ -962,7 +964,7 @@ Considering this example from the point of view of performance, the AV must not 
 %
 % We define $\delta$ as the ratio of `achieved distance ahead' to the `SDA required by profile' from Table~\ref{Overtaking_Profiles}. 
 %
-The size of this \emph{opportunity window} will be dependent on a myriad of different contextual and preferential conditions such as the driving style, vehicle capability, passenger comfort, etc. 
+The size of this \emph{opportunity window} will be dependent on a myriad of different contextual and preferential conditions such as the driving style, vehicle capability and passenger comfort. 
 
 We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotated}, considering performance as well as safety, using the required SDA and opportunity window to define three specific cases:
 \begin{itemize}
@@ -970,9 +972,9 @@ We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotat
     % \item Unsafe: $d_{OV} < SDA$
     % \item Higher Performance: $SDA \leq d_{OV}$ $\leq SDA + \delta$
     % \item Lower Performance: $d_{OV} > SDA + \delta$
-    \item Case 1: $d_{OV} < SDA$
-    \item Case 2: $SDA \leq d_{OV}$ $\leq SDA + \delta$
-    \item Case 3: $d_{OV} > SDA + \delta$
+    \item Case 1: $DA < SDA$
+    \item Case 2: $SDA \leq DA$ $\leq SDA + \delta$
+    \item Case 3: $DA > SDA + \delta$
 \end{itemize}
 %
 Here, $d_{OV}$ is the distance to the Oncoming Vehicle,\todo{is this the Distance Ahead in Fig.\ 2?} SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
@@ -1048,7 +1050,7 @@ An excerpt from Rule 146 of the UKHC states \begin{quote} \textit{Try to anticip
 
 % At present, we are not in a position to perform assertion checking for this kind of safety property by means of an independent assertion-based oracle. There is no externally objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
 % =======
-This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. In many AI technologies the complexity and opacity of internal representations of perceptions, decisions, etc., combined with the non-deterministic nature of complex operational situations in real world environments means that they may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. 
+This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. In many AI technologies the complexity and opacity of internal representations of perceptions or decisions, combined with the non-deterministic nature of complex operational situations in real world environments means that they may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. 
 %This requires some form of communication protocol or interface from the perception and decision-making centres of the system to the outside world, so that the decisions can be observed and recorded for later analysis. 
 %
 This opens up a significant opportunity for the use of assertion-based runtime monitoring as discussed in Section~\ref{assertions_at_run_time}.
@@ -1056,14 +1058,16 @@ This opens up a significant opportunity for the use of assertion-based runtime m
 \todo[inline]{Please consider taking the following two paras out.}
 At present, however, we are not in a position to perform assertion checking for this kind of safety property as an independent validation exercise.
 %by means of an independent assertion-based oracle
-There is to date no objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
+To date, there is no objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
 % >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 
-In the absence of any such explanation, it is still possible to achieve some degree of validation by performing checks derived from the text of the rule, which attempt to challenge the hypothesis expressed or implied by the UKHC rule or rule clause (\emph{e.g.\ falsification testing}) of the safety property. For example, in the testing phase of an AV, to exercise the last bullet item of Rule 146 above one could construct a test case, perhaps similar in nature to those defined in~\cite{EuroNCAP}, where simulated `children agents' (that model the physical appearance of children as well as some aspects of their behaviour) step out into a road in front of the AV agent, having appeared either to be looking away from an AV agent, towards it, or some mix of the two focuses of attention. Such a test suite could then test the capability of the AV control system to evaluate the potential behaviour of children to determine what driving action can be taken successfully and safely. This can test the `end-to-end' situated behaviour of the vehicle and thereby evaluate the cumulative effect of decision making, but as evidence to support a safety case this is less effective than explicit confirmation (by recording) of the AV's decision process that would come from explainable AI.
+In the absence of any such explanation, it is still possible to achieve some degree of validation by performing checks derived from the text of the rule, which attempt to challenge the hypothesis expressed or implied by the UKHC rule or rule clause (\emph{e.g.\ falsification testing}) of the safety property. For example, in the testing phase of an AV, to exercise the last bullet item of Rule 146 above one could construct a test case, perhaps similar in nature to those defined in~\cite{EuroNCAP}, where simulated `children agents' (that model the physical appearance of children as well as some aspects of their behaviour) step out into a road in front of the AV agent, having appeared either to be looking away from an AV agent, towards it, or some mix of the two focuses of attention. Such test cases could assess the capability of the AV control system to evaluate the potential behaviour of children to determine what driving action can be taken successfully and safely. This can test the `end-to-end' situated behaviour of the vehicle and thereby evaluate the cumulative effect of decision making, but as evidence to support a safety case this is less effective than explicit confirmation (by recording) of the AV's decision process that would come from explainable AI.
 
-\section{Conclusion}\label{conclusion}\todo[inline]{Revise: cover contributions, ...}
+\section{Conclusion}\label{conclusion}
+\todo[inline]{Revise: cover contributions, ...}
 
-In this paper we have presented a methodology to systematically derive formal logical expressions, encoded as assertions, from the UKHC. We have introduced a process for monitoring assertions that can be used for simulation-based assertion checking and runtime monitoring during operation.\todo[inline]{complete with reference to abstract and first section - contributions}
+In this paper we have presented a methodology to systematically derive formal logical expressions, encoded as assertions, from the UKHC. We have introduced a process for monitoring assertions that can be used for simulation-based assertion checking and runtime monitoring during operation.
+\todo[inline]{complete with reference to abstract and first section - contributions}
 
 The results obtained from both the simulation and the runtime video analysis case studies show the general feasibility and utility of assertion-based safety validation, with the assertions being derived from regulatory documentation written in natural language and intended for human drivers rather than written specifically to be usable by computer. The results provide our first indication that human-oriented natural language rules of driving are an effective oracle for assessment of artificial systems.
 
