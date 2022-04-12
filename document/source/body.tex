@@ -7,7 +7,7 @@
 
 \section{Introduction}
 
-Verification and validation are important to earning trust and gaining confidence in the safety of autonomous systems (AS) such as autonomous vehicles (AVs). Safety validation of any system can (and should) be performed by a variety of measures, including analysis and inspection of designs and their implementation. In this paper we focus on validation by system testing, and in particular on using assertions within simulation and at runtime for a vehicle overtaking scenario. 
+Verification and validation are important to earning trust and gaining confidence in the safety of autonomous systems (AS) such as autonomous vehicles (AVs). Safety validation of any system can (and should) be performed by a variety of measures, including analysis and inspection of designs and their implementation. In this paper we focus on validation by system testing, and in particular on using assertions for a vehicle overtaking scenario  both in simulation and in runtime monitoring. 
 %
 
 % GC ADDED THIS
@@ -15,7 +15,9 @@ We are investigating the use of assertions to validate autonomous vehicle behavi
 % There has been some recent work to make autonomous vehicles abide by highway traffic laws by formalising the rules in a language that autonomous systems can understand. 
 This is challenging not only because driving rules are often vague and may be conflicting, but also because of the contextual and common sense knowledge required to interpret these rules into appropriate driving actions. 
 %
-Field testing, often the traditional approach to validating systems in their target environments, is likely to be prohibitively expensive for autonomous systems, if a high degree of coverage or statistical confidence is required. This has led to much interest and research into the use of driving simulators\footnote{Examples include \url{https://www.rfpro.com} and \url{http://carla.org}.} for validation. 
+Field testing, often the traditional approach to validating systems in their target environments, is likely to be prohibitively expensive for autonomous vehicles
+%systems
+, if a high degree of coverage or statistical confidence is required. This has led to much interest and research into the use of driving simulators\footnote{Examples include \url{https://www.rfpro.com} and \url{http://carla.org}.} for validation. 
 %
 % GC COMMENTED THIS out to be more concise
 % Autonomous systems are significantly more complex than their non-autonomous counterparts, and therefore more difficult to validate. Whereas a non-autonomous system is usually designed only to deliver a given servo-mechanical or information processing relationship from inputs to outputs (its function), the problem of autonomy is concerned with how that function is used to achieve one or more situated tasks within the environment, which have specified goals that must be achieved. The state of the environment is as much a part of the validation problem of an autonomous system as the internal state of the system. Hence, the task of validation is often a much higher dimensional problem to solve than for conventional systems, leading to a major expansion in the number of states of a system that may need to be tested. 
@@ -73,7 +75,8 @@ lane changing during an overtaking scenario. We adopt the terms scene, scenario 
 
 %\subsection{Safety argument}
 % GC added sentence on UK law commission
-Evaluation of AV behaviour against codes of driving conduct is emerging as an essential aspect AV verification and certification, as set out in the recent UK Law Commission report~\cite{law_commission_UK}. 
+Evaluation of AV behaviour against codes of driving conduct is emerging as an essential aspect AV %verification and 
+certification, as set out in the recent UK Law Commission report~\cite{law_commission_UK}. 
 % Safety assurance is emerging as a legislative practice and an essential aspect of AV verification and certification, e.g. see recommendations set out in the recent UK Law commission report which specifically mentions evaluation of AV behaviour against the rules of the road~\cite{law_commission_UK}. 
 %
 Assertion monitoring may be used as evidence to show functional safety compliance against national regulations or codes of practice, the general safety argument being that if an AV satisfies all the rules that may be legally expected of a human driver, then its behaviour is comparable to that of human drivers and therefore should be acceptable, or at least legal. It should be noted that acceptance may therefore be somewhat context-specific, against the code of practice for each country, and what passes under one legal code may not be acceptable in another. 
@@ -94,18 +97,19 @@ This paper makes the following contributions.
 %
 We develop and present a taxonomy of assertions that covers the externally observable behaviours of vehicles (although in principle this is applicable to measurements of any system). 
 %
-We present a novel technique for deriving, systematically formalising and encoding assertions from the UKHC and applying them in two modes: (i) within a Geospatial Information System (GIS) database linked to a vehicle simulator, and (ii) within a real-time monitoring system during vehicle operation.
+We present a novel technique for deriving, systematically formalising and encoding assertions from the UKHC and applying them in two modes: (i) within a %Geospatial Information System (GIS) database linked to a 
+vehicle simulator at the vehicle design validation stage, and (ii) within a runtime monitoring system during vehicle operation.
 %
 In the first mode of use, we encode the UKHC assertions as SQL queries and run them within a PostgreSQL database with a PostGIS extension.\footnote{Refer to \url{https://www.postgresql.org/} and \url{http://postgis.net}.} In this mode, the assertions can make use of any data stream available, passed into the database records.
 %
-In the second mode of use, the principal requirement is that data about the AV, other road users and the adjacent environment with respect to the test vehicle is sufficient to evaluate the assertions during operation. The same PostgreSQL-based database as used in the simulator can therefore be installed as embedded software, but is receiving its data directly from vehicle sensors instead of a simulator. This data stream need not be of a high fidelity, but rather should have ``just enough'' detail~\cite{Koopman2018} to allow the assertions to be evaluated with good confidence.
+In the second mode of use, the principal requirement is that data about the AV, other road users and the adjacent environment with respect to the test vehicle is sufficient to evaluate the assertions during runtime. The same PostgreSQL-based database as used in the simulator can therefore be installed as embedded software, but its data stream will be sourced from real vehicle sensors instead of a simulator. This data stream need not be of a high fidelity, but rather should have ``just enough'' detail~\cite{Koopman2018} to allow the assertions to be evaluated with good confidence.
 
 
 
 
 
 %\subsection{Document Structure}
-In the following, related work is reviewed in Section~\ref{Related_work}. Section~\ref{generic_architecture} explains the structure of the PostgreSQL database and how it integrates with the underlying simulator or runtime monitoring environment. Section~\ref{Use_of_assertions} discusses the  methodology of deriving assertions from the UKHC, and the principles of using an assertion-based oracle both in simulations and for operational analysis. Section~\ref{Experimental_scenario} introduces the overtaking scenario we have used to demonstrate the application of assertion-based oracles and describes two case studies to illustrate the two options, simulation-based testing and operational monitoring. The results from the case studies are presented and analysed. In Section~\ref{discussion} we discuss some important aspects of assertion-based monitoring, which have emerged from the experimental work, in particular the use of assertions for performance monitoring as well as for safety, and the observation that in many assertions the intention of ego-vehicle agents may also need to be monitored to demonstrate compliance with certain driving rules. Finally, in Section~\ref{conclusion} we draw conclusions and suggest directions for future work.
+In the following, related work is reviewed in Section~\ref{Related_work}. Section~\ref{generic_architecture} explains the structure of the PostgreSQL database and how it integrates with the underlying simulator or runtime monitoring environment. Section~\ref{Use_of_assertions} discusses the  methodology of deriving assertions from the UKHC, and the principles of using an assertion-based oracle both in simulations and for runtime analysis. Section~\ref{Experimental_scenario} introduces the overtaking scenario we have used to demonstrate the application of assertion-based oracles and describes two case studies to illustrate the two options, simulation-based testing and runtime monitoring. The results from the case studies are presented and analysed. In Section~\ref{discussion} we discuss some important aspects of assertion-based monitoring, which have emerged from the experimental work, in particular the use of assertions for performance monitoring as well as for safety, and the observation that in many assertions the intention of ego-vehicle agents may also need to be monitored to demonstrate compliance with certain driving rules. Finally, in Section~\ref{conclusion} we draw conclusions and suggest directions for future work.
 
 
 
@@ -140,7 +144,7 @@ We use SQL to build the assertions, which is highly expressive~\cite{sqllibkin} 
 
 \section{System Architecture for Assertion-based Monitoring} \label{generic_architecture}
 
-The evaluation of assertions requires an environment to capture or generate vehicle data, and apply the assertions to interpret the driving situation. This section presents the generic components and software architecture we have deployed to support assertion-based monitoring either in simulation or during operation.
+The evaluation of assertions requires an environment to capture or generate vehicle data, and apply the assertions to interpret the driving situation. This section presents the generic components and software architecture we have deployed to support assertion-based monitoring either in simulation or during runtime.
 
 \subsection{Assertion Monitoring Architecture} \label{generic_sim_system}
 
@@ -157,7 +161,7 @@ The evaluation of assertions requires an environment to capture or generate vehi
 % <<<<<<< HEAD
 % Figure~\ref{fig:SimulatorArchitecture} shows the testbench architecture that was used to formalise and monitor assertions and interpret the driving situation. The testbench is used by starting with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) that converts human-readable rules into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
 % =======
-Figure~\ref{fig:SimulatorArchitecture} shows the process developed to formalise and monitor assertions and interpret the driving situation. The process starts with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) where human-readable rules are converted into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses postgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
+Figure~\ref{fig:SimulatorArchitecture} shows the process developed to formalise and monitor assertions and interpret the driving situation. The process starts with the reference used to assess the driving situation, in this case the UKHC. Following this, there is a human-interpreted stage (human icon) where human-readable rules are converted into formal assertions (\emph{Assertion Formalisation}) that are machine-readable. This forms one of two inputs to the \emph{Oracle} which uses PostgreSQL database technology to perform the automated assertion checking. The second input to the Oracle is the \emph{Data Stream} of extracted features that is observing the driving scenario, which may be from simulation or from live sensor data. The \emph{Feature Extraction} process will capture relevant information from the driving scenario, including \emph{Static} elements such as the road network and \emph{Dynamic} elements such as vehicle position and orientation. Records are captured from the \emph{Data Stream} and stored on the PostgreSQL DBMS server at each available time step.
 % >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 %
 Automated assertion checks are executed within the DBMS, where \emph{SQL Assertions} are stored which express the formalisations of the UKHC in SQL. At each time step the \emph{Assertion Checking} process invokes a query engine that evaluates the relevant assertions against the stored records and generates a pass or a fail verdict as an \emph{Output}.
@@ -306,7 +310,7 @@ The overtake manoeuvre ends when the vehicle is entirely within the running lane
 
 
 \section{Assertion Development and Application}\label{Use_of_assertions}
-In this section we first identify the types of assertions that may exist. We then discuss how to develop assertions from the natural language statements of the UKHC. We also present how to use assertions, both in simulation and during operation.
+In this section we first identify the types of assertions that may exist. We then discuss how to develop assertions from the natural language statements of the UKHC. We also present how to use assertions, both in simulation and during runtime.
 
 \begin{figure}[!b]
     \centering
@@ -600,7 +604,7 @@ many that have been developed for analysis of overtaking manoeuvres, which aim t
 
 Analysis of the overtaking manoeuvre problem fits neatly into the geospatial database framework for assertion checking. The vehicles can be represented as shape objects using the PostGIS system extension which allows for logical tests and measurement metrics to be efficiently calculated between shapes. An Entity Relation Diagram (ERD), Figure~\ref{fig:erd}, shows the variables within the database and the relationships between them\footnote{See \url{https://en.wikipedia.org/wiki/Entity-relationship\_model} for an explanation of \textit{crow's foot} notation.}. 
 
-For each log file there exists an environment table containing map information, which in this case is based on the openDrive\footnote{\url{https://www.asam.net/standards/detail/opendrive/}} and lanelet formats. From the lanelet data we derive a table containing useful entries such as lane width and orientation for the environment. Data captured from the simulation (or real-time monitor), contains a state vector for the actors in $data\_capture.actor\_state$ which contains position and orientation information. From this captured data table we can calculate dynamic state information, that is information changing over time (e.g.\ velocity, acceleration) or with vehicle speed (e.g.\ braking distance). 
+For each log file there exists an environment table containing map information, which in this case is based on the OpenDrive\footnote{\url{https://www.asam.net/standards/detail/opendrive/}} and lanelet formats. From the lanelet data we derive a table containing useful entries such as lane width and orientation for the environment. Data captured from the simulation (or runtime monitoring), contains a state vector for the actors in $data\_capture.actor\_state$ which contains position and orientation information. From this captured data table we can calculate dynamic state information, that is information changing over time (e.g.\ velocity, acceleration) or with vehicle speed (e.g.\ braking distance). 
 
 Further insight to the driving situation can be derived when combining actor state information with information about the environment. For example, driving lane orientation ($lanelets.lane\_orientation$) can be used to calculate the vehicle heading angle relative to the driving lane, to infer the cut-in or pull-out angles ($state\_dynamics.pull\_out\_angle$) required for the Safe Distance Ahead calculation. The final $assertions$ table is where the Safe Distance Ahead output can be written and stored as a Boolean pass/fail result.\todo{The SDA is a number, the result of the check is a Bool. Please clarify.}
 % KIE: There is a jump here from SDA to the assertion that checks the SDA - both are different and we've not yet introduced the _assertion_, but instead we've focused on the formula (as in the Appendix).
@@ -637,7 +641,7 @@ in a variety of ways, both during simulation and in runtime monitoring:
 %
 %The simulation may need to be halted, but pragmatically we believe this decision is probably best left for test engineers to decide. However, the use of assertions to provide operator warnings could be a beneficial mode of use.
 		
-		\item \emph{Simulation Log Annotation}:\todo{for near misses also?} for negligible safety assertions failures, or for non-safety checks such as service performance monitoring, assertions could be checked as the simulation runs. But, instead of halting or providing warnings, assertion failures could simply result in annotations being added to the simulation log data, indicating that an assertion failed at a given time step but otherwise having no other externally observable effect. The log can then be analysed retrospectively after the simulation run has finished.
+		\item \emph{Simulation Log Annotation}:\todo{for near misses also?} for negligible safety assertions failures, or for non-safety checks such as service performance monitoring, assertions could be checked as the simulation runs. However, instead of halting or providing warnings, assertion failures could simply result in annotations being added to the simulation log data, indicating that an assertion failed at a given time step but otherwise having no other externally observable effect. The log can then be analysed retrospectively after the simulation run has finished.
 		
 		\item \emph{Retrospective analysis}: Instead of checking assertions as the simulation runs, the captured data can be recorded and passed to the assertion checking database after simulation has finished, to analyse an AV's performance retrospectively. %To date this is the mode in which we have been using the assertion-checking facility.
 	\end{itemize}
@@ -650,12 +654,12 @@ in a variety of ways, both during simulation and in runtime monitoring:
 \underline{\textbf{Modes of use during runtime monitoring:}}
 	
 	\begin{itemize}
-		\item \emph{Warnings and Alarms}: Assertion checks can be used to raise warnings or alarms to human vehicle operators, to draw their attention or request them to take control over the vehicle if safety violations occur. Additionally these warnings can be used to indirectly assess the performance of subsystems during operation to provide development feedback in future versions of the system.
+		\item \emph{Warnings and Alarms}: Assertion checks can be used to raise warnings or alarms to human vehicle operators, to draw their attention or request them to take control over the vehicle if safety violations occur. Additionally these warnings can be used to indirectly assess the performance of subsystems during runtime to provide development feedback in future versions of the system.
 		
 		\item \emph{Triggering safety functions}: Detection of assertion violations can be used to initiate automated pre-planned risk mitigation plans as a safety function, where such occurrences present an immediate and sufficiently high risk that such a reaction is warranted~\cite{RuntimeReview}. Having a ground truth reference to judge on monitored data at runtime can be challenging. Assertion failures can provide a reliable verdict to execute appropriate risk mitigation plans.
 		
 		\item \emph{Self-adaptation}: using assertion checking during runtime can be combined with measurements of key and safety performance indicators (KPIs, SPIs)~\cite{Koopman2020} or other scoring functions to help the AV %(or autonomous systems more generally) 
-		to actively learn and reliably adapt their behaviour during operation~\cite{Kang2020}.
+		to actively learn and reliably adapt their behaviour during runtime~\cite{Kang2020}.
 		
 		\item \emph{Accident investigation or insurance risk assessment}: Assertion-checking subsystems can be used to annotate the internal data logs of an AV to help identify potential causes of an accident in any post-incident investigation (similar to flight data recorders in aircraft), or to measure the occurrence rate of UKHC driving rule infractions for insurance risk adjustment purposes. However, there are ethical concerns associated with such applications, as discussed in~\cite{EthicalBlackBox}.
 		
@@ -674,7 +678,7 @@ While these examples initially served as an aid to shaping the methods and techn
 %
 The use of methods such as modelling, and the need for features such as the use of standard procedures/library functions, all emerged as direct consequences of developing these examples.
 
-In the following we present two example case studies inspired from an overtaking scenario; the first aims at demonstrating the use of assertions in simulation testing, and the second shows how assertions can be used as SPIs to assess the safety performance of an AV or other road user at runtime.
+In the following we present two example case studies inspired from an overtaking scenario; the first aims at demonstrating the use of assertions in simulation testing, and the second shows how assertions can be used as \emph{safety performance indicators} (SPIs) to measure how well an AV or other road user maintains the relevant safety properties at runtime.
 
 \subsection{Experimental Scenario} % (from the NHTSA/CARLA Challenge)}
 \label{carla_challenge}
@@ -692,11 +696,11 @@ The vehicle must leave a sufficient gap to the vehicle it is overtaking and also
 
 %This scenario is challenging for the autonomous vehicle as there are competing goals firstly to ensure safety and avoid accidents but also to make reasonable progress along the road network given the conditions, i.e. maintain \textit{liveness}. There is also significant challenge in validating vehicle safety in such a scenario, whether in the real world or in a simulation. For the overtaking scenario several parameters need to be monitored in order to check each assertion. 
 
-In the simulation and the real-time video analysis experiments, we chose to assess clauses in two different UKHC overtaking rules. The simulation study developed an assertion for the first bullet-item of Rule 162 (as discussed in Section~\ref{interp_nat_lang_UKHC_rules}). 
+In the simulation and runtime monitoring experiments, we chose to assess clauses in two different UKHC overtaking rules. The simulation study developed an assertion for the first bullet-item of Rule 162 (as discussed in Section~\ref{interp_nat_lang_UKHC_rules}). 
 % and also in Section \ref{model_based_analysis}
 The assertion checks whether a Safe Distance Ahead exists for an AV performing an overtake manoeuvre.
 %
-The real-time safety validation study developed video analysis measurements that would support assertion checks against the fourth bullet-item of Rule 163 
+The runtime safety validation study developed video analysis measurements that would support assertion checks against the fourth bullet-item of Rule 163 
 (see the italicised clause in Section \ref{interp_nat_lang_UKHC_rules}).
 % ; the relevant clause is italicised in that section for ease of identification) %
 While the measurements were not developed fully into assertions in SQL code, the study does capture the information essential to the assertion hypothesis for that UKHC clause (the Cut-in Clearance distance as discussed in Section~\ref{model_based_analysis}), which can be generated as a derived variable in the database using a standard procedure function as discussed previously.
@@ -807,7 +811,7 @@ The table shows that it would have been inadvisable to perform a `relaxed' overt
 \subsection{Runtime monitoring case study}
 In the runtime case study we developed an assertion monitor for checking safe stopping distance during the overtake. 
 %
-To demonstrate the use of assertions at runtime, in the absence of a roadworthy AV controller, we used manual video analysis in combination with a pre-trained object classifier to extract data from a dashboard video camera of a dangerously overtaking vehicle.\footnote{Link to video used in analysis: \url{https://youtu.be/Gzi4X7WZkRI}.} \todo[inline]{indicate start-stop timing in video, from min:sec to min:sec}
+To demonstrate the use of assertions at runtime, in the absence of a roadworthy AV controller, we used manual video analysis in combination with a pre-trained object classifier to extract data from a dashboard video camera of a dangerously overtaking vehicle.\footnote{Link to video used in analysis: \url{https://youtu.be/Gzi4X7WZkRI} time period 01:30 to 01:45 minutes.} \todo[inline]{indicate start-stop timing in video, from min:sec to min:sec}
 \todo[inline]{Say what the video shows, i.e.\ what should the outcome from the assertion checks be?}
 %
 The aim of the assertions applied to runtime data was to assess whether the AV risks colliding with any of the other vehicles involved in the scenario during the overtake and in turn take an informative decision on aborting or continuing the overtake. 
@@ -829,20 +833,20 @@ The first four assertions are applicable throughout the three stages of the over
 
 \noindent \textbf{i)} the VBP should not be in the DS$_{AV}$ at any time during the overtake, 
 
-\noindent \textbf{ii)} the OV should not be in the AV$_{DS}$, 
+\noindent \textbf{ii)} the OV should not be in the DS$_{AV}$, 
 
-\noindent \textbf{iii)} the AV should not be in the OV$_{DS}$, 
+\noindent \textbf{iii)} the AV should not be in the DS$_{OV}$, 
 
 % <<<<<<< HEAD
 % \noindent \textbf{iv)} there should be no intersection between the AV$_{DS}$ and OV$_{DS}$.
 
 % =======
 % >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
-There are two key SPIs applicable for the last stage of the overtake (cutting in):
+The last two assertions are only applicable to the last stage of the overtake (cutting in):
 
-\noindent \textbf{iv)} the AV should not enter the VBP$_{DS}$ and 
+\noindent \textbf{iv)} the AV should not enter the DS$_{VBP}$ and 
 
-\noindent \textbf{v)} there should be no intersection between the AV$_{DS}$ and the VBP$_{DS}$. 
+\noindent \textbf{v)} there should be no intersection between the DS$_{AV}$ and the DS$_{VBP}$. 
 
 \subsubsection{Video processing}
 %
@@ -851,7 +855,7 @@ We used the following approach to approximate the processing of the real-time da
 %
 First, a pre-trained object classifier, YOLOv3~\cite{Yolo}, was used to provide locations of vehicles in each frame and how much area each vehicle occupies of the frame. 
 %
-The separation distances between the AV and the other vehicles are the SPIs at the various stages of the overtaking manoeuvre. 
+The separation distances between the AV and the other vehicles can be used as a safety performance indicator for the overtaking manoeuvre. For this to be determined we need to calculate the longitudinal and lateral separation distances between the other vehicles from the AV.
 %
 The longitudinal distance ($s$) of a vehicle along the road from the AV can be estimated 
 using Equation~\ref{s_equation}:
@@ -868,7 +872,7 @@ Second, the lateral distance $d$ of the AV from the middle white line is estimat
 %
 where $w_{L (real)}$ is the real lane width measured in meters, $w_{L (pixels)}$ is the lane width measured in pixels and $d_{pixels}$ is the lateral distance of the AV from the middle white line in pixels. $d_{pixels}$ is determined by simply finding where the middle white line is when compared to the middle of the frame. The VBP and OV are assumed to have a fixed lateral distance from the white line separating lanes. 
 %
-Third, the pull out $\beta$ and cut in $\theta$ angles of the AV are calculated using the change in lateral distance and change in the longitudinal distance measured. Fourth, as these is no vehicle speed associated with the video, we based the DS calculation on the worst case scenario; that is all vehicles were traveling at the speed limit of the road. 
+Third, the pull out $\beta$ and cut in $\theta$ angles of the AV are calculated using the change in lateral distance and change in the longitudinal distance measured. Fourth, as there is no vehicle speed associated with the video, we based the DS calculation on the worst case scenario; that is all vehicles were traveling at the speed limit of the road. 
 %
 According to Rule 124 in the UKHC the national speed limit of the single carriage way in the video for cars (AV and OV) is 60mph, and 50mph for goods vehicles (VBP). Using the above steps the real time video was converted to a 2D driving scenario, where the Danger Space assertions listed in section~\ref{DS_assessment} can be checked.
 
@@ -890,22 +894,22 @@ When passing the VBP the assertion checks indicate that the overtake should have
 \multirow{3}{*}{\textbf{}} & \multicolumn{3}{c}{\textbf{Overtaking manoeuvre stages}}\\
 \textbf{Assertion} & \textbf{Pulling out} & \textbf{Passing VBP} & \textbf{Cutting in} & \\
 &  &  &  & \\
-VBP not in AV$_{DS}$ & PASS & PASS & FAIL\\
+VBP outside DS$_{AV}$ & PASS & PASS & FAIL\\
 %
-OV not in AV$_{DS}$ & PASS & FAIL & FAIL\\
+OV outside DS$_{AV}$ & PASS & FAIL & FAIL\\
 %
-AV not in OV$_{DS}$  & PASS & FAIL & FAIL\\
+AV outside DS$_{OV}$  & PASS & FAIL & FAIL\\
 %
-No AV$_{DS}$ $\cap$ OV$_{DS}$  & PASS & FAIL & FAIL\\
+No DS$_{AV}$ $\cap$ DS$_{OV}$  & PASS & FAIL & FAIL\\
 %
-AV not in VBP$_{DS}$  & N/A & N/A & PASS\\
+AV outside DS$_{VBP}$  & N/A & N/A & PASS\\
 %
-No AV$_{DS}$ $\cap$ VBP$_{DS}$  & N/A & N/A & FAIL\\
+No DS$_{AV}$ $\cap$ DS$_{VBP}$  & N/A & N/A & FAIL\\
 %
 \\
 \hline
 \end{tabular}
-\caption{Pass/Fail danger space assertion checks results.} \label{Overtaking_DS_table}
+\caption{Pass/Fail danger space assertion checks results for the runtime monitoring study.} \label{Overtaking_DS_table}
 \end{table}
 
 % <<<<<<< HEAD
@@ -1050,18 +1054,25 @@ An excerpt from Rule 146 of the UKHC states \begin{quote} \textit{Try to anticip
 
 % At present, we are not in a position to perform assertion checking for this kind of safety property by means of an independent assertion-based oracle. There is no externally objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
 % =======
-This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. In many AI technologies the complexity and opacity of internal representations of perceptions or decisions, combined with the non-deterministic nature of complex operational situations in real world environments means that they may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. 
+This case highlights the need for \emph{explainable AI}, a topic gaining increasing attention in the AI, robotics and autonomous systems community. The opinion is widely held \cite{deeks2019judicial, o2019legal, wortham2020transparency} that it may be essential for any such system employed in a safety related application to be able to explain its decision making. 
+%
+In many AI technologies the internal representations of perceptions or decisions are complexity and opaque, which makes the task of identifying, by manual inspection, how a system might have come to a particular decision extremely difficult. When combined with the non-deterministic nature of complex operational situations in real world environments, this means that particular decisions may not be repeatable in post-incident analysis without the system being able to report the precise situation that it perceived, and the planning or action-selection decisions that it made as a consequence. 
 %This requires some form of communication protocol or interface from the perception and decision-making centres of the system to the outside world, so that the decisions can be observed and recorded for later analysis. 
 %
 This opens up a significant opportunity for the use of assertion-based runtime monitoring as discussed in Section~\ref{assertions_at_run_time}.
 
 \todo[inline]{Please consider taking the following two paras out.}
-At present, however, we are not in a position to perform assertion checking for this kind of safety property as an independent validation exercise.
+At present, however, we are not in a position to perform independent validation of this kind of safety property through assertion checking.
 %by means of an independent assertion-based oracle
-To date, there is no objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. And given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
+To date, there is no objective way to observe whether an AV agent is actually performing deliberative reasoning, planning or action selection consistent with rules such as Rule 146, unless it communicates explicitly its planning and decision-making through an interface, whose information can be read by the oracle for checking. A standard protocol for reporting decision-making information would need to be developed and at time of writing no such standard for doing this has been agreed. Furthermore, given the commercially sensitive nature of such information, we do not anticipate that manufacturers would be willing to design systems that volunteer such information without legal requirements to do so and a standard protocol to use.
 % >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 
-In the absence of any such explanation, it is still possible to achieve some degree of validation by performing checks derived from the text of the rule, which attempt to challenge the hypothesis expressed or implied by the UKHC rule or rule clause (\emph{e.g.\ falsification testing}) of the safety property. For example, in the testing phase of an AV, to exercise the last bullet item of Rule 146 above one could construct a test case, perhaps similar in nature to those defined in~\cite{EuroNCAP}, where simulated `children agents' (that model the physical appearance of children as well as some aspects of their behaviour) step out into a road in front of the AV agent, having appeared either to be looking away from an AV agent, towards it, or some mix of the two focuses of attention. Such test cases could assess the capability of the AV control system to evaluate the potential behaviour of children to determine what driving action can be taken successfully and safely. This can test the `end-to-end' situated behaviour of the vehicle and thereby evaluate the cumulative effect of decision making, but as evidence to support a safety case this is less effective than explicit confirmation (by recording) of the AV's decision process that would come from explainable AI.
+In the absence of any such explanation, it is still possible to achieve some degree of validation by performing checks derived from the text of the rule, which attempt to challenge the hypothesis expressed or implied by the UKHC rule or rule clause (\emph{e.g.\ falsification testing}) of the safety property. 
+%
+%For example, in the testing phase of an AV, to exercise the last bullet item of Rule 146 above one could construct a test case, perhaps similar in nature to those defined in~\cite{EuroNCAP}, where simulated `children agents' (that model the physical appearance of children as well as some aspects of their behaviour) step out into a road in front of the AV agent, having appeared either to be looking away from an AV agent, towards it, or some mix of the two focuses of attention. 
+For example, an AV could be tested for compliance with the last bullet item of Rule 146 through simulation scenarios, perhaps similar in nature to those defined in~\cite{EuroNCAP}, in which simulated `children pedestrians' step out into a road in front of the AV agent. Variations on this scenario can establish the child-agent, which should model the physical appearance of children as well their pedestrian behaviour, as appearing either to be looking away from an AV agent, towards it, or some mix of the two focuses of attention.
+%
+Such test cases could assess the capability of the AV control system to evaluate the potential behaviour of children to determine what driving action can be taken successfully and safely. This can test the `end-to-end' situated behaviour of the vehicle and thereby evaluate the cumulative effect of decision making but, as evidence to support a safety case, this is less effective than explicit confirmation (by recording) of the AV's decision process that would come from explainable AI.
 
 \section{Conclusion}\label{conclusion}
 \todo[inline]{Revise: cover contributions, ...}
@@ -1069,11 +1080,11 @@ In the absence of any such explanation, it is still possible to achieve some deg
 In this paper we have presented a methodology to systematically derive formal logical expressions, encoded as assertions, from the UKHC. We have introduced a process for monitoring assertions that can be used for simulation-based assertion checking and runtime monitoring during operation.
 \todo[inline]{complete with reference to abstract and first section - contributions}
 
-The results obtained from both the simulation and the runtime video analysis case studies show the general feasibility and utility of assertion-based safety validation, with the assertions being derived from regulatory documentation written in natural language and intended for human drivers rather than written specifically to be usable by computer. The results provide our first indication that human-oriented natural language rules of driving are an effective oracle for assessment of artificial systems.
+The results obtained from both the simulation and the runtime video analysis case studies show the general feasibility and utility of assertion-based safety validation, with the assertions being derived from regulatory documentation written in natural language and intended for human drivers rather than written specifically to be usable by computer. The results provide our first indication that human-oriented natural language rules for driving are an effective oracle for assessment of artificial systems.
 
 The case studies were carried out at an early stage of development so we did not employ every element of the methodology that has emerged. Nevertheless, we believe that enough of the process has been demonstrated to show that the full methodology is viable.\todo[inline]{focus on what we did, not what we did not do - state that this illustrates, rather than ``we believe''.}
 %
-We also present the idea of using UKHC-based assertion checking methodology as a method to infer autonomous vehicle performance and have demonstrated this with an overtaking scenario using simulation results. We have demonstrated that a common UKHC assertion-based oracle is equally usable in runtime monitoring as it is in simulation.
+We also present the idea of using UKHC-based assertion checking methodology as a method to infer autonomous vehicle performance and have demonstrated this with an overtaking scenario using simulation results. We have demonstrated that a common UKHC assertion-based oracle is equally as usable in runtime monitoring as it is in simulation.
 
 
 % GC condensed this section:
