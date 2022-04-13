@@ -309,7 +309,7 @@ In the case of assertions related to overtaking, it is necessary to determine wh
 The overtake manoeuvre ends when the vehicle is entirely within the running lane once more after having passed the VBP. Lane geometry objects (shape or bounding box polygons) are therefore an essential element of the assertions related to overtaking. 
 
 
-\section{Assertion Development and Application}\label{Use_of_assertions}
+\section{Assertion Development Methodology}\label{Use_of_assertions}
 In this section we first identify the types of assertions that may exist. We then discuss how to develop assertions from the natural language statements of the UKHC. We also present how to use assertions, both in simulation and during runtime.
 
 \begin{figure}[!b]
@@ -351,7 +351,7 @@ Pre- and post-conditions can be of one of two sub-types:
 \end{itemize}
 
 % this following paragraph has not yet been revised, but should be updated to reflect the changes in the previous few paragraphs - TBD by Chris
-\subsection{Assertion Selection} \label{assertion_triggers}
+\subsection{Assertion Applicability and Triggering} \label{assertion_triggers}
 Identifying which assertions are relevant in a given situation is important to manage the performance of assertion checking, which is  %performance of the simulator 
 particularly critical for runtime monitoring, and to ensure the output is meaningful. For example, assertions specifically for highway driving are not applicable in urban or rural road environments. %, and may cause confusion if applied in inappropriate contexts. 
 Similarly, different assertions checking for mutually exclusive conditions will be guaranteed to generate errors unless the inappropriate assertions are filtered out. For example, checking that an AV is braking smoothly will inherently fail in a situation where it is required to accelerate. If assertions of this kind are not selected correctly, they will generate nuisance failure results.
@@ -375,7 +375,8 @@ In addition, encoding the assertion type will enable the assertion checking proc
 %system can opt to apply only the invariant and execution conditions, %leaving the pre- and post-condition assertions (which may have greater %processing overheads) to be applied retrospectively after the data log %has been fully captured. %simulation run has been completed.
 
 % \subsection{Deriving machine-oriented logical assertions from human-oriented Highway Code rules}
-\subsection{Human-Readable Driving Rules}
+\subsection{Deriving Machine-Oriented Assertions from Human-Oriented Rules}
+% \subsection{Human-Readable Driving Rules}
 \label{interp_nat_lang_UKHC_rules}% logical assertions from driving rules}
 % ***************
 % GC TODO need to check this label is still relevent where ref'd
@@ -427,7 +428,7 @@ This example illustrates several characteristics found frequently in UKHC rules:
 
 
 
-\subsection{Deriving Assertions}\label{deriving_assertions}
+\subsection{Methods for Deriving Assertions}\label{deriving_assertions}
 Deriving assertions from the human-readable UKHC %, a natural language developed for human readers, 
 requires that it be interpreted in a consistent manner. 
 We present two approaches %to constructing logical assertions from the text. 
@@ -471,7 +472,7 @@ This approach involves converting the natural language text into a logical predi
     
 % \end{enumerate}
 
-As an example of the direct translation method, consider the following clause from UKHC Rule 258. The procedure could be applied as follows:\todo{Out of context and therefore rather hard to appreciate.}
+As an example of the direct translation method, consider the following clause from UKHC Rule 258. The procedure could be applied as follows:\todo[inline]{Out of context and therefore rather hard to appreciate.}
 
 % \begin{itemize}
     % \item \emph{UKHC rule clause:}
@@ -598,15 +599,17 @@ Taken as an ensemble, the last four parameters in the above list define a \emph{
 % GC this is confusing...
 As with the problem of direct translation of the UKHC rules, the approach aimed to develop a model using the concepts of the natural language of the rule rather than by other parameters, for example time-to-collision, which has been found in human factors studies to be the most significant parameter characterising overtaking manoeuvres \cite{lenard2018, Chen2015}. Hence the model developed for the Safe Distance Ahead measurement differs from many that have been developed for analysis of overtaking manoeuvres, which aim to capture the decision making of the driver rather than the characteristics of the legal code of behaviour that is essentially an independent observer's perspective on the scenario.
 
-\subsection{Geospatial Database for Assertion Checking}
-\todo{elevated heading one up}
-\todo{this is the same title as section B!}
+\section{Assertion-checking System Application}
+
+\subsection{Database Design}
+% \todo{elevated heading one up}
+% \todo{this is the same title as section B!}
 
 Analysis of the overtaking manoeuvre problem fits neatly into the geospatial database framework for assertion checking. The vehicles can be represented as shape objects using the PostGIS system extension which allows for logical tests and measurement metrics to be efficiently calculated between shapes. An Entity Relation Diagram (ERD), Figure~\ref{fig:erd}, shows the variables within the database and the relationships between them\footnote{See \url{https://en.wikipedia.org/wiki/Entity-relationship\_model} for an explanation of \textit{crow's foot} notation.}. 
 
 For each log file there exists an environment table containing map information, which in this case is based on the OpenDrive\footnote{\url{https://www.asam.net/standards/detail/opendrive/}} and lanelet formats. From the lanelet data we derive a table containing useful entries such as lane width and orientation for the environment. Data captured from the simulation (or runtime monitoring), contains a state vector for the actors in $data\_capture.actor\_state$ which contains position and orientation information. From this captured data table we can calculate dynamic state information, that is information changing over time (e.g.\ velocity, acceleration) or with vehicle speed (e.g.\ braking distance). 
 
-Further insight to the driving situation can be derived when combining actor state information with information about the environment. For example, driving lane orientation ($lanelets.lane\_orientation$) can be used to calculate the vehicle heading angle relative to the driving lane, to infer the cut-in or pull-out angles ($state\_dynamics.pull\_out\_angle$) required for the Safe Distance Ahead calculation. The final $assertions$ table is where the results of the assertion can be written and stored. The assertion compares the observed distance ahead with the required Safe Distance Ahead, and indicates whether a situation is safe as a Boolean pass/fail result where a 'pass' result is generated if the observed DA is less than the SDA calculated from the driving profile being followed by the AV.
+Further insight to the driving situation can be derived when combining actor state information with information about the environment. For example, driving lane orientation ($lanelets.lane\_orientation$) can be used to calculate the vehicle heading angle relative to the driving lane, to infer the cut-in or pull-out angles ($state\_dynamics.pull\_out\_angle$) required for the Safe Distance Ahead calculation. The final $assertions$ table is where the results of the assertion can be written and stored. The assertion compares the observed distance ahead with the required Safe Distance Ahead, and indicates whether a situation is safe as a Boolean pass/fail result where a `pass' result is generated if the observed DA is greater than the SDA calculated from the driving profile being followed by the AV.
 %\todo{The SDA is a number, the result of the check is a Bool. Please clarify.}
 % KIE: There is a jump here from SDA to the assertion that checks the SDA - both are different and we've not yet introduced the _assertion_, but instead we've focused on the formula (as in the Appendix).
 
@@ -617,6 +620,8 @@ Further insight to the driving situation can be derived when combining actor sta
     \caption{PostgreSQL database Entity Relationship Diagram.}
     \label{fig:erd}
 \end{figure}
+
+
 
 
 \subsection{Modes of Use of the Assertion-checking Subsystem} \label{Assertions_at_Sim_Time} \label{assertions_at_run_time}
@@ -641,8 +646,8 @@ in a variety of ways, both during simulation and in runtime monitoring:
 		We anticipate that this may be the best policy for minor safety violations or events such as collisions which may lead to secondary effects like non-deterministic behaviour in the simulator~\cite{chance2021}, where the log file data might be degraded or unrepeatable following the event. 
 %
 %The simulation may need to be halted, but pragmatically we believe this decision is probably best left for test engineers to decide. However, the use of assertions to provide operator warnings could be a beneficial mode of use.
-		
-		\item \emph{Simulation Log Annotation}:\todo{for near misses also?} for negligible safety assertions failures, or for non-safety checks such as service performance monitoring, assertions could be checked as the simulation runs. However, instead of halting or providing warnings, assertion failures could simply result in annotations being added to the simulation log data, indicating that an assertion failed at a given time step but otherwise having no other externally observable effect. The log can then be analysed retrospectively after the simulation run has finished.
+		% \todo[inline]{for near misses also?}
+		\item \emph{Simulation Log Annotation}: for negligible safety assertions failures, or for non-safety checks such as service performance monitoring, assertions could be checked as the simulation runs. However, instead of halting or providing warnings, assertion failures could simply result in annotations being added to the simulation log data, indicating that an assertion failed (or also possibly for near-miss cases) at a given time step but otherwise having no other externally observable effect. The log can then be analysed retrospectively after the simulation run has finished.
 		
 		\item \emph{Retrospective analysis}: Instead of checking assertions as the simulation runs, the captured data can be recorded and passed to the assertion checking database after simulation has finished, to analyse an AV's performance retrospectively. %To date this is the mode in which we have been using the assertion-checking facility.
 	\end{itemize}
@@ -1105,6 +1110,6 @@ We are considering numerous directions in which to continue this work such as ex
 %     \item We aim to investigate and extend the use of assertion checking to provide scores as a critic or reward function in reinforcement learning processes. Allowing for continuous improvement of the AVs balance between safety and liveness during operation.
 %     \end{itemize}
 
-\section{Acknowledgments}
-\todo[inline]{add CAV Forth grant number}
-This research has in part been funded by the CAV Forth, ROBOPILOT and CAPRI projects. These projects are part-funded by the Centre for Connected and Autonomous Vehicles (CCAV), delivered in partnership with Innovate UK under grant numbers 103703 (CAPRI) and 103288 (ROBOPILOT). This research was also supported in part by the UKRI Trustworthy Autonomous Systems Node in Functionality under grant number EP/V026518/1. Also special thanks to S\'everin Lemaignan.
+% \section{Acknowledgments}
+% \todo[inline]{add CAV Forth grant number}
+% This research has in part been funded by the CAV Forth, ROBOPILOT and CAPRI projects. These projects are part-funded by the Centre for Connected and Autonomous Vehicles (CCAV), delivered in partnership with Innovate UK under grant numbers 103703 (CAPRI) and 103288 (ROBOPILOT). This research was also supported in part by the UKRI Trustworthy Autonomous Systems Node in Functionality under grant number EP/V026518/1. Also special thanks to S\'everin Lemaignan.
