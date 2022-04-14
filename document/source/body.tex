@@ -472,50 +472,61 @@ This approach involves converting the natural language text into a logical predi
     
 % \end{enumerate}
 
-As an example of the direct translation method, consider the following clause from UKHC Rule 258. The procedure could be applied as follows:\todo[inline]{Out of context and therefore rather hard to appreciate.}
+As an example of the direct translation method, consider the first clause from UKHC Rule 163, mentioned previously. The procedure could be applied as follows:
+%\todo[inline]{Out of context and therefore rather hard to appreciate.}
 
 % \begin{itemize}
     % \item \emph{UKHC rule clause:}
 \noindent $i$) \emph{UKHC rule clause:}
 	    \begin{quote}
-			\textit{\textbf{Red flashing lights.} If red lights flash on a signal and a red `X' is showing, you MUST NOT drive in the lane shown as closed beyond the signal.}
+			\textit{You should not get too close to the vehicle you intend to overtake.}
 		\end{quote}
     % \item \emph{Assertion Hypothesis:}
 \noindent $ii$) \emph{Assertion Hypothesis:}
         \begin{quote}
-        	The hypothesis question is: \textit{Does the AV pass a `Lane Closed’ overhead gantry signal?}
+        	The hypothesis question is: \textit{As the AV begins to cross the road centre line (start of the overtake manoeuvre), is the separation distance between AV and VBP is less than [a pre-determined distance]?} 
+        	
+        	The specific separation distance value will have to be specified by some external requirement, as the rule is not specific as to what is acceptable or safe in this context. For the purposes of this example, we declare that the acceptable distance is equal to the sum of the 'thinking distance' and 'braking distance' (as shown in \ref{fig:assertion_database_annotated}) of the AV, as this would allow the AV to decelerate without collision risk if an emergency occurred as it began its overtake manoeuvre.
         \end{quote}
     % \item \emph{Assertion Statement (Predicate logic):}
 \noindent $iii$) \emph{Assertion Statement (Predicate logic):}
 
-	The assertion question concept of passing a sign then becomes a test of whether the AV bounding-box geometry overlaps with a boundary line between the posts of an overhead gantry object, which must lie across the roadway. 
-	%
-	This can be converted into an SQL query (SELECT statement) returning all time steps where the bounding box shape of a vehicle overlaps the line between the posts of an overhead gantry and the overhead sign of that gantry reads ``Lane Closed" for the road lane occupied by the vehicle.      
-	% \footnote{Note: this skeleton SQL schema is an illustrative example only and was not tested experimentally. The experimental results presented in section \ref{Experimental_scenario} are based on a clause from UKHC Rule 162 on overtaking.}
-
+The assertion concept, of testing whether the separation between AV and VBP is always at least equal to the sum of the AV's thinking distance and braking distance at the moment it crosses the road centre line, is an Execution Condition whose elements are defined as follows:
+	\begin{itemize}
+		\item \emph{Assertion Reference Point(s)}: all time steps where the AV bounding-box geometry overlaps with the road centre line;
+		\item \emph{Assertion Condition}: distance between AV and VBP is greater than the sum of the thinking and braking distances (this will be referred to as the 'danger space' of the AV).
+	\end{itemize}
+ 
+%
+%This can be converted into an SQL query (SELECT statement) returning all time steps where the bounding box shape of a vehicle overlaps the line between the posts of an overhead gantry and the overhead sign of that gantry reads ``Lane Closed" for the road lane occupied by the vehicle.      
+% \footnote{Note: this skeleton SQL schema is an illustrative example only and was not tested experimentally. The experimental results presented in section \ref{Experimental_scenario} are based on a clause from UKHC Rule 162 on overtaking.}
+This can be converted into an SQL query of a form similar to the fragment shown below:
 % \scriptsize    %scriptsize gets all the SQL code into a column width
-% \begin{lstlisting}[
-%            language=SQL,
-%            showspaces=false,
-%            basicstyle=\ttfamily,
-%            numbers=none,
-%            numberstyle=\tiny,
-%            commentstyle=\color{gray}
-%         ]
-% SELECT (time, ST_Overlap(AV.geom::geography,
-%     	      GantryLine::geography) ) ASC LIMIT 1
-% FROM simulation_data AS sd
-% WHERE
-%   sd.agent_id = /* the AV's ID */ AND
-%   RoadType(sd.agent_id) = 'ATM_MOTORWAY' AND
-%   LaneStatus(sd.agent_id) = 'LANE_CLOSED' AND
-%   GantryLine = FindNextGantryLine(agent_id);
-% \end{lstlisting}
-% \normalsize %normalsize resets the font size
+ \begin{lstlisting}[
+            language=SQL,
+            showspaces=false,
+            basicstyle=\ttfamily,
+            numbers=none,
+            numberstyle=\tiny,
+            commentstyle=\color{gray}]
+ WITH danger_space  
+     AS /* sum of thinking
+               & braking distances */        
+ SELECT (time) ASC LIMIT 1
+ FROM simulation_data AS sd
+ WHERE
+  ST_Overlap(AV.geom::geography, 
+             /*road centreline*/) AND
+  ST_Distance(AV.geom::geography, 
+                  VBP.geom::geography)
+                      <= danger_space;
+\end{lstlisting}
+%\normalsize %normalsize resets the font size
 
-Key concepts of the assertion (for example, boundary lines of overhead gantry signals) become predicates in the assertion logic, and can be implemented as SQL procedural functions stored in the PostgreSQL database.% (refer back to Section \ref{generic_sim_system}).
+Although the above example is simple enough not to require their use, key concepts of the assertion (for example road centre lines) can be implemented as procedural functions stored in the PostgreSQL database.% (refer back to Section \ref{generic_sim_system}).
 
-We anticipate that typically assertion queries will make use of PostGIS relational operators and functions for object geometries, whereas the library functions will typically use PostGIS geometry constructors to set up the geometric objects for the assertions as variables derived from the captured simulation data. % (as discussed in Section \ref{generic_sim_system}). 
+We anticipate that the more complex assertion types, such as spatio-temporal Pre- or post-conditions, will require stored procedural functions whereas invariant and execution conditions will probably be simple enough to be handled by straightforward queries.  
+Typically, assertion queries will make use of PostGIS relational operators (such as ST\_Distance or ST\_Overlap) and functions for object geometries, whereas the library functions will typically use PostGIS geometry constructors to set up the geometric objects for the assertions as variables derived from the captured simulation data. % (as discussed in Section \ref{generic_sim_system}). 
 A hierarchical organization of queries and procedural functions (from Assertions to CAV DBMS library functions to PostGIS functions to captured simulation data) emerges from this approach.
 % \end{itemize}
 
@@ -581,7 +592,7 @@ The analysis identifies several key parameters that characterise the overtaking 
 \text{SD} = \underbrace{av }_{\substack{\text{Thinking} \\ \text{Distance}}} + \underbrace{b + cv + dv^2}_{\substack{\text{Braking} \\ \text{Distance}}}
 \end{equation}
 
-    \item \emph{Danger Space} (DS) is an area projected forward in the direction of travel with a length equal to the stopping distance and a width equal to that of the vehicle. The overall formula for SDA incorporates the DS of the OV.\todo{adjust DS def in appendix to include width}
+    \item \emph{Danger Space} (DS) is an area projected forward in the direction of travel with a length equal to the stopping distance and a width equal to that of the vehicle. The overall formula for SDA incorporates the DS of the OV.\todo[inline]{adjust DS def in appendix to include width}
     %
     SD varies with vehicle speed, making the DS a function of speed, therefore intuitively as the speed increases the DS ahead of the vehicle will project further forward.
     
@@ -744,7 +755,7 @@ The intent of the Safe Distance Ahead assertion we developed was to assess wheth
 %\footnote{Furthermore, it is always possible for the AV to change its profile in mid-manoeuvre, thereby shortening the remaining distance required, which can be applied as an emergency action if the risk of the situation should increase for any reason. So, the assessment whether there is a safe distance ahead in any given situation at the start of an overtake manoeuvre is dependent in part on the internal plans of the AV at the time, and must be made without full knowledge of exactly how the manoeuvre will play out after the Safe Distance Ahead assessment has been made.} 
 
 Although the simulated AV in the experiment was programmed to follow a preset trajectory, this information  was not used to influence the choice of parameters in the Safe Distance Ahead assertion expression. We developed three different variations of the SDA assertion, each calculating the safe distance ahead using the formula developed from the modelling analysis %(see Section \ref{model_based_analysis}), 
-but which assumed three different driving profiles corresponding to three different levels of urgency of overtake manoeuvre (called `relaxed', `hurried' and `aggressive').\todo{Why not low/medium/high urgency?} The levels of urgency were based loosely on similar concepts developed in other Human Factors research~\cite{Chen2015,wang2019analysis}, which had equated the level or degree of urgency with \emph{Time To Collision} (TTC). These sources identified that a TTC of approximately two seconds corresponds approximately to a medium degree of urgency, which we have labelled `hurried'. These three variants of the SDA assertion were then applied to the simulation data produced by the preset AV controller to determine which of the driving profiles would trigger the SDA assertion.\todo{more technical detail needed here}
+but which assumed three different driving profiles corresponding to three different levels of urgency of overtake manoeuvre (called `relaxed', `hurried' and `aggressive').\todo[inline]{Why not low/medium/high urgency?} The levels of urgency were based loosely on similar concepts developed in other Human Factors research~\cite{Chen2015,wang2019analysis}, which had equated the level or degree of urgency with \emph{Time To Collision} (TTC). These sources identified that a TTC of approximately two seconds corresponds approximately to a medium degree of urgency, which we have labelled `hurried'. These three variants of the SDA assertion were then applied to the simulation data produced by the preset AV controller to determine which of the driving profiles would trigger the SDA assertion.\todo[inline]{more technical detail needed here}
 
 \subsubsection{Simulator system}
 
@@ -758,7 +769,7 @@ The system used the CARLA simulation software~\cite{CarlaSimulator}, an open-sou
 \todo[inline]{The next section should clearly identify the parameters to be varied and those kept constant during simulation, i.e. fixed trajectories for all vehicles, but three driving profiles to be varied and three starting positions of OV resulting in three different Req. DA values.}
 
 
-\subsubsection{Simulation experiments}\todo{revise and tidy up this section}
+\subsubsection{Simulation experiments}\todo[inline]{revise and tidy up this section}
 
 Parameters to be taken into account .... to include path of vehicles, driving profiles and OV starting positions.
 
@@ -766,7 +777,7 @@ The paths for each simulated vehicle (AV, VBP, OV - see Figure~\ref{fig:assertio
 
 Three simulation runs were executed for each driving profile to generate simulation data traces. 
 %
-In each case, the trajectory of the AV remained unchanged, overtaking the stationary VBP and cutting back into the running lane with the same pull-out and cut-in clearance distances each time. The OV simply moved along the oncoming lane at constant speed, but the starting position of the OV was varied so as to generate three different scenarios of i) a safe overtake manoeuvre, ii) a near miss and iii) a dangerous overtake manoeuvre resulting in a collision.\todo{more technical data required, i.e.\ what is safe, a near miss, ...?} 
+In each case, the trajectory of the AV remained unchanged, overtaking the stationary VBP and cutting back into the running lane with the same pull-out and cut-in clearance distances each time. The OV simply moved along the oncoming lane at constant speed, but the starting position of the OV was varied so as to generate three different scenarios of i) a safe overtake manoeuvre, ii) a near miss and iii) a dangerous overtake manoeuvre resulting in a collision.\todo[inline]{more technical data required, i.e.\ what is safe, a near miss, ...?} 
 
 
 
@@ -889,7 +900,7 @@ According to Rule 124 in the UKHC the national speed limit of the single carriag
 % =======
 \subsubsection{Runtime validation results}
 Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in Section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as none of the vehicles were present in another vehicle's danger space and there was no overlap in any of the danger spaces. 
-When passing the VBP the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during the passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally, at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the DS$_{VBP}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.\todo{unclear}
+When passing the VBP the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during the passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally, at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the DS$_{VBP}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.\todo[inline]{unclear}
 % >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 
 \begin{table}
@@ -969,7 +980,7 @@ Condition & \textbf{Overtake} & \\
 % =======
 An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. 
 %In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. 
-Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e.\ taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. \todo{clarify delta, which is measured in seconds and corresponds to TTC}
+Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e.\ taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. \todo[inline]{clarify delta, which is measured in seconds and corresponds to TTC}
 % >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 %
 % We define $\delta$ as the ratio of `achieved distance ahead' to the `SDA required by profile' from Table~\ref{Overtaking_Profiles}. 
@@ -987,7 +998,7 @@ We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotat
     \item Case 3: $DA > SDA + \delta$
 \end{itemize}
 %
-Here, $d_{OV}$ is the distance to the Oncoming Vehicle,\todo{is this the Distance Ahead in Fig.\ 2?} SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
+Here, $d_{OV}$ is the distance to the Oncoming Vehicle,\todo[inline]{is this the Distance Ahead in Fig.\ 2?} SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
 %
 In each of these cases the AV could decide to overtake or hold back and the performance outcomes for each of these are shown in Table~\ref{performance_metric_table}. 
 %
