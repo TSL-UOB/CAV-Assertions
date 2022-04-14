@@ -969,12 +969,17 @@ Condition & \textbf{Overtake} & \\
 % =======
 An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. 
 %In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. 
-Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e.\ taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. \todo{clarify delta, which is measured in seconds and corresponds to TTC}
+Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e.\ taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. 
+%
+Delta can be thought of as the time it would take for any oncoming vehicle to collide with the AV and is synonymous with TTC. %, and is also measured in units of time. 
+It is therefore a dynamic parameter with a temporal variance, changing with the development of other actors and road users.
+%
+% \todo{clarify delta, which is measured in seconds and corresponds to TTC}
 % >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 %
 % We define $\delta$ as the ratio of `achieved distance ahead' to the `SDA required by profile' from Table~\ref{Overtaking_Profiles}. 
 %
-The size of this \emph{opportunity window} will be dependent on a myriad of different contextual and preferential conditions such as the driving style, vehicle capability and passenger comfort. 
+The acceptable size of this \emph{opportunity window} (\textbf{gap acceptance [ref]}) will be dependent on a myriad of different contextual and preferential conditions such as the driving style, vehicle capability and passenger comfort. For example, an aggressive driving style with a tolerance for a low TTC, will be able to make use of smaller gaps in traffic than a more risk adverse driving style. 
 
 We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotated}, considering performance as well as safety, using the required SDA and opportunity window to define three specific cases:
 \begin{itemize}
@@ -987,7 +992,9 @@ We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotat
     \item Case 3: $DA > SDA + \delta$
 \end{itemize}
 %
-Here, $d_{OV}$ is the distance to the Oncoming Vehicle,\todo{is this the Distance Ahead in Fig.\ 2?} SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
+Here, $DA$ is the distance ahead to the Oncoming Vehicle,
+% \todo{is this the Distance Ahead in Fig.\ 2?} 
+SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
 %
 In each of these cases the AV could decide to overtake or hold back and the performance outcomes for each of these are shown in Table~\ref{performance_metric_table}. 
 %
