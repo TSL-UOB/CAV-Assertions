@@ -938,8 +938,13 @@ Note: The use of intersection symbols in the table is shorthand for a `does not 
 
 \subsubsection{Runtime validation results}
 Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in Section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as none of the vehicles were present in another vehicle's danger space and there was no overlap in any of the danger spaces. 
-%
-When passing the VBP, the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during the passing the VBP stage as both the AV and the OV have entered each others danger spaces. Finally, at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the DS$_{VBP}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.
+
+When passing the VBP, the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during the passing the VBP stage as both the AV and the OV have entered each others danger spaces. 
+
+Finally, at the last stage of the overtake, the assertion checks suggest that the AV has attempted to cut in before it has completely overtaken the VBP, whilst still failing the assertions relating to the OV. However, the AV has passed the assertion of not being in the DS$_{VBP}$, which suggests, given all of the other assertions have failed, that it has not overtaken the VBP before cutting in.
+
+% Do we need pass, fail, unknown, n/a enumerated lists
+
 \todo[inline]{unclear}
 % \todo[inline]{A table note must be added to explain the use of intersection symbols as shorthand for a "does not overlap" relation between two polygons.}
 % \todo[inline]{In table:, ``No DS...'' should be intersection between the DSs is empty. Strictly speaking, the DSs should be defined as sets earlier on.}
