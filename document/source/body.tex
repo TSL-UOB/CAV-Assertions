@@ -804,6 +804,12 @@ The system used the CARLA simulation software~\cite{CarlaSimulator}, an open-sou
 
 \todo[inline]{The next section should clearly identify the parameters to be varied and those kept constant during simulation, i.e. fixed trajectories for all vehicles, but three driving profiles to be varied and three starting positions of OV resulting in three different Req. DA values.}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/Sim_experiment_layout.png}
+    \caption{Simulation experiment driving paths for each scenario.}
+    \label{fig:Sim_experiment_layout}
+\end{figure} 
 
 \subsubsection{Simulation experiments}\todo[inline]{revise and tidy up this section}
 
@@ -881,6 +887,15 @@ The last two assertions are only applicable to the last stage of the overtake (c
 
 \end{enumerate}
 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/Runtime_timeline.png}
+    \caption{Simulation experiment driving paths for each scenario.}
+    \label{fig:Runtime_timeline}
+\end{figure} 
+
+
 \subsubsection{Video processing}
 %
 % Usually well trained machine learning models are used with stereo vision and information from other sensors, like LIDAR, odometers etc, to estimate accurately the position, orientation and velocities of the AV and surrounding static and dynamic objects. However, due to the absence of a fully functioning AV, w
@@ -908,6 +923,7 @@ where $w_{L (real)}$ is the real lane width measured in meters, $w_{L (pixels)}$
 Third, the pull out $\beta$ and cut in $\theta$ angles of the AV are calculated using the change in lateral distance and change in the longitudinal distance measured. Fourth, as there is no vehicle speed associated with the video, we based the DS calculation on the worst case scenario; that is all vehicles were travelling at the speed limit of the road. 
 %
 According to Rule 124 in the UKHC the national speed limit of the single carriage way in the video for cars (AV and OV) is 60mph, and 50mph for goods vehicles (VBP). Using the above steps the real time video was converted to a 2D driving scenario, where the Danger Space assertions listed in section~\ref{DS_assessment} can be checked.
+
 
 \begin{table}[h]
 \centering
@@ -1020,13 +1036,13 @@ We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotat
     \item Case 3: $DA > SDA + \delta$
 \end{itemize}
 %
-<<<<<<< HEAD
+% <<<<<<< HEAD
 Here, $DA$ is the distance ahead to the Oncoming Vehicle,
 % \todo{is this the Distance Ahead in Fig.\ 2?} 
 SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
-=======
-Here, $d_{OV}$ is the distance to the Oncoming Vehicle,\todo[inline]{is this the Distance Ahead in Fig.\ 2?} SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
->>>>>>> 0141af45d2d02286b8d5ba66c012cecbfa795585
+% =======
+% Here, $d_{OV}$ is the distance to the Oncoming Vehicle,\todo[inline]{is this the Distance Ahead in Fig.\ 2?} SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
+% >>>>>>> 0141af45d2d02286b8d5ba66c012cecbfa795585
 %
 In each of these cases the AV could decide to overtake or hold back and the performance outcomes for each of these are shown in Table~\ref{performance_metric_table}. 
 %
