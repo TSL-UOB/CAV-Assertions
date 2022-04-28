@@ -322,8 +322,8 @@ In this section we first identify the types of assertions that may exist. We the
 
 \subsection{Types of Assertions} \label{assertion_categories}
 % \todo{Mention this classification/these types as contribution?}
-
-The assertions to encode UKHC rules tend to fall into one of four principal types. Except for invariants, assertions are defined with respect to some \emph{assertion reference point} - a particular step of a captured data trace, defined by some reference condition which holds at a specified time step. The assertion is then defined as some spatio-temporal condition relative to the reference point, as shown in Figure~\ref{fig:categories_of_assertions}.
+\todo [inline] {I have changed the start of this paragraph. To be discussed.}
+Where UKHC rules define objectively measurable driving behaviour, the assertions to encode them tend to fall into one of four principal types. Except for invariants, assertions are defined with respect to some \emph{assertion reference point} - a particular step of a captured data trace, defined by some reference condition which holds at a specified time step. The assertion is then defined as some spatio-temporal condition relative to the reference point, as shown in Figure~\ref{fig:categories_of_assertions}.
 
 
 The four types of assertions are:
@@ -639,7 +639,7 @@ Further insight to the driving situation can be derived when combining actor sta
 
 \subsection{Modes of Use of the Assertion-checking Subsystem} \label{Assertions_at_Sim_Time} \label{assertions_at_run_time}
 
-Assertion-checking databases can be used as a test oracle %(see Section~\ref{generic_architecture}) 
+Assertion-checking systems can be used %(see Section~\ref{generic_architecture}) 
 in a variety of ways, both during simulation and in runtime monitoring:
 
 % GC removed 2nd level bullet list
@@ -647,7 +647,6 @@ in a variety of ways, both during simulation and in runtime monitoring:
 	% \item \underline{\textbf{Modes of use during simulation:}}
 
 \underline{\textbf{Modes of use during simulation:}}
-
 	
 	\begin{itemize}
 		\item \emph{Simulation Control (Halting)}: Assertions can be checked as the simulation runs, and a simulation could be halted after a major safety violation if there is little value in continuing with a simulation beyond that point.
@@ -850,43 +849,61 @@ The results of all tests are provided in Table~\ref{Overtaking_Profiles}, which 
 The table shows that it would have been inadvisable to perform a `relaxed' overtake in any of the three scenarios presented, as this would have resulted in a near miss or a collision. If a `nominal' overtake is attempted (which actually corresponds to the behaviour of the AV in the scenarios), this policy was acceptable for the `Safe' scenario, but inadvisable for the `Near Miss' and `Collision' scenarios (as their descriptive names imply). Finally, if the AV had been programmed to overtake aggressively in these scenarios, then only in the case of the Collision scenario circumstances would the Distance Ahead have been short enough for the manoeuvre to be inadvisable; in the other two cases the overtake could have been achieved successfully (although aggressive overtaking may result in other safety assertions being violated).
 
 \subsection{Runtime monitoring case study}
-In the runtime case study we developed an assertion monitor for checking safe stopping distance during the overtake. 
+In many real driving scenarios, environmental conditions that may have been checked and found safe at the beginning may cease to be true or valid as the scenario progresses, and driving plans or actions may need to be altered midway through as a consequence. Therefore, it can be highly advisable for autonomous vehicles to evaluate assertions continually during runtime, to detect the onset of hazards as a cue for changes of strategy.
+
+In our experimental study of runtime monitoring we developed an assertion monitor for checking safe stopping distance during the overtake. 
 %
-To demonstrate the use of assertions at runtime, in the absence of a roadworthy AV controller, we analysed public domain video footage of an attempted overtaking manoeuvre.\footnote{Link to video used in analysis: \url{https://youtu.be/Gzi4X7WZkRI} time period 01:30 to 01:45 minutes.} The video shows an aborted overtake manoeuvre which needed to be aborted due to inadequate distance ahead, which should register a Safe Distance Ahead assertion check failure. 
+To demonstrate the use of assertions at runtime, in the absence of a roadworthy AV controller, we analysed public domain video footage of an attempted overtaking manoeuvre in a manually driven car.\footnote{Link to video used in analysis: \url{https://youtu.be/Gzi4X7WZkRI} time period 01:30 to 01:45 minutes.} The video shows a scenario within a road journey, where an overtake manoeuvre was initiated because the road ahead appeared clear in the opposite lane to allow a safe manoeuvre. However, during the manoeuvre an oncoming vehicle, which had been obscured by a combination of a slight dip and a minor bend in the road, suddenly became visible at a distance that did not allow the manoeuvre to be completed safely, and the human driver was forced to abort the overtake and pull back into the running lane behind the VBP \footnote{The cause of this error was a mistake in estimating the safe distance ahead, which should have treated the observable line of sight as the available distance ahead, in the absence of any directly visible OV. Since we were only intending to demonstrate the principle of assertion checking in our simulation study, we eliminated this complication from the simulation scenario deliberately, by using a map of a long straight road section where an OV would always be visible.}. Such situations occur frequently in typical (complex) real-world road layouts, if vehicles change speed or if for any other reason the SDA calculation at the start of the manoeuvre gives misleading estimates. 
+
+The video example shows the advantage (perhaps even the necessity) of continual re-evaluation of safety properties during runtime. If an AV had been fully committed to such an overtake manoeuvre after making only one assertion check at the start, a collision might have occurred.
 % \todo[inline]{indicate start-stop timing in video, from min:sec to min:sec}
 % \todo[inline]{Say what the video shows, i.e.\ what should the outcome from the assertion checks be?}
 %
 % in combination with a pre-trained object classifier to extract data from a dashboard video camera of a dangerously overtaking vehicle.
 
-The aim of the assertions applied to runtime data was to assess whether the AV risks colliding with any of the other vehicles involved in the scenario during the overtake and in turn take an informative decision on aborting or continuing the overtake. 
-%
-Such situations are very likely to happen if road layouts are more complex, vehicles change speed or if for any other reason the SDA calculation at the start of the manoeuvre gives misleading estimates. 
 
-\subsubsection{Danger Space (DS) assessment}
+%
+
+
+\subsubsection{Definition of assertions}
 \label{DS_assessment}
+In the video analysis study, the aim of the assertion checking applied to runtime data was to assess whether the AV risks colliding with any of the other vehicles involved in the scenario during the overtake and in turn take an informative decision on aborting or continuing the overtake. The assertions defined for this study were therefore related to the danger spaces (DS) of the AV and OV, as defined by the UKHC.
 
-The overtake manoeuvre can be split into three distinct stages as was described in the modelling analysis (Section \ref{model_based_analysis}): pulling out, passing the VBP and cutting in.
+%The overtake manoeuvre can be split into three distinct stages as was described in the modelling analysis (Section \ref{model_based_analysis}): pulling out, passing the VBP and cutting in.
 %
-During the different stages of the overtake, none of the vehicles should be present in the DS of another vehicle nor should the DS of one of the vehicles overlap with the DS of another. 
-%
-To satisfy this requirement, six assertions are needed to be checked at the different stages of the overtake.
-%
-The DS subscript refers to the respective vehicle.
+Following Rule 126 of the UKHC, the basic requirements being evaluated during the different stages of the overtake (pulling out, passing, and cutting in, as described in Section \ref{model_based_analysis}) were:
 
-The first three assertions are applicable throughout the three stages of the overtake, these are:
+ that neither the AV nor OV should be present in the DS of the other vehicle, nor should either DS overlap (which indicates the onset of a hazardous situation that requires ). 
+%
+%To satisfy this requirement, six assertions are needed to be checked at the different stages of the overtake.
+%
+%The DS subscript refers to the respective vehicle.
+
+%The first three assertions are applicable throughout the three stages of the overtake, these are:
 
 \begin{enumerate}[i)]
-\item the VBP should not be in the DS$_{AV}$ at any time during the overtake, 
-\item the OV should not be in the DS$_{AV}$, 
-\item the AV should not be in the DS$_{OV}$, 
+\item \emph{Safe separation with VBP:}
+The AV should maintain safe separation with the VBP throughout the overtake manoeuvre; in practice this is primarily applicable during the Pulling Out phase.
+\begin{itemize}
+	\item Assertion condition: VBP not within DS$_{AV}$
+\end{itemize}
+\item \emph{Hazardous condition (requiring urgent avoiding action):} 
+As two vehicles moving in opposing directions in the same lane converge, several conditions associated with their relative proximity develop, which can be checked by assertion and used as cues for safety related decision making such as aborting manoeuvres or taking avoiding actions. Any situation, which requires such action to be taken is called a \textit{hazardous situation}. An overtake manoeuvre situation will begin to become potentially hazardous as the danger spaces of the AV and OV begin to overlap. At this stage a collision might occur if neither vehicle takes any avoiding action, so this overlap condition measures the onset of the hazardous situation.
+\begin{itemize}
+	\item Assertion condition: no intersection between DS$_{AV}$ and DS$_{VBP}$
+\end{itemize}
+\emph{Imminent collision conditions:}
+As a potentially hazardous overtaking situation develops, other conditions related to the direct occupancy of one vehicle inside another indicate the increasing imminence of a collision, and can be used as cues to reinforce further the need to take avoiding action:
+\begin{itemize}
+	\item Assertion condition: OV location is not within DS$_{AV}$ 
+	\item Assertion condition: AV location is not within DS$_{OV}$
+\end{itemize}
 \end{enumerate}
-The last two assertions are only applicable to the last stage of the overtake (cutting in):
-\begin{enumerate}[iv)]
-\item the AV should not enter the DS$_{VBP}$ and 
-\item there should be no intersection between the DS$_{AV}$ and the DS$_{VBP}$. 
-
-\end{enumerate}
-
+%The last two assertions are only applicable to the last stage of the overtake (cutting in):
+%\begin{enumerate}[iv)]
+%\item the AV should not enter the DS$_{VBP}$ and 
+%\end{enumerate}
+These four assertions were evaluated in the selected video file by means of video processing analysis.
 
 \begin{figure}
     \centering
@@ -903,10 +920,12 @@ We used the following approach to approximate the processing of the real-time da
 %
 First, a pre-trained object classifier, YOLOv3~\cite{Yolo}, was used to provide locations of vehicles in each frame and how much area each vehicle occupies of the frame. 
 %
-The separation distances between the AV and the other vehicles can be used as a safety performance indicator for the overtaking manoeuvre. For this to be determined we need to calculate the longitudinal and lateral separation distances between the other vehicles from the AV.
+%The separation distances between the AV and other vehicles can be used as a safety performance indicator for the overtaking manoeuvre. 
+%For this to be 
+To determine separation distances between the AV and other vehicles %we need to calculate 
+the longitudinal and lateral separation distances were calculated between other vehicles and the AV.
 %
-The longitudinal distance ($s$) of a vehicle along the road from the AV can be estimated 
-using Equation~\ref{s_equation}:
+The longitudinal distance ($s$) of a vehicle along the road from the AV can be estimated using Equation~\ref{s_equation}:
 \begin{equation}\label{s_equation}
     s = \frac{c\times W}{w}
 \end{equation}
@@ -924,37 +943,37 @@ Third, the pull out $\beta$ and cut in $\theta$ angles of the AV are calculated 
 %
 According to Rule 124 in the UKHC the national speed limit of the single carriage way in the video for cars (AV and OV) is 60mph, and 50mph for goods vehicles (VBP). Using the above steps the real time video was converted to a 2D driving scenario, where the Danger Space assertions listed in section~\ref{DS_assessment} can be checked.
 
+\subsubsection{Runtime validation results}
+Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in Section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as none of the vehicles were present in another vehicle's danger space and there was no overlap in any of the danger spaces. 
 
 \begin{table}[h]
-\centering
-\begin{tabular}{ lcccc }
-\hline
-\\
-\multirow{3}{*}{\textbf{}} & \multicolumn{3}{c}{\textbf{Overtaking manoeuvre stages}}\\
-\textbf{Assertion} & \textbf{Pulling out} & \textbf{Passing VBP} & \textbf{Cutting in} & \\
-&  &  &  & \\
-VBP outside DS$_{AV}$ & PASS & PASS & FAIL\\
-%
-OV outside DS$_{AV}$ & PASS & FAIL & FAIL\\
-%
-AV outside DS$_{OV}$  & PASS & FAIL & FAIL\\
-%
-No DS$_{AV}$ $\cap$ DS$_{OV}$  & PASS & FAIL & FAIL\\
-%
-AV outside DS$_{VBP}$  & N/A & N/A & PASS\\
-%
-No DS$_{AV}$ $\cap$ DS$_{VBP}$  & N/A & N/A & FAIL\\
-%
-\\
-\hline
-\end{tabular}
-\caption{Pass/Fail danger space assertion checks results for the runtime monitoring study. } \label{Overtaking_DS_table}
+	\centering
+	\begin{tabular}{ lccc }
+		\hline
+		\\
+		\multirow{3}{*}{\textbf{}} & \multicolumn{3}{c}{\textbf{Overtaking manoeuvre stages}}\\
+		\textbf{Assertion} & \textbf{Pulling out} & \textbf{Passing VBP} & %\textbf{Cutting in}
+		 \\
+		&  &  &  \\
+		VBP outside DS$_{AV}$ & PASS & PASS & \\
+		%
+		OV outside DS$_{AV}$ & PASS & FAIL & \\
+		%
+		AV outside DS$_{OV}$  & PASS & FAIL & \\
+		%
+		No DS$_{AV}$ $\cap$ DS$_{OV}$  & PASS & FAIL & \\
+		%
+%		AV outside DS$_{VBP}$  & N/A & N/A & PASS\\
+		%
+%		No DS$_{AV}$ $\cap$ DS$_{VBP}$  & N/A & N/A & \\
+		%
+		\\
+		\hline
+	\end{tabular}
+	\caption{Pass/Fail danger space assertion checks results for the runtime monitoring study. } \label{Overtaking_DS_table}
 \end{table}
 Note: The use of intersection symbols in the table is shorthand for a `does not overlap' relation between polygons. 
 \vspace{2mm}
-
-\subsubsection{Runtime validation results}
-Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in Section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as none of the vehicles were present in another vehicle's danger space and there was no overlap in any of the danger spaces. 
 
 When passing the VBP, the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during the passing the VBP stage as both the AV and the OV have entered each others danger spaces. 
 
