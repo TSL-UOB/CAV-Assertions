@@ -322,7 +322,7 @@ In this section we first identify the types of assertions that may exist. We the
 
 \subsection{Types of Assertions} \label{assertion_categories}
 % \todo{Mention this classification/these types as contribution?}
-\todo [inline] {I have changed the start of this paragraph. To be discussed.}
+% \todo [inline] {I have changed the start of this paragraph. To be discussed.}
 Where UKHC rules define objectively measurable driving behaviour, the assertions to encode them tend to fall into one of four principal types. Except for invariants, assertions are defined with respect to some \emph{assertion reference point} - a particular step of a captured data trace, defined by some reference condition which holds at a specified time step. The assertion is then defined as some spatio-temporal condition relative to the reference point, as shown in Figure~\ref{fig:categories_of_assertions}.
 
 
@@ -1027,9 +1027,13 @@ Condition & \textbf{Overtake} & \\
 An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. 
 %In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. 
 
-From the point of view of performance, the AV should make best use of the available gaps must overtake
-without violating the safety property but must overtake 
-% within a minimum acceptable gap~\cite{mahmassani1981using},
+From the point of view of performance, the AV should make best use of the available gaps without violating the safety property. However if a vehicle chooses a driving profile that is overly conservative is safety properties are rejected because the DA is
+In an overtaking scenario there is a time window within which an overtake can be made
+
+
+%
+ but must overtake 
+within a minimum acceptable gap~\cite{mahmassani1981using},
 reasonable window of opportunity ($\delta$), 
 i.e.\ taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. 
 %
@@ -1043,6 +1047,8 @@ It is therefore a dynamic parameter with a temporal variance, changing with the 
 % We define $\delta$ as the ratio of `achieved distance ahead' to the `SDA required by profile' from Table~\ref{Overtaking_Profiles}. 
 %
 The acceptable size of this \emph{opportunity window} (\textbf{gap acceptance \cite{mahmassani1981using}}) will be dependent on a myriad of different contextual and preferential conditions such as the driving style, vehicle capability and passenger comfort. For example, an aggressive driving style with a tolerance for a low TTC, will be able to make use of smaller gaps in traffic than a more risk adverse driving style. 
+
+Pre-set delta so they should not be rejecting scenarios where the DA is close to the required SDA, select the driving profile that meets the performance requirement
 
 We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotated}, considering performance as well as safety, using the required SDA and opportunity window to define three specific cases:
 \begin{itemize}
