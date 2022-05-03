@@ -1027,8 +1027,19 @@ Condition & \textbf{Overtake} & \\
 An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. 
 %In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. 
 
-From the point of view of performance, the AV should make best use of the available gaps without violating the safety property. However if a vehicle chooses a driving profile that is overly conservative is safety properties are rejected because the DA is
-In an overtaking scenario there is a time window within which an overtake can be made
+From the point of view of performance, the AV should make best use of the available gaps without violating the safety property. However if a vehicle chooses a driving profile that is overly conservative, it will reject opportunities to overtake that would be safe if a more aggressive profile were selected, and hence its performance would suffer.
+
+A performance requirement ($\delta$), defined as the ratio of actual distance ahead to safe distance ahead, below which an AV would reject an unacceptable number of overtaking opportunities. 
+
+% GC Notes:
+% In this example, certain profiles perform better?
+% IT is possible to overtake in B/C
+% Even distribution of overtaking situations
+% Fix profile, move horizontal 65m acceptable (near miss so rejection reasonable), but if you reject 82m gap this impacts performance
+% Any opportunity in zone D unaccptable, diagram can be sued to select profile
+% Risk Zones in Fig7
+% "Performance Requirement/Margin delta" -> replace opp window
+% Aggressive may put others at risk, cannot always be drive like this
 
 
 %
@@ -1046,7 +1057,7 @@ It is therefore a dynamic parameter with a temporal variance, changing with the 
 %
 % We define $\delta$ as the ratio of `achieved distance ahead' to the `SDA required by profile' from Table~\ref{Overtaking_Profiles}. 
 %
-The acceptable size of this \emph{opportunity window} (\textbf{gap acceptance \cite{mahmassani1981using}}) will be dependent on a myriad of different contextual and preferential conditions such as the driving style, vehicle capability and passenger comfort. For example, an aggressive driving style with a tolerance for a low TTC, will be able to make use of smaller gaps in traffic than a more risk adverse driving style. 
+The acceptable size of this \emph{opportunity window} (\textbf{gap acceptance \cite{mahmassani1981using}}) will be dependent on a myriad of different contextual and preferential conditions such as the driving style, vehicle capability and passenger comfort. For example, an aggressive driving style with a tolerance for a low TTC, will be able to make use of smaller gaps in traffic than a more risk averse driving style. 
 
 Pre-set delta so they should not be rejecting scenarios where the DA is close to the required SDA, select the driving profile that meets the performance requirement
 
