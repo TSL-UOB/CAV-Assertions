@@ -812,17 +812,21 @@ The system used the CARLA simulation software~\cite{CarlaSimulator}, an open-sou
 
 \subsubsection{Simulation experiments}\todo[inline]{revise and tidy up this section}
 
-Parameters to be taken into account .... to include path of vehicles, driving profiles and OV starting positions.
+Three simulation runs were performed, in which the simulated AV followed the same trajectory, overtaking a stationary (parked) VBP as shown in Figure \ref{fig:Sim_experiment_layout} at a constant simulated speed of 25mph. In each simulation run, the OV followed a straight trajectory down the oncoming lane at a constant speed of 25mph, but in the start location of the OV was varied so that as the AV began its overtake manoeuvre, its separation from the OV (the DA) varied. In the run labelled ``Safe'', there was clearly sufficient distance for a safe overtake; the run labelled ``Near Miss'' produced a situation where the AV and OV came very close to colliding (within 1m distance), and in the third run (labelled ``Collision'') a head-on collision occurred. The locations  relative to the VBP of the near miss and collision eventsare marked on Figure \ref{fig:Sim_experiment_layout}.
+%Parameters to be taken into account .... to include path of vehicles, driving profiles and OV starting positions.
+%The paths for each simulated vehicle (AV, VBP, OV - see Figure~\ref{fig:assertion_database_annotated}) were preset to follow a series of way-points. 
+Using fixed vehicle paths facilitates evaluation of the assertion, as it makes the test repeatable within a deterministic simulation environment~\cite{chance2021}. 
+%I'm not sure what this sentence adds to the discussion
+%In addition, this setup allowed us to perform assertion checking for the three different driving profiles over the fixed paths. % (see Section~\ref{sim_results} for details). 
 
-The paths for each simulated vehicle (AV, VBP, OV - see Figure~\ref{fig:assertion_database_annotated}) were preset to follow a series of way-points. Using fixed vehicle paths facilitates evaluation of the assertion, as it makes the test repeatable within a deterministic simulation environment~\cite{chance2021}. In addition, this setup allowed us to perform assertion checking for the three different driving profiles over the fixed paths. % (see Section~\ref{sim_results} for details). 
-
-Three simulation runs were executed for each driving profile to generate simulation data traces. 
+%CH: this sentence is not correct, as there was no explicit choice of driving profile
+%The simulation runs were executed for each driving profile to generate simulation data traces. 
 %
-In each case, the trajectory of the AV remained unchanged, overtaking the stationary VBP and cutting back into the running lane with the same pull-out and cut-in clearance distances each time. The OV simply moved along the oncoming lane at constant speed, but the starting position of the OV was varied so as to generate three different scenarios of i) a safe overtake manoeuvre, ii) a near miss and iii) a dangerous overtake manoeuvre resulting in a collision.
+%In each case, the trajectory of the AV remained unchanged, overtaking the stationary VBP and cutting back into the running lane with the same pull-out and cut-in clearance distances each time. The OV simply moved along the oncoming lane at constant speed, but the starting position of the OV was varied so as to generate three different scenarios of i) a safe overtake manoeuvre, ii) a near miss and iii) a dangerous overtake manoeuvre resulting in a collision.
 
-\todo[inline]{more technical data required, i.e.\ what is safe, a near miss, ...?} 
+%\todo[inline]{more technical data required, i.e.\ what is safe, a near miss, ...?} 
 
-We selected a set of scenarios which we named 'safe', 'near miss' and 'collision', based on the ultimate outcome of the scenario, although the outcome is not being measured by the assertion and are a consequence that plays out in the simulation.
+%We selected a set of scenarios which we named 'safe', 'near miss' and 'collision', based on the ultimate outcome of the scenario, although the outcome is not being measured by the assertion and are a consequence that plays out in the simulation.
 
 
 The three simulation runs described previously produced simulation data logs that were subjected to assertion checking to ensure that a Safe Distance Ahead existed as the AV began to cross the road centre line into the oncoming lane at the start of the overtake manoeuvre. However, there are several factors conditioning the test results that need to be taken into account. 
