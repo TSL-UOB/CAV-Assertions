@@ -749,7 +749,7 @@ The runtime safety validation study developed video analysis measurements that w
 % ; the relevant clause is italicised in that section for ease of identification) %
 While the measurements were not developed fully into assertions in SQL code, the study does capture the information essential to the assertion hypothesis for that UKHC clause (the Cut-in Clearance distance as discussed in Section~\ref{model_based_analysis}), which can be generated as a derived variable in the database using a standard procedure function as discussed previously.
 
-\subsection{Simulation case study}  \label{sim_case_study}
+\subsection{Simulation Case Study}  \label{sim_case_study}
 We developed an assertion check for Safe Distance Ahead at the start of overtaking on a single-lane road, just as the vehicle begins to cross the road centre line. The assertion uses the expression for SDA discussed earlier in Section~\ref{model_based_analysis}. 
 
 \subsubsection{Environment model}
@@ -879,7 +879,7 @@ The results of all tests are provided in Table~\ref{Overtaking_Profiles}, which 
 
 The table shows that it would have been inadvisable to perform a `relaxed' overtake in any of the three scenarios presented, as this would have resulted in a near miss or a collision. If a `nominal' overtake is attempted (which actually corresponds to the behaviour of the AV in the scenarios), this policy was acceptable for the `Safe' scenario, but inadvisable for the `Near Miss' and `Collision' scenarios (as their descriptive names imply). Finally, if the AV had been programmed to overtake aggressively in these scenarios, then only in the case of the Collision scenario circumstances would the Distance Ahead have been short enough for the manoeuvre to be inadvisable; in the other two cases the overtake could have been achieved successfully (although aggressive overtaking may result in other safety assertions being violated).
 
-\subsection{Runtime monitoring case study}
+\subsection{Runtime Monitoring Case Study}
 In our experimental study of runtime monitoring we developed an assertion monitor for checking safe stopping distance during the overtake. However, the SDA check is only applicable at the \textit{start} of an overtake - it says nothing about whether separation distances \textit{remain} safe at later stages of the manoeuvre.
 
 In many real driving scenarios, environmental conditions that may have been checked and found safe at the beginning may cease to be true or valid as the scenario progresses, and driving plans or actions may need to be altered midway through as a consequence. Therefore, it can be highly advisable for autonomous vehicles to evaluate assertions continually during runtime, to detect the onset of hazards as a cue for changes of strategy.
@@ -1023,7 +1023,7 @@ The change of evaluation state of the assertions part way through the overtake m
 \section{Discussion} \label{discussion}
 The initial work presented in this paper has raised a number of consequent issues that require further investigation.
 
-\subsection{Assertion Checking to measure Performance}
+\subsection{Assertion Checking to Measure Performance}
 While we have applied the assertion checking methodology to measure the safety properties of vehicles in simulation and at runtime, the methodology can also be extended to validate other important system properties. This may include performance based metrics such as smooth driving (minimal jerk), accuracy of control (such as parking or stopping precisely, e.g.\ at a bus stop), and decisive behaviour at junctions or roundabouts, sometimes termed \emph{liveness}~\cite{kim2014mpc}. In particular, the mission performance of a vehicle, for example, can be measured in journey time or efficiency of movement through traffic, which may affect not only passenger expectations but also the commercial viability of such an autonomous system. 
 
 Performance (achievement of task goals) and safety (avoidance of task hazards) are distinct behavioural properties of a system; achievement of one does not necessarily entail the other. A task controller must achieve satisfactory compliance with both properties if a dependable system is to be developed. In some scenarios, such as during overtaking, there may exist a competition within the controller to satisfy both the achievement of goals and the avoidance of hazards. 
