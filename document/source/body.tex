@@ -170,11 +170,11 @@ The evaluation of assertions requires an environment to capture or generate vehi
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.98\linewidth]{\pathToOtherFiles/figures/SimulatorAssertionsCondensed.jpg}
+    \includegraphics[width=0.98\linewidth]{\pathToOtherFiles/figures/SimulatorAssertionsCondensed.png}
     \caption{Process for interpreting and monitoring assertions.}
     \label{fig:SimulatorArchitecture}
 \end{figure}
-\todo[inline]{remove the word 'oracle' from Fig.1}
+% \todo[inline]{remove the word 'oracle' from Fig.1}
 
 
 % GC added this as condensetion of section III **************
@@ -827,7 +827,7 @@ The system used the CARLA simulation software~\cite{CarlaSimulator}, an open-sou
 %CARLA generates dynamic state information about the simulation actors, which is made available via an API from where it is transferred into the PostgreSQL database.
 %and Python scripts were written to transfer data from the simulator into the PostgreSQL database on a step-by-step basis.
 
-\todo[inline]{The next section should clearly identify the parameters to be varied and those kept constant during simulation, i.e. fixed trajectories for all vehicles, but three driving profiles to be varied and three starting positions of OV resulting in three different Req. DA values.}
+% \todo[inline]{The next section should clearly identify the parameters to be varied and those kept constant during simulation, i.e. fixed trajectories for all vehicles, but three driving profiles to be varied and three starting positions of OV resulting in three different Req. DA values.}
 
 \begin{figure}
     \centering
@@ -836,9 +836,10 @@ The system used the CARLA simulation software~\cite{CarlaSimulator}, an open-sou
     \label{fig:Sim_experiment_layout}
 \end{figure} 
 
-\subsubsection{Simulation experiments}\todo[inline]{revise and tidy up this section}
+\subsubsection{Simulation experiments}
+% \todo[inline]{revise and tidy up this section}
 
-Three simulation runs were performed, in which the simulated AV followed the same trajectory, overtaking a stationary (parked) VBP as shown in Figure \ref{fig:Sim_experiment_layout} at a constant simulated speed of 25mph. In each simulation run, the OV followed a straight trajectory down the oncoming lane at a constant speed of 25mph, but in the start location of the OV was varied so that as the AV began its overtake manoeuvre, its separation from the OV (the DA) varied. In the run labelled ``Safe'', there was clearly sufficient distance for a safe overtake; the run labelled ``Near Miss'' produced a situation where the AV and OV came very close to colliding (within 1m distance), and in the third run (labelled ``Collision'') a head-on collision occurred. The locations  relative to the VBP of the near miss and collision eventsare marked on Figure \ref{fig:Sim_experiment_layout}.
+Three simulation runs were performed, in which the simulated AV followed the same trajectory, overtaking a stationary (parked) VBP as shown in Figure \ref{fig:Sim_experiment_layout} at a constant simulated speed of 25mph along a section of single carriageway approximately 150m long. In each simulation run, the OV followed a straight trajectory down the oncoming lane at a constant speed of 25mph, but in the start location of the OV was varied so that as the AV began its overtake manoeuvre, its separation from the OV (the DA) varied. In the run labelled ``Safe'', there was clearly sufficient distance for a safe overtake; the run labelled ``Near Miss'' produced a situation where the AV and OV came very close to colliding (within 1m distance), and in the third run (labelled ``Collision'') a head-on collision occurred. The locations  relative to the VBP of the near miss and collision events are marked on Figure \ref{fig:Sim_experiment_layout}.
 %Parameters to be taken into account .... to include path of vehicles, driving profiles and OV starting positions.
 %The paths for each simulated vehicle (AV, VBP, OV - see Figure~\ref{fig:assertion_database_annotated}) were preset to follow a series of way-points. 
 Using fixed vehicle paths facilitates evaluation of the assertion, as it makes the test repeatable within a deterministic simulation environment~\cite{chance2021}. 
@@ -1004,7 +1005,7 @@ Table~\ref{Overtaking_DS_table} shows the results for the six assertions introdu
 \end{table}
 Note: The use of intersection symbols in the table is shorthand for a `does not overlap' relation between polygons. 
 %\vspace{2mm}
-The four assertions were checked against every frame, and were found to change from ``PASS'' to ``FAIL'' approximately six seconds after the start of the overtake manoeuvre, as the oncoming vehicle suddenly became visible. Due to the degradation of video quality, caused by prevailing ambient conditions (light rain), and the small size of the OV object image in the video frame at that time, a transient state change occurs as shown in \ref{fig:Runtime_timeline} at 96s, where the evaluation of the assertions reverts back to ``PASS'' for a few frames before going back unambiguously to ``FAIL''. This emphasizes the need for good quality environmental sensing (e.g. high resolution cameras) to obtain clearly defined changes of state. Figure \ref{fig:Runtime_timeline} also shows that all safety assertions fail simultaneously. This is due to the fact that the obscuration of the OV was cleared with only a short separation distance between the ego-vehicle and the OV, so assertions (2)-(4) all failed immediately as soon as they became measurable. In a scenario where the OV is visible from the start, one would expect assertion (4) (no overlap between DS$_{AV}$ and DS$_{OV}$) to fail first, followed shortly by (2) and (3) as the vehicles drew closer together.
+The four assertions were checked against every frame, and were found to change from ``PASS'' to ``FAIL'' approximately six seconds after the start of the overtake manoeuvre, as the oncoming vehicle suddenly became visible. Due to the degradation of video quality, caused by prevailing ambient conditions (light rain), and the small size of the OV object image in the video frame at that time, a transient state change occurs as shown in Figure~\ref{fig:Runtime_timeline} at 96s, where the evaluation of the assertions reverts back to ``PASS'' for a few frames before going back unambiguously to ``FAIL''. This emphasizes the need for good quality environmental sensing (e.g. high resolution cameras) to obtain clearly defined changes of state. Figure \ref{fig:Runtime_timeline} also shows that all safety assertions fail simultaneously. This is due to the fact that the obscuration of the OV was cleared with only a short separation distance between the ego-vehicle and the OV, so assertions (2)-(4) all failed immediately as soon as they became measurable. In a scenario where the OV is visible from the start, one would expect assertion (4) (no overlap between DS$_{AV}$ and DS$_{OV}$) to fail first, followed shortly by (2) and (3) as the vehicles drew closer together.
 
 The change of evaluation state of the assertions part way through the overtake manoeuvre clearly shows the value of applying them as runtime monitoring checks. For example, the transitions can be used as input signals to the AV control system to prompt an emergency avoidance action.
 %When passing the VBP, the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during the passing the VBP stage as both the AV and the OV have entered each others danger spaces. 
@@ -1027,55 +1028,66 @@ Performance (achievement of task goals) and safety (avoidance of task hazards) a
 
 For example, an autonomous taxi may need to perform a minimum number of fare-paying journeys in a day in order to remain commercially viable. Performance assertions can measure whether suitable opportunities for manoeuvres such as overtaking were taken efficiently, without incurring delays or driving sub-optimally for the given road network i.e. using all available space. However, it must still drive safely as it conducts each journey, so being unduly aggressive in its driving may cause other risks in terms of other interactions with traffic. Assertions can measure how the AV trades off these two properties in the execution of its task(s). 
 
-\begin{table}[]
-\centering
-\begin{tabular}{|p{2.3cm}|p{2.3cm}|p{2.3cm}|}
-\hline
-\multicolumn{1}{|l|}{Distance Ahead} & \multicolumn{1}{l|}{\textbf{AV Does Not }} & \multicolumn{1}{l|}{\textbf{AV Overtakes}} \\ 
-Condition & \textbf{Overtake} & \\
-\hline
-% \multirow{2}{*}{1: Unsafe} & safe & unsafe (assertion \\
-\multirow{2}{*}{Case 1} & safe & unsafe (assertion \\
-& & failure) \\
-\hline
-% \multirow{2}{*}{2: Higher} & safe but not taking & safe and taking\\ 
-      % Performance & opportunities & opportunities\\
-\multirow{2}{*}{Case 2} & safe but not taking & safe and taking\\ 
-& opportunities & opportunities\\
-\hline
-% \multirow{2}{*}{3: Lower} & safe but incurring  & safe \& expected  \\ 
-% Performance & significant delay & behaviour\\
-\multirow{2}{*}{Case 3} & safe but incurring  & safe \& expected  \\ 
-& significant delay & behaviour\\
-\hline
-\end{tabular}
-\caption{Performance classifications for deciding to overtake based on the Distance Ahead to the Oncoming Vehicle.}
-\label{performance_metric_table}
-\end{table}
+% \begin{table}[]
+% \centering
+% \begin{tabular}{|p{2.3cm}|p{2.3cm}|p{2.3cm}|}
+% \hline
+% \multicolumn{1}{|l|}{Distance Ahead} & \multicolumn{1}{l|}{\textbf{AV Does Not }} & \multicolumn{1}{l|}{\textbf{AV Overtakes}} \\ 
+% Condition & \textbf{Overtake} & \\
+% \hline
+% % \multirow{2}{*}{1: Unsafe} & safe & unsafe (assertion \\
+% \multirow{2}{*}{Case 1} & safe & unsafe (assertion \\
+% & & failure) \\
+% \hline
+% % \multirow{2}{*}{2: Higher} & safe but not taking & safe and taking\\ 
+%       % Performance & opportunities & opportunities\\
+% \multirow{2}{*}{Case 2} & safe but not taking & safe and taking\\ 
+% & opportunities & opportunities\\
+% \hline
+% % \multirow{2}{*}{3: Lower} & safe but incurring  & safe \& expected  \\ 
+% % Performance & significant delay & behaviour\\
+% \multirow{2}{*}{Case 3} & safe but incurring  & safe \& expected  \\ 
+% & significant delay & behaviour\\
+% \hline
+% \end{tabular}
+% \caption{Performance classifications for deciding to overtake based on the Distance Ahead to the Oncoming Vehicle.}
+% \label{performance_metric_table}
+% \end{table}
 
-% <<<<<<< HEAD
-% An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. Considering this example from the point of view of performance, the AV must not violate the safety property but must overtake within a reasonable window of opportunity ($\delta$), i.e. taking any presented opportunity to overtake if safe to do so and if appropriate to the road network. 
-% =======
-An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle as listed in Table~\ref{Overtaking_Profiles}. 
+
+An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle. 
+% as listed in Table~\ref{Overtaking_Profiles}. 
 %In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. 
-
-From the point of view of performance, the AV should make best use of the available gaps to overtake without violating the safety property, and may need to change its driving profile in order to do so. 
+From the point of view of performance, the AV should make best use of the available gaps to overtake 
+% without violating the safety property, 
+and may need to change its driving profile in order to do so. 
 %
 If a vehicle chooses a driving profile that is overly conservative, it will reject opportunities to overtake that would be safe if a more aggressive profile were selected, and hence its performance would suffer. 
 %
 However, aggressive driving profiles can introduce new risks, e.g. adverse reaction from other drivers and the UKHC requires drivers to maintain the minimum level of aggression necessary for overtaking.
 
-We assume that the frequency at which overtaking opportunities of a given actual distance ahead may occur is illustrated in figure~\textbf(add figure ref). 
+\begin{figure}
+    \centering
+    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/gaussian_ada.png}
+    \caption{Assumed distribution of overtaking opportunities as a function of actual distance ahead.}
+    \label{fig:distribution}
+\end{figure} 
+
+We assume that the frequency at which overtaking opportunities of a given actual distance ahead may occur as illustrated in Figure~\ref{fig:distribution} (based on findings from~\cite{farah2016drivers}). 
 %
-In general the more aggressive the driving style selected by an AV the further the safe/unsafe boundary will move towards the left and hence the higher the number of overtaking opportunities can be taken. 
+In general the more aggressive the driving style selected the closer to the unsafe boundary the AV will  be and hence the higher the number of overtaking opportunities that can be taken. 
 %
-For the results of our simulation experiment this is shown by the zones in figure~\ref{fig:performance_results}. 
+For the results of our simulation experiment this is shown by the zones in Figure~\ref{fig:performance_results}. 
 %
-Zone A includes all situations where the AD is less than the SDA and are therefore unsafe. Zone B is a safety margin (which excludes all near-miss situations). Zones C and D describe situations where the ADA is getting progressively larger and represent increasing levels of safety. 
+Zone A includes all situations where the actual distance ahead is less than the SDA and are therefore unsafe. Zone B is a required safety margin that is used to  excludes all near-miss situations which is typical practice in many safety related applications. 
 %
-Zone D, which captures all situations where there is more than 2.5s TTC between the AV and the OV during the overtake, represents situations where there is so much safety that a decision not to overtake would be overly conservative. Zone C captures all situations where more opportunities are taken but safety is still maintained.
+Zones C and D describe situations where the required safe distance ahead is getting progressively larger and represent increasing levels of safety. 
+%
+Zone D, which captures all situations where there is more than 2.5s TTC between the AV and the OV during the overtake, represents situations where there is so much safety that a decision not to overtake would be overly conservative. Zone C captures all situations where more overtaking opportunities are taken but safety is still maintained.
 %
 A performance assertion should measure whether the AV is in Zone C which is a trade off between driving profile, the actual distance ahead and the required safe distance ahead. The optimal overtaking condition is therefore the least aggressive driving profile that attains Zone C for any given combination of DA/SDA. 
+%
+Switching from a conservative to a more aggressive profile may allow an AV in Zone A to move into Zone C and take opportunities to overtake that would be denied if the driving profile is fixed. 
 
 % A performance requirement ($\delta$), defined as the ratio of actual distance ahead to safe distance ahead, below which an AV would reject an unacceptable number of overtaking opportunities. 
 
@@ -1112,25 +1124,25 @@ A performance assertion should measure whether the AV is in Zone C which is a tr
 
 
 
-We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotated}, considering performance as well as safety, using the required SDA and opportunity window to define three specific cases:
-\begin{itemize}
+% We analyse the overtaking scenario in Figure~\ref{fig:assertion_database_annotated}, considering performance as well as safety, using the required SDA and opportunity window to define three specific cases:
+% \begin{itemize}
 
-    % \item Unsafe: $d_{OV} < SDA$
-    % \item Higher Performance: $SDA \leq d_{OV}$ $\leq SDA + \delta$
-    % \item Lower Performance: $d_{OV} > SDA + \delta$
-    \item Case 1: $DA < SDA$
-    \item Case 2: $SDA \leq DA$ $\leq SDA + \delta$
-    \item Case 3: $DA > SDA + \delta$
-\end{itemize}
+%     % \item Unsafe: $d_{OV} < SDA$
+%     % \item Higher Performance: $SDA \leq d_{OV}$ $\leq SDA + \delta$
+%     % \item Lower Performance: $d_{OV} > SDA + \delta$
+%     \item Case 1: $DA < SDA$
+%     \item Case 2: $SDA \leq DA$ $\leq SDA + \delta$
+%     \item Case 3: $DA > SDA + \delta$
+% \end{itemize}
 
-Here, $DA$ is the distance ahead to the Oncoming Vehicle,
-% \todo{is this the Distance Ahead in Fig.\ 2?} 
-SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
+% Here, $DA$ is the distance ahead to the Oncoming Vehicle,
+% % \todo{is this the Distance Ahead in Fig.\ 2?} 
+% SDA is the required Safe Distance Ahead based on the model given in Appendix~\ref{appendix_a} and $\delta$ is the optimal window of opportunity for the vehicle to perform the manoeuvre. 
 
 %
-In each of these cases the AV could decide to overtake or hold back and the performance outcomes for each of these are shown in Table~\ref{performance_metric_table}. 
+% In each of these cases the AV could decide to overtake or hold back and the performance outcomes for each of these are shown in Table~\ref{performance_metric_table}. 
 
-For Case 1, the distance to the OV is less than SDA, so the only safe action is not to overtake and indeed to attempt to do so in this condition would result in failure of the SDA safety assertion. Safe driving behaviour whilst making timely use of the overtaking opportunities presented to the vehicle will see the vehicle progress through a road network most efficiently. This sentiment is captured in Case 2, where the vehicle is taking opportunities to overtake whilst maintaining a safe distance to the OV. Deciding not to overtake in Case 2 would not take advantage of opportunities to progress through traffic and will incur journey time penalties. In Case 3, the distance to the OV is greater than $SDA$ plus the window of opportunity, where the vehicle has unhindered opportunity, i.e.\ no currently oncoming traffic. In this case not overtaking (although completely safe) will incur significant and unnecessary delay to the journey and can be considered lower performance. Overtaking in Case 3 would be the expected behaviour.  
+% For Case 1, the distance to the OV is less than SDA, so the only safe action is not to overtake and indeed to attempt to do so in this condition would result in failure of the SDA safety assertion. Safe driving behaviour whilst making timely use of the overtaking opportunities presented to the vehicle will see the vehicle progress through a road network most efficiently. This sentiment is captured in Case 2, where the vehicle is taking opportunities to overtake whilst maintaining a safe distance to the OV. Deciding not to overtake in Case 2 would not take advantage of opportunities to progress through traffic and will incur journey time penalties. In Case 3, the distance to the OV is greater than $SDA$ plus the window of opportunity, where the vehicle has unhindered opportunity, i.e.\ no currently oncoming traffic. In this case not overtaking (although completely safe) will incur significant and unnecessary delay to the journey and can be considered lower performance. Overtaking in Case 3 would be the expected behaviour.  
 
 \begin{figure}[t]
     \centering
@@ -1139,11 +1151,15 @@ For Case 1, the distance to the OV is less than SDA, so the only safe action is 
     \label{fig:performance_results}
 \end{figure}
 
-The previous simulation results from the perspective of performance are shown in Figure~\ref{fig:performance_results}. Here $\delta$ is set to be equivalent to TTC=$2.5s$ \cite{Robbins2018,Chen2015,wang2019analysis} for the purposes of illustrating this concept. The required SDA is shown as a function of the actual distance ahead for the three overtaking profiles. Test cases that fail the safety assertion are shown as cross markers, all being within \emph{Zone A} which is an area where the SDA assertion will be violated. At the edge of this area, defining unsafe driving behaviour, is a \emph{safety boundary} (dashed line) being the edge of Zone A. Beyond the safety boundary exists the opportunity window that extends to the limit of the \emph{performance boundary} (dotted line), and covers \emph{Zone B} and \emph{Zone C}. Zone B represents a conceptual \emph{safety margin} or \emph{buffer} between optimal performance and the safety boundary, and in reality this may be the limit of a near-miss condition, e.g.\ TTC=$0.5s$. Reward should be given for an adaptive controller that makes use of Zone C but does not enter Zone B, i.e. executes optimal overtaking given opportunity $\delta$ but does not cause a near-miss event. \emph{Zone D} can be considered safer than the other zones, i.e. the vehicle is giving lots of distance to the Oncoming Vehicle, but may be unnecessarily incurring delays and hence considered lower performance. An improvement could be made by moving from Zone D to Zone C without violating any safety property. 
+% The previous simulation results from the perspective of performance are shown in Figure~\ref{fig:performance_results}. Here $\delta$ is set to be equivalent to TTC=$2.5s$ \cite{Robbins2018,Chen2015,wang2019analysis} for the purposes of illustrating this concept. The required SDA is shown as a function of the actual distance ahead for the three overtaking profiles. Test cases that fail the safety assertion are shown as cross markers, all being within \emph{Zone A} which is an area where the SDA assertion will be violated. At the edge of this area, defining unsafe driving behaviour, is a \emph{safety boundary} (dashed line) being the edge of Zone A. Beyond the safety boundary exists the opportunity window that extends to the limit of the \emph{performance boundary} (dotted line), and covers \emph{Zone B} and \emph{Zone C}. Zone B represents a conceptual \emph{safety margin} or \emph{buffer} between optimal performance and the safety boundary, and in reality this may be the limit of a near-miss condition, e.g.\ TTC=$0.5s$. Reward should be given for an adaptive controller that makes use of Zone C but does not enter Zone B, i.e. executes optimal overtaking given opportunity $\delta$ but does not cause a near-miss event. \emph{Zone D} can be considered safer than the other zones, i.e. the vehicle is giving lots of distance to the Oncoming Vehicle, but may be unnecessarily incurring delays and hence considered lower performance. An improvement could be made by moving from Zone D to Zone C without violating any safety property. 
 
 
 
-There is therefore a trade-off between safety and performance for optimal driving behaviour, where performance is improved by moving towards Zone B (but not passing the safety boundary), and safety is improved by moving towards Zone D (see large arrows in Figure~\ref{fig:performance_results}). While we have observed this conceptual trade-off between safety and performance in our analysis, we also see evidence of this in the UKHC rules themselves. An example of this is the 4th bullet point in Rule 163 (see Section~\ref{interp_nat_lang_UKHC_rules}) where the overtaking rule states ``Move quickly past the vehicle'' and ``Move back to the left as soon as you can...'', which clearly suggests that performance will play a part in safe driving behaviour. There is also evidence of this trade-off between performance and safety, while the AV should complete the overtake maneuver ``as soon as you can'' (higher performance) but ``do not cut in'' (higher safety) we see these competing demands resolve in optimal driving behaviour analogous to that described by Zone C in Figure~\ref{fig:performance_results}. This analysis considers only the overtaking scenario and in reality there will be many competing demands on the decision making process of a controller. 
+There is therefore a trade-off between safety and performance for optimal driving behaviour, where performance is improved by moving towards Zone B (but not passing the safety boundary), and safety is improved by moving towards Zone D (see large arrows in Figure~\ref{fig:performance_results}). While we have observed this conceptual trade-off between safety and performance in our analysis, we also see evidence of this in the UKHC rules themselves. An example of this is the 4th bullet point in Rule 163 (see Section~\ref{interp_nat_lang_UKHC_rules}) where the overtaking rule states ``Move quickly past the vehicle'' and ``Move back to the left as soon as you can...'', which suggests that performance can play a part in safe driving behaviour. 
+% cut this???
+% There is also evidence of this trade-off between performance and safety, while the AV should complete the overtake maneuver ``as soon as you can'' (higher performance) but ``do not cut in'' (higher safety) 
+%
+We see these competing demands resolve in optimal driving behaviour analogous to that described by Zone C in Figure~\ref{fig:performance_results}. This analysis considers only the overtaking scenario and in reality there will be many competing demands on the decision making process of a controller. 
 
 
 
