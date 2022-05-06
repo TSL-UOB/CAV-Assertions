@@ -829,12 +829,7 @@ The system used the CARLA simulation software~\cite{CarlaSimulator}, an open-sou
 
 % \todo[inline]{The next section should clearly identify the parameters to be varied and those kept constant during simulation, i.e. fixed trajectories for all vehicles, but three driving profiles to be varied and three starting positions of OV resulting in three different Req. DA values.}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/Sim_experiment_layout.png}
-    \caption{Simulation experiment driving paths for each scenario.}
-    \label{fig:Sim_experiment_layout}
-\end{figure} 
+
 
 \subsubsection{Simulation experiments}
 % \todo[inline]{revise and tidy up this section}
@@ -875,7 +870,12 @@ The fixed overtaking manoeuvre trajectory that had been pre-set for the AV vehic
 The results of all tests are provided in Table~\ref{Overtaking_Profiles}, which shows the required separation distances at the start of each manoeuvre (determined by the modelling analysis formula described in Section~\ref{model_based_analysis}), the Distance Ahead that was achieved in each simulation run, and hence the pass/fail assertion results of comparing the two distances in each case.
 % >>>>>>> 73dcf5c238b93d3bf13283edf1ff00e8dcb5fd58
 
-
+\begin{figure}
+    \centering
+    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/Sim_experiment_layout.png}
+    \caption{Simulation experiment driving paths for each scenario.}
+    \label{fig:Sim_experiment_layout}
+\end{figure} 
 
 The table shows that it would have been inadvisable to perform a `relaxed' overtake in any of the three scenarios presented, as this would have resulted in a near miss or a collision. If a `nominal' overtake is attempted (which actually corresponds to the behaviour of the AV in the scenarios), this policy was acceptable for the `Safe' scenario, but inadvisable for the `Near Miss' and `Collision' scenarios (as their descriptive names imply). Finally, if the AV had been programmed to overtake aggressively in these scenarios, then only in the case of the Collision scenario circumstances would the Distance Ahead have been short enough for the manoeuvre to be inadvisable; in the other two cases the overtake could have been achieved successfully (although aggressive overtaking may result in other safety assertions being violated).
 
@@ -936,13 +936,8 @@ As a potentially hazardous overtaking situation develops, other conditions relat
 %\end{enumerate}
 These four assertions were evaluated in the selected video file by means of video processing analysis.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/Runtime_timeline.png}
-    \caption{Simulation experiment driving paths for each scenario.}
-    \label{fig:Runtime_timeline}
-\end{figure} 
-%\todo[inline]{need to explain the transient just after the initial change of state in Fig.6}
+
+
 
 \subsubsection{Video processing}
 %
@@ -977,7 +972,7 @@ According to Rule 124 in the UKHC the national speed limit of the single carriag
 \subsubsection{Runtime validation results}
 Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in Section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as none of the vehicles were present in another vehicle's danger space and there was no overlap in any of the danger spaces. 
 
-\begin{table}[h]
+\begin{table}
 	\centering
 	\begin{tabular}{ lccc }
 		\hline
@@ -1001,10 +996,10 @@ Table~\ref{Overtaking_DS_table} shows the results for the six assertions introdu
 		\\
 		\hline
 	\end{tabular}
-	\caption{Pass/Fail danger space assertion checks results for the runtime monitoring study. } \label{Overtaking_DS_table}
+	\caption{Pass/Fail danger space assertion checks results for the runtime monitoring study. Note: The use of intersection symbols in the table is shorthand for a `does not overlap' relation between polygons.} \label{Overtaking_DS_table}
 \end{table}
-Note: The use of intersection symbols in the table is shorthand for a `does not overlap' relation between polygons. 
-%\vspace{2mm}
+
+
 The four assertions were checked against every frame, and were found to change from ``PASS'' to ``FAIL'' approximately six seconds after the start of the overtake manoeuvre, as the oncoming vehicle suddenly became visible. Due to the degradation of video quality, caused by prevailing ambient conditions (light rain), and the small size of the OV object image in the video frame at that time, a transient state change occurs as shown in Figure~\ref{fig:Runtime_timeline} at 96s, where the evaluation of the assertions reverts back to ``PASS'' for a few frames before going back unambiguously to ``FAIL''. This emphasizes the need for good quality environmental sensing (e.g. high resolution cameras) to obtain clearly defined changes of state. Figure \ref{fig:Runtime_timeline} also shows that all safety assertions fail simultaneously. This is due to the fact that the obscuration of the OV was cleared with only a short separation distance between the ego-vehicle and the OV, so assertions (2)-(4) all failed immediately as soon as they became measurable. In a scenario where the OV is visible from the start, one would expect assertion (4) (no overlap between DS$_{AV}$ and DS$_{OV}$) to fail first, followed shortly by (2) and (3) as the vehicles drew closer together.
 
 The change of evaluation state of the assertions part way through the overtake manoeuvre clearly shows the value of applying them as runtime monitoring checks. For example, the transitions can be used as input signals to the AV control system to prompt an emergency avoidance action.
@@ -1017,6 +1012,13 @@ The change of evaluation state of the assertions part way through the overtake m
 %\todo[inline]{unclear}
 % \todo[inline]{A table note must be added to explain the use of intersection symbols as shorthand for a "does not overlap" relation between two polygons.}
 % \todo[inline]{In table:, ``No DS...'' should be intersection between the DSs is empty. Strictly speaking, the DSs should be defined as sets earlier on.}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/Runtime_timeline.png}
+    \caption{Assertion checking results for runtime case study.}
+    \label{fig:Runtime_timeline}
+\end{figure} 
 
 \section{Discussion} \label{discussion}
 The initial work presented in this paper has raised a number of consequent issues that require further investigation.
