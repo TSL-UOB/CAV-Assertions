@@ -903,8 +903,8 @@ In the video analysis study, the aim of the assertion checking applied to runtim
 %The overtake manoeuvre can be split into three distinct stages as was described in the modelling analysis (Section \ref{model_based_analysis}): pulling out, passing the VBP and cutting in.
 %
 Following Rule 126 of the UKHC, the basic requirements being evaluated during the different stages of the overtake (pulling out, passing, and cutting in, as described in Section \ref{model_based_analysis}) were:
-
- that neither the AV nor OV should be present in the DS of the other vehicle, nor should either DS overlap (which indicates the onset of a hazardous situation that requires ). 
+%
+% that neither the AV nor OV should be present in the DS of the other vehicle, nor should either DS overlap (which indicates the onset of a hazardous situation). 
 %
 %To satisfy this requirement, six assertions are needed to be checked at the different stages of the overtake.
 %
@@ -916,18 +916,18 @@ Following Rule 126 of the UKHC, the basic requirements being evaluated during th
 \item \emph{Safe separation with VBP:}
 The AV should maintain safe separation with the VBP throughout the overtake manoeuvre; in practice this is primarily applicable during the Pulling Out phase.
 \begin{itemize}
-	\item Assertion condition: VBP not within DS$_{AV}$
+	\item Assertion condition: VBP outside DS$_{AV}$
 \end{itemize}
 \item \emph{Hazardous condition (requiring urgent avoiding action):} 
 As two vehicles moving in opposing directions in the same lane converge, several conditions associated with their relative proximity develop, which can be checked by assertion and used as cues for safety related decision making such as aborting manoeuvres or taking avoiding actions. Any situation, which requires such action to be taken is called a \textit{hazardous situation}. An overtake manoeuvre situation will begin to become potentially hazardous as the danger spaces of the AV and OV begin to overlap. At this stage a collision might occur if neither vehicle takes any avoiding action, so this overlap condition measures the onset of the hazardous situation.
 \begin{itemize}
-	\item Assertion condition: no intersection between DS$_{AV}$ and DS$_{VBP}$
+	\item Assertion condition: no intersection between DS$_{AV}$ and DS$_{OV}$
 \end{itemize}
-\emph{Imminent collision conditions:}
-As a potentially hazardous overtaking situation develops, other conditions related to the direct occupancy of one vehicle inside another indicate the increasing imminence of a collision, and can be used as cues to reinforce further the need to take avoiding action:
+\item \emph{Imminent collision conditions:}
+As a potentially hazardous overtaking situation develops, other conditions related to the direct occupancy of one vehicle inside another danger space indicate the increasing imminence of a collision, and can be used as cues to reinforce further the need to take avoiding action:
 \begin{itemize}
-	\item Assertion condition: OV location is not within DS$_{AV}$ 
-	\item Assertion condition: AV location is not within DS$_{OV}$
+	\item Assertion condition: OV outside DS$_{AV}$ 
+	\item Assertion condition: AV outside DS$_{OV}$
 \end{itemize}
 \end{enumerate}
 %The last two assertions are only applicable to the last stage of the overtake (cutting in):
@@ -970,24 +970,22 @@ Third, the pull out $\beta$ and cut in $\theta$ angles of the AV are calculated 
 According to Rule 124 in the UKHC the national speed limit of the single carriage way in the video for cars (AV and OV) is 60mph, and 50mph for goods vehicles (VBP). Using the above steps the real time video was converted to a 2D driving scenario, where the Danger Space assertions listed in section~\ref{DS_assessment} can be checked.
 
 \subsubsection{Runtime validation results}
-Table~\ref{Overtaking_DS_table} shows the results for the six assertions introduced in Section~\ref{DS_assessment} at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as none of the vehicles were present in another vehicle's danger space and there was no overlap in any of the danger spaces. 
-
 \begin{table}
 	\centering
-	\begin{tabular}{ lccc }
+	\begin{tabular}{ clcc }
 		\hline
 		\\
-		\multirow{3}{*}{\textbf{}} & \multicolumn{3}{c}{\textbf{Overtaking manoeuvre stages}}\\
-		\textbf{Assertion} & \textbf{Pulling out} & \textbf{Passing VBP} & %\textbf{Cutting in}
+		\textbf{} & \multirow{3}{*}{\textbf{}} & \multicolumn{2}{c}{\textbf{Overtaking manoeuvre stages}}\\
+		\textbf{Assertion No.} & \textbf{Assertion} & \textbf{Pulling out} & \textbf{Passing VBP} %& \textbf{Cutting in}
 		 \\
-		&  &  &  \\
-		VBP outside DS$_{AV}$ & PASS & PASS & \\
+		&  &  &   \\
+		(1) & VBP outside DS$_{AV}$ & PASS & PASS  \\
 		%
-		OV outside DS$_{AV}$ & PASS & FAIL & \\
+		(2) & OV outside DS$_{AV}$ & PASS & FAIL  \\
 		%
-		AV outside DS$_{OV}$  & PASS & FAIL & \\
+		(3) & AV outside DS$_{OV}$  & PASS & FAIL  \\
 		%
-		No DS$_{AV}$ $\cap$ DS$_{OV}$  & PASS & FAIL & \\
+		(4) & No DS$_{AV}$ $\cap$ DS$_{OV}$  & PASS & FAIL  \\
 		%
 %		AV outside DS$_{VBP}$  & N/A & N/A & PASS\\
 		%
@@ -999,8 +997,18 @@ Table~\ref{Overtaking_DS_table} shows the results for the six assertions introdu
 	\caption{Pass/Fail danger space assertion checks results for the runtime monitoring study. Note: The use of intersection symbols in the table is shorthand for a `does not overlap' relation between polygons.} \label{Overtaking_DS_table}
 \end{table}
 
-
-The four assertions were checked against every frame, and were found to change from ``PASS'' to ``FAIL'' approximately six seconds after the start of the overtake manoeuvre, as the oncoming vehicle suddenly became visible. Due to the degradation of video quality, caused by prevailing ambient conditions (light rain), and the small size of the OV object image in the video frame at that time, a transient state change occurs as shown in Figure~\ref{fig:Runtime_timeline} at 96s, where the evaluation of the assertions reverts back to ``PASS'' for a few frames before going back unambiguously to ``FAIL''. This emphasizes the need for good quality environmental sensing (e.g. high resolution cameras) to obtain clearly defined changes of state. Figure \ref{fig:Runtime_timeline} also shows that all safety assertions fail simultaneously. This is due to the fact that the obscuration of the OV was cleared with only a short separation distance between the ego-vehicle and the OV, so assertions (2)-(4) all failed immediately as soon as they became measurable. In a scenario where the OV is visible from the start, one would expect assertion (4) (no overlap between DS$_{AV}$ and DS$_{OV}$) to fail first, followed shortly by (2) and (3) as the vehicles drew closer together.
+Table~\ref{Overtaking_DS_table} shows the results for the four runtime assertions introduced in Section~\ref{DS_assessment}. 
+% at the three different stages of the overtake. At pulling out, the assertion checks suggest that it was safe to continue the overtake manoeuvre as none of the vehicles were present in another vehicle's danger space and there was no overlap in any of the danger spaces. 
+%
+The four assertions were checked against every frame, and were found to change from ``PASS'' to ``FAIL'' approximately six seconds after the start of the overtake manoeuvre, as the oncoming vehicle suddenly became visible. 
+%
+Due to the degradation of video quality, caused by prevailing ambient conditions (light rain), and the small size of the OV object image in the video frame at that time, a transient state change occurs as shown in Figure~\ref{fig:Runtime_timeline} at 96s, where the evaluation of the assertions reverts back to ``PASS'' for a few frames before going back unambiguously to ``FAIL''. 
+%
+This emphasizes the need for good quality environmental sensing (e.g. high resolution cameras for more reliable object classification) to obtain clearly defined changes of state.
+%
+In the absence of good quality sensing due to harsh environmental conditions, autonomous systems can benefit from the use of classifiers that adapt to operational environments~\cite{ghobrial2022operational}, giving more reliable performance in harsh environmental conditions that were not trained on at design time. 
+%
+Figure \ref{fig:Runtime_timeline} also shows that all safety assertions fail simultaneously. This is due to the fact that the obscuration of the OV was cleared with only a short separation distance between the ego-vehicle and the OV, so assertions (2)-(4) all failed immediately as soon as they became measurable. In a scenario where the OV is visible from the start, one would expect assertion (4) (no overlap between DS$_{AV}$ and DS$_{OV}$) to fail first, followed shortly by (2) and (3) as the vehicles drew closer together.
 
 The change of evaluation state of the assertions part way through the overtake manoeuvre clearly shows the value of applying them as runtime monitoring checks. For example, the transitions can be used as input signals to the AV control system to prompt an emergency avoidance action.
 %When passing the VBP, the assertion checks indicate that the overtake should have been aborted or if it was aborted then it should have been aborted earlier during the passing the VBP stage as both the AV and the OV have entered each others danger spaces. 
