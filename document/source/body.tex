@@ -1065,35 +1065,35 @@ For example, an autonomous taxi may need to perform a minimum number of fare-pay
 % \end{table}
 
 
-An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle. 
+An analysis for overtaking performance can be observed in the simulation results presented in Section~\ref{sim_case_study} by comparing the required SDA to the actual distance ahead of the Oncoming Vehicle and the relative frequency with which overtaking opportunities of a given distance ahead actually occur. Figure~\ref{fig:distribution} presents a sample of overtaking distances based on findings presented by Farah~\cite{farah2016drivers} as a representative example. Some opportunities may be unsafe because the actual DA is less than the required SDA (as illustrated in region of the graph marked 'unsafe'). For a given driving profile the proportion of those overtaking opportunities that are achievable are those where the actual DA is greater than distance that can be achieved under that profile. In Figure~\ref{fig:distribution} this is represented by the area under the curve to the right of the line representing the achievable DA for a given profile. This is shown in Figure~\ref{fig:distribution} for the nominal profile as an example. 
+
 % as listed in Table~\ref{Overtaking_Profiles}. 
 %In this previous example, a failure of the SDA assertion indicates a violation of the UKHC and this happens when the actual distance ahead is less than the required Safe Distance Ahead, i.e. intersecting the danger space of the Oncoming Vehicle. 
-From the point of view of performance, the AV should make best use of the available gaps to overtake 
-% without violating the safety property, 
-and may need to change its driving profile in order to do so. 
+From the point of view of performance, the AV should make best use of the available gaps to overtake and may need to change its driving profile in order to do so. 
+%
+However, aggressive driving profiles can introduce new risks, e.g. adverse reaction from other drivers and the UKHC requires drivers to maintain the minimum level of aggression necessary for overtaking.
 %
 If a vehicle chooses a driving profile that is overly conservative, it will reject opportunities to overtake that would be safe if a more aggressive profile were selected, and hence its performance would suffer. 
 %
-However, aggressive driving profiles can introduce new risks, e.g. adverse reaction from other drivers and the UKHC requires drivers to maintain the minimum level of aggression necessary for overtaking.
 
 \begin{figure}
     \centering
-    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/gaussian_ada.png}
+    \includegraphics[width=8.5cm]{\pathToOtherFiles/figures/gap_distribution.png}
     \caption{Assumed distribution of overtaking opportunities as a function of actual distance ahead.}
     \label{fig:distribution}
 \end{figure} 
 
 We assume that the frequency at which overtaking opportunities of a given actual distance ahead may occur as illustrated in Figure~\ref{fig:distribution} (based on findings from~\cite{farah2016drivers}). 
 %
-In general the more aggressive the driving style selected the closer to the unsafe boundary the AV will  be and hence the higher the number of overtaking opportunities that can be taken. 
-%
-For the results of our simulation experiment this is shown by the zones in Figure~\ref{fig:performance_results}. 
+In general the more aggressive the driving style selected, the higher the number of opportunities that can be taken. 
+
+For the results of our simulation experiment the trade off between driving style, DA and SDA is shown by the zones in Figure~\ref{fig:performance_results}. 
 %
 Zone A includes all situations where the actual distance ahead is less than the SDA and are therefore unsafe. Zone B is a required safety margin that is used to  excludes all near-miss situations which is typical practice in many safety related applications. 
 %
-Zones C and D describe situations where the required safe distance ahead is getting progressively larger and represent increasing levels of safety. 
+Zones C and D describe situations where the ratio of DA/SDA is  getting progressively larger and represent increasing levels of safety. 
 %
-Zone D, which captures all situations where there is more than 2.5s TTC between the AV and the OV during the overtake, represents situations where there is so much safety that a decision not to overtake would be overly conservative. Zone C captures all situations where more overtaking opportunities are taken but safety is still maintained.
+Zone D, which captures all situations where there is more than 2.5s TTC between the AV and the OV during the overtake, represents situations where there is so much safety that a decision not to overtake would be overly conservative. Zone C captures all situations where more overtaking opportunities are taken but safety is still maintained. 
 %
 A performance assertion should measure whether the AV is in Zone C which is a trade off between driving profile, the actual distance ahead and the required safe distance ahead. The optimal overtaking condition is therefore the least aggressive driving profile that attains Zone C for any given combination of DA/SDA. 
 %
